@@ -16,10 +16,38 @@ const inter = Inter({
   display: "swap",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://rainbowapps.org";
+const title = "RainbowApps — Ai o idee bună? O construiesc gratis.";
+const description =
+  "Sunt Adelin, programator din Cluj. Dacă ai o idee de aplicație care ajută oameni, dar nu știi să programezi, o construiesc eu — gratuit.";
+
 export const metadata: Metadata = {
-  title: "RainbowApps — Ai o idee bună? O construiesc gratis.",
-  description:
-    "Sunt Adelin, programator din Cluj. Dacă ai o idee de aplicație care ajută oameni, dar nu știi să programezi, o construiesc eu — gratuit.",
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "ro_RO",
+    siteName: "RainbowApps",
+    url: siteUrl,
+    title,
+    description,
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "RainbowApps — Ai o idee bună? O construiesc gratis.",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: ["/og.png"],
+  },
 };
 
 export default function RootLayout({
