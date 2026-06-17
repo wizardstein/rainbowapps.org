@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createServiceClient, SKETCHES_BUCKET } from "@/lib/supabase";
+import { sendSubmissionEmails } from "@/lib/email";
 import { validateSubmission, type FieldErrors } from "@/lib/validation";
 
 export type SubmitState = {
@@ -77,7 +78,16 @@ export async function submitIdea(formData: FormData): Promise<SubmitState> {
       return { formError: GENERIC_ERROR };
     }
 
-    // M6: send the two Resend emails here (failure-tolerant).
+    // Emails are best-effort: the submission is already saved, so a Resend
+    // failure is logged but never fails the request.
+    await sendSubmissionEmails({
+      id,
+      name: data.name,
+      email: data.email,
+      phone: data.phone ? data.phone : null,
+      idea: data.idea,
+      attachmentPath,
+    });
   } catch (err) {
     console.error("Unexpected error saving submission:", err);
     return { formError: GENERIC_ERROR };
