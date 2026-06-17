@@ -1,65 +1,167 @@
-import Image from "next/image";
+import Link from "next/link";
+import StatusBadge from "@/components/StatusBadge";
+import { PROJECTS } from "@/lib/site";
+
+const STEPS = [
+  {
+    title: "Îmi spui ideea",
+    body: "Completezi un formular scurt. Fără jargon, fără cont, fără costuri.",
+  },
+  {
+    title: "Mă uit peste ea",
+    body: "Aleg ideile care ajută oameni și pe care le pot construi singur. Îți răspund oricum, indiferent de răspuns.",
+  },
+  {
+    title: "O construiesc",
+    body: "De la un weekend la o lună. Tu plătești doar domeniul (~€10–15/an) și găzduirea (gratuită). Restul e din partea mea.",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <>
+      <header className="mx-auto w-full max-w-5xl px-6 py-6">
+        <Link
+          href="/"
+          className="font-display text-lg font-bold tracking-tight text-ink"
+        >
+          RainbowApps
+        </Link>
+      </header>
+
+      <main className="flex-1">
+        {/* Hero */}
+        <section className="mx-auto w-full max-w-5xl px-6 pt-10 pb-20 sm:pt-16 sm:pb-28">
+          <div className="max-w-2xl">
+            <StatusBadge />
+            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl">
+              Ai o idee bună? O construiesc gratis.
+            </h1>
+            <div className="spectrum-rule mt-5 w-44" aria-hidden="true" />
+            <p className="mt-6 text-lg leading-relaxed text-ink-soft">
+              Sunt Adelin, programator din Cluj. Dacă ai o idee de aplicație
+              care ajută oameni, dar nu știi să programezi, o construiesc eu —
+              gratuit. Tu păstrezi totul: ideea, codul, domeniul.
+            </p>
+            <Link
+              href="/trimite"
+              className="mt-8 inline-flex items-center justify-center rounded-lg bg-ink px-6 py-3 text-base font-medium text-bg transition-opacity hover:opacity-90"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              Spune-mi ideea ta
+            </Link>
+          </div>
+        </section>
+
+        {/* Cum funcționează */}
+        <section className="border-t border-line">
+          <div className="mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
+            <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+              Cum funcționează
+            </h2>
+            <ol className="mt-10 grid gap-10 sm:grid-cols-3 sm:gap-8">
+              {STEPS.map((step, i) => (
+                <li key={step.title}>
+                  <span
+                    aria-hidden="true"
+                    className="font-display text-3xl font-bold text-ink-soft"
+                  >
+                    {i + 1}
+                  </span>
+                  <h3 className="mt-3 font-display text-xl font-semibold text-ink">
+                    {step.title}
+                  </h3>
+                  <p className="mt-2 leading-relaxed text-ink-soft">
+                    {step.body}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        {/* De ce fac asta */}
+        <section className="border-t border-line">
+          <div className="mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
+            <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+              De ce fac asta
+            </h2>
+            <blockquote className="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
+              Cred că o idee bună nu ar trebui să rămână blocată doar fiindcă
+              omul din spatele ei nu scrie cod. M-au inspirat profesorii care
+              predau gratis și oamenii care construiesc open source. Acesta e
+              felul meu de a da înapoi.
+            </blockquote>
+          </div>
+        </section>
+
+        {/* Ce nu pot construi */}
+        <section className="border-t border-line">
+          <div className="mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
+            <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+              Ce nu pot construi
+            </h2>
+            <blockquote className="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
+              Las deoparte ideile care țin de jocuri de noroc sau pariuri,
+              politică, religie, sau orice ar putea face rău cuiva. Și,
+              deocamdată, sisteme foarte complexe cu multe părți — sunt un
+              singur om.
+            </blockquote>
+          </div>
+        </section>
+
+        {/* Portofoliu */}
+        <section className="border-t border-line">
+          <div className="mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
+            <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+              Portofoliu
+            </h2>
+            <ul className="mt-10 grid gap-6 sm:grid-cols-2">
+              {PROJECTS.map((project) => (
+                <li key={project.url}>
+                  <a
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block h-full rounded-xl border border-line bg-surface p-6 transition-colors hover:border-ink/30"
+                  >
+                    <h3 className="font-display text-lg font-semibold text-ink">
+                      {project.title}
+                    </h3>
+                    <p className="mt-2 leading-relaxed text-ink-soft">
+                      {project.description}
+                    </p>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* CTA repeat */}
+        <section className="border-t border-line">
+          <div className="mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
+            <Link
+              href="/trimite"
+              className="inline-flex items-center justify-center rounded-lg bg-ink px-6 py-3 text-base font-medium text-bg transition-opacity hover:opacity-90"
             >
-              Learning
-            </a>{" "}
-            center.
+              Spune-mi ideea ta
+            </Link>
+          </div>
+        </section>
+      </main>
+
+      <footer className="border-t border-line">
+        <div className="mx-auto w-full max-w-5xl px-6 py-12 text-sm leading-relaxed text-ink-soft">
+          <p className="max-w-2xl">
+            RainbowApps — o inițiativă personală, sub Rainbow Engineering SRL,
+            Cluj-Napoca. Construiesc și fac voluntariat pentru comunitate.
+          </p>
+          <p className="mt-4 max-w-2xl">
+            Datele pe care le trimiți sunt folosite doar ca să te pot contacta
+            despre ideea ta. Nu le dau nimănui.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </footer>
+    </>
   );
 }

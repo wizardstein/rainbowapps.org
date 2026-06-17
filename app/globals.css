@@ -1,26 +1,74 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* Palette — warm off-white, never the forbidden cream */
+  --color-bg: #f7f6f4;
+  --color-ink: #232321;
+  --color-ink-soft: #5c5b57;
+  --color-line: #e4e2dd;
+  --color-surface: #ffffff;
+  --color-focus: #3a6ea5;
+  --color-status-green: #3f9d5a;
+  --color-status-amber: #d99a2b;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Type */
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Visible keyboard focus everywhere (AA, §10 quality floor) */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* The one bold place: a muted "dawn" spectrum hairline under the H1.
+   Desaturated on purpose — adult, not a primary rainbow. Used once. */
+.spectrum-rule {
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    #c0607a 0%,
+    #d99a6b 26%,
+    #c9b45a 48%,
+    #6fa67c 68%,
+    #5e8fb0 86%,
+    #8a6fb0 100%
+  );
+  transform-origin: left center;
+  animation: spectrum-reveal 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes spectrum-reveal {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+/* Respect reduced motion: render the hairline static, no reveal. */
+@media (prefers-reduced-motion: reduce) {
+  .spectrum-rule {
+    animation: none;
+    transform: none;
+  }
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
