@@ -22,6 +22,7 @@ const inputBase =
 
 export default function SubmissionForm() {
   const [errors, setErrors] = useState<FieldErrors>({});
+  const [formError, setFormError] = useState<string | undefined>(undefined);
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -51,13 +52,19 @@ export default function SubmissionForm() {
     }
 
     setErrors({});
+    setFormError(undefined);
     setSubmitting(true);
     const result = await submitIdea(fd);
     // On success the server action redirects; we only land here on error.
     if (result?.errors) {
       setErrors(result.errors);
-      setSubmitting(false);
+      const firstKey = Object.keys(result.errors)[0];
+      form.querySelector<HTMLElement>(`[name="${firstKey}"]`)?.focus();
     }
+    if (result?.formError) {
+      setFormError(result.formError);
+    }
+    setSubmitting(false);
   }
 
   const borderFor = (key: keyof FieldErrors) =>
@@ -65,6 +72,15 @@ export default function SubmissionForm() {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-6">
+      {formError && (
+        <p
+          role="alert"
+          className="rounded-lg border border-[#a23a30]/30 bg-[#a23a30]/5 px-4 py-3 text-sm text-[#a23a30]"
+        >
+          {formError}
+        </p>
+      )}
+
       {/* Name */}
       <div>
         <label htmlFor="name" className="font-medium text-ink">

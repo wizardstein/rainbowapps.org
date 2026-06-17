@@ -1,9 +1,23 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { createServiceClient, SKETCHES_BUCKET } from "@/lib/supabase";
 import { validateSubmission, type FieldErrors } from "@/lib/validation";
 
-export type SubmitState = { errors: FieldErrors } | null;
+export type SubmitState = {
+  errors?: FieldErrors;
+  formError?: string;
+} | null;
+
+const GENERIC_ERROR =
+  "Ceva n-a mers la trimitere. Te rog încearcă din nou peste un moment.";
+
+function storagePath(uuid: string, fileName: string): string {
+  const safe =
+    fileName.replace(/[^\w.\-]+/g, "_").slice(-100).replace(/^_+/, "") ||
+    "fisier";
+  return `submissions/${uuid}/${safe}`;
+}
 
 export async function submitIdea(formData: FormData): Promise<SubmitState> {
   // Honeypot: a bot fills this hidden field. Pretend success, do nothing.
@@ -30,8 +44,44 @@ export async function submitIdea(formData: FormData): Promise<SubmitState> {
     return { errors };
   }
 
-  // M5: upload optional file to Storage + insert the submissions row here.
-  // M6: send the two Resend emails here (failure-tolerant).
+  try {
+    const supabase = createServiceClient();
+    const id = crypto.randomUUID();
+
+    // Optional sketch upload. A failed upload must NOT lose the submission —
+    // log it and save the idea without the attachment.
+    let attachmentPath: string | null = null;
+    if (file) {
+      const path = storagePath(id, file.name);
+      const { error: uploadError } = await supabase.storage
+        .from(SKETCHES_BUCKET)
+        .upload(path, file, { contentType: file.type, upsert: false });
+      if (uploadError) {
+        console.error("Sketch upload failed:", uploadError.message);
+      } else {
+        attachmentPath = path;
+      }
+    }
+
+    const { error: insertError } = await supabase.from("submissions").insert({
+      id,
+      name: data.name,
+      email: data.email,
+      phone: data.phone ? data.phone : null,
+      idea: data.idea,
+      attachment_path: attachmentPath,
+    });
+
+    if (insertError) {
+      console.error("Submission insert failed:", insertError.message);
+      return { formError: GENERIC_ERROR };
+    }
+
+    // M6: send the two Resend emails here (failure-tolerant).
+  } catch (err) {
+    console.error("Unexpected error saving submission:", err);
+    return { formError: GENERIC_ERROR };
+  }
 
   redirect("/multumesc");
 }
