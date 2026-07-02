@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const REGULI = [
   {
     title: "Construirea e gratuită.",
-    body: "De la ideea ta la o aplicație funcțională, nu mă plătești. Tu acoperi doar domeniul (~€10–15/an) și găzduirea (de regulă gratuită la început).",
+    body: "De la ideea ta la o aplicație funcțională, nu mă plătești. Singurul cost e domeniul, ~10–15 € pe an. Găzduirea e de regulă gratuită la început.",
   },
   {
     title: "Stabilim împreună ce înseamnă „gata”.",

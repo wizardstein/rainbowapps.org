@@ -27,7 +27,7 @@ const STEPS = [
   },
   {
     title: "O construiesc",
-    body: "De la un weekend la o lună. Tu plătești doar domeniul (~€10–15/an) și găzduirea (gratuită). Restul e din partea mea.",
+    body: "De la un weekend la o lună. Singurul tău cost e domeniul, ~10–15 € pe an. Găzduirea e gratuită, iar restul e din partea mea.",
   },
 ];
 

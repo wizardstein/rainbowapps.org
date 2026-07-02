@@ -81,7 +81,7 @@ The landing page links prominently to `/trimite`. After a successful submit, red
 **Cum funcționează** (a real 3-step sequence — numbered markers are appropriate here)
 1. `Îmi spui ideea` — `Completezi un formular scurt. Fără jargon, fără cont, fără costuri.`
 2. `Mă uit peste ea` — `Aleg ideile care ajută oameni și pe care le pot construi singur. Îți răspund oricum, indiferent de răspuns.`
-3. `O construiesc` — `De la un weekend la o lună. Tu plătești doar domeniul (~€10–15/an) și găzduirea (gratuită). Restul e din partea mea.`
+3. `O construiesc` — `De la un weekend la o lună. Singurul tău cost e domeniul, ~10–15 € pe an. Găzduirea e gratuită, iar restul e din partea mea.` *(reworded 2026-07-02 — the old "plătești doar domeniul (...) și găzduirea (gratuită)" read as paying for both)*
 
 **Povestea mea** *(added 2026-07-02, owner request — builds trust through the real arc, without private details)*
 
