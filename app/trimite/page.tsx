@@ -20,16 +20,21 @@ export default function TrimitePage() {
           Nu trebuie să fie tehnic și nu trebuie să fie perfect. Scrie-mi pur
           și simplu ce ai în cap.
         </p>
-        <p className="mt-3 text-ink-soft">
-          Nu știi de unde să începi?{" "}
+        <div className="mt-6 rounded-xl border border-line bg-surface p-5">
+          <p className="font-display text-lg font-semibold text-ink">
+            Nu știi de unde să începi?
+          </p>
+          <p className="mt-1 leading-relaxed text-ink-soft">
+            Ghidul pas cu pas te plimbă prin cinci întrebări simple și îți
+            aduce răspunsurile direct aici, în formular.
+          </p>
           <Link
             href="/ghid"
-            className="underline decoration-line underline-offset-4 transition-colors hover:text-ink"
+            className="mt-4 inline-flex items-center justify-center rounded-full border border-ink/25 bg-bg px-5 py-2.5 font-medium text-ink transition-colors hover:border-ink/50"
           >
-            Ghidul pas cu pas
-          </Link>{" "}
-          te plimbă prin cinci întrebări simple.
-        </p>
+            Deschide ghidul →
+          </Link>
+        </div>
         <div className="mt-10">
           <SubmissionForm />
         </div>
