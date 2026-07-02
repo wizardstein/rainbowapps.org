@@ -119,3 +119,74 @@ Adelin's existing Anthropic Console credits with a new project-scoped API key.
 - No Anthropic key or call reachable from the client bundle.
 - A scripted client hits the per-session cap, then the WAF rate limit; spend limit verified in
   Console.
+
+## 5. Feature: Admin section `/admin` — requested 2026-07-02
+
+> **Supersedes CLAUDE.md hard rules #2 ("no admin panel") and #4 ("no auth") and SPEC §15.**
+> Owner decision, 2026-07-02. Update both files as part of building this. The public site
+> must never depend on the admin/auth code path — if auth is misconfigured, the landing page
+> and form keep working untouched.
+
+### Scope (owner's words)
+
+Google sign-in, **only adelin.cavasi@gmail.com** gets access. From the admin: manage the
+availability flag, see submitted ideas, change their status (including done). Over time:
+manage testimonials and portfolio entries too — all from the admin, no more code commits
+for content.
+
+### Auth
+
+- **Auth.js (NextAuth v5)**, Google provider, JWT sessions — no DB adapter, nothing stored.
+- Allowlist in the `signIn` callback: reject any Google account whose email ≠ `ADMIN_EMAIL`
+  (env var, not hardcoded). Rejected users get a polite Romanian message.
+- Route protection: middleware/proxy on `/admin/*` **plus** a session re-check inside every
+  admin server action (defense in depth — middleware alone is not enough).
+- New env vars: `AUTH_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `ADMIN_EMAIL`.
+- `/admin` is never linked from public pages; `robots: noindex`.
+
+### Data model additions (extend `supabase/schema.sql`)
+
+- `site_settings` — single row, `availability text check (availability in ('green','amber'))`.
+  Replaces the `AVAILABILITY` constant in `lib/site.ts`; flipping it no longer needs a commit.
+- `projects` — title, description, url, sort_order, published. Replaces hardcoded `PROJECTS`.
+  Seed with the current three.
+- `testimonials` — author, text, url (optional), sort_order, published. New landing section,
+  rendered only when at least one published row exists.
+- Same security pattern everywhere: RLS on, zero anon policies, explicit grants to
+  `service_role` (lesson learned 2026-07-02: direct-psql-created tables don't inherit them).
+
+### Public pages: reading DB-driven content
+
+Landing/status data cached with tag-based revalidation (`unstable_cache`/`revalidateTag`, or
+`use cache` + `updateTag` if cacheComponents is enabled at build time): admin mutations
+revalidate instantly, no redeploy, and the pages stay effectively static for visitors.
+Fallbacks if the settings/projects read fails: availability `green`, current hardcoded
+projects — the public site never breaks because a table is empty.
+
+### Admin UI (same design system, plain and small)
+
+- `/admin` — availability toggle + submissions list (newest first, status filter chips).
+- `/admin/idei/[id]` — full idea, contact details, sketch via short-lived signed URL,
+  status dropdown (`new → reviewing → accepted → building → shipped / declined`), private
+  `notes` textarea, save.
+- `/admin/portofoliu`, `/admin/testimoniale` — small CRUD with publish toggle.
+- All mutations are server actions: session check → service client → `revalidateTag`.
+
+### Owner steps (manual, ~5–10 min, before building)
+
+1. Google Cloud Console → a project → **OAuth consent screen** (External; "Testing" status
+   with adelin.cavasi@gmail.com as test user is enough — nobody else needs to log in).
+2. **Credentials → Create OAuth client ID (Web application)** with redirect URIs:
+   `https://rainbowapps.org/api/auth/callback/google` and
+   `http://localhost:3000/api/auth/callback/google`.
+3. Hand over `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` (or add to Vercel directly).
+   `AUTH_SECRET` gets generated at build time (`openssl rand -base64 32`).
+
+### Acceptance
+
+- adelin.cavasi@gmail.com signs in and sees the dashboard; any other Google account is
+  politely refused; signed-out visits to `/admin/*` redirect to sign-in.
+- Availability flipped in admin is visible on the landing page within seconds, no deploy.
+- Submission status + notes edits persist; sketches open via signed URL.
+- Public pages keep working with auth env vars missing entirely.
+- No secret (Google client secret, AUTH_SECRET, service key) in the client bundle.
