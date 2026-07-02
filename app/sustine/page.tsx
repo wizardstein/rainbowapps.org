@@ -8,10 +8,25 @@ export const metadata: Metadata = {
   alternates: { canonical: "/sustine" },
 };
 
-export default function SustinePage() {
+export default async function SustinePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ donatie?: string }>;
+}) {
+  const { donatie } = await searchParams;
+
   return (
     <main className="flex-1">
       <section className="mx-auto w-full max-w-2xl px-6 pt-10 pb-20 sm:pt-16">
+        {donatie === "multumesc" && (
+          <p
+            role="status"
+            className="mb-8 rounded-xl border border-line bg-surface p-5 leading-relaxed text-ink"
+          >
+            Mulțumesc pentru donație! ♥ Fiecare leu ține uneltele pornite
+            pentru următoarea idee.
+          </p>
+        )}
         <h1 className="font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
           Spune o vorbă bună
         </h1>

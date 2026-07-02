@@ -30,6 +30,10 @@ const SECTIONS = [
     body: "Dacă îmi lași un mesaj de susținere prin formularul „Spune o vorbă bună”, numele și mesajul tău apar public pe site — dar numai după ce le citesc eu și doar cu bifa ta de acord. Poți cere oricând să le scot.",
   },
   {
+    title: "Donațiile",
+    body: "Plata se face pe pagina securizată Revolut. Eu nu văd și nu stochez datele cardului — site-ul doar deschide pagina de plată. Datele plății sunt prelucrate de Revolut, conform politicii lor.",
+  },
+  {
     title: "Cât le păstrez",
     body: "Cât timp lucrăm la idee sau cât e nevoie să îți răspund. Dacă vrei să le șterg, scrie-mi și le șterg — simplu.",
   },

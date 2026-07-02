@@ -75,6 +75,75 @@ export async function supportInitiative(): Promise<SupportState> {
   }
 }
 
+export type DonationState = { url?: string; error?: string } | null;
+
+const DONATION_MIN_LEI = 5;
+const DONATION_MAX_LEI = 10000;
+
+/** Creates a Revolut Merchant API order and returns the hosted checkout URL.
+ *  The payment itself happens entirely on Revolut's page — no card data ever
+ *  touches this site. Secret key is server-only. */
+export async function createDonation(
+  _prev: DonationState,
+  formData: FormData,
+): Promise<DonationState> {
+  try {
+    const raw = String(formData.get("amount") ?? "").replace(",", ".").trim();
+    const amount = Number(raw);
+    if (
+      !Number.isFinite(amount) ||
+      amount < DONATION_MIN_LEI ||
+      amount > DONATION_MAX_LEI
+    ) {
+      return {
+        error: `Alege o sumă între ${DONATION_MIN_LEI} și ${DONATION_MAX_LEI.toLocaleString("ro-RO")} lei.`,
+      };
+    }
+
+    const key = process.env.REVOLUT_SECRET_KEY;
+    if (!key) {
+      console.error("createDonation: REVOLUT_SECRET_KEY is missing.");
+      return { error: GENERIC };
+    }
+
+    const siteUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ?? "https://rainbowapps.org";
+    const res = await fetch("https://merchant.revolut.com/api/orders", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${key}`,
+        "Revolut-Api-Version": "2024-09-01",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        amount: Math.round(amount * 100), // minor units (bani)
+        currency: "RON",
+        description: "Donație RainbowApps",
+        redirect_url: `${siteUrl}/sustine?donatie=multumesc`,
+      }),
+    });
+
+    if (!res.ok) {
+      console.error(
+        `createDonation: Revolut order failed (${res.status}):`,
+        (await res.text()).slice(0, 300),
+      );
+      return { error: GENERIC };
+    }
+
+    const order = (await res.json()) as { checkout_url?: string };
+    if (!order.checkout_url) {
+      console.error("createDonation: no checkout_url in Revolut response.");
+      return { error: GENERIC };
+    }
+
+    return { url: order.checkout_url };
+  } catch (err) {
+    console.error("createDonation failed:", err);
+    return { error: GENERIC };
+  }
+}
+
 export async function submitThought(
   _prev: ThoughtState,
   formData: FormData,

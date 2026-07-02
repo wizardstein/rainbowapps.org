@@ -11,10 +11,6 @@ export const STATUS: Record<Availability, { label: string }> = {
   amber: { label: "Construiesc acum — poți trimite o idee, dar intri la coadă." },
 };
 
-// Revolut Business payment link for donations (accountant-approved,
-// 2026-07-02). Empty string hides the donation card everywhere.
-export const DONATION_URL = "";
-
 export type Project = {
   title: string;
   description: string;

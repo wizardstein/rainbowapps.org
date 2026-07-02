@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import StatusBadge from "@/components/StatusBadge";
 import SupportButton from "@/components/SupportButton";
-import { DONATION_URL } from "@/lib/site";
+import DonateCard from "@/components/DonateCard";
 import {
   getProjects,
   getSupportersCount,
@@ -64,6 +64,7 @@ export default async function Home() {
     getTestimonials(),
     getSupportersCount(),
   ]);
+  const donationsEnabled = Boolean(process.env.REVOLUT_SECRET_KEY);
 
   return (
     <main className="flex-1">
@@ -258,7 +259,7 @@ export default async function Home() {
             împinge lucrurile înainte în felul tău.
           </p>
           <div
-            className={`mt-10 grid gap-6 sm:grid-cols-2 ${DONATION_URL ? "lg:grid-cols-3" : ""}`}
+            className={`mt-10 grid gap-6 sm:grid-cols-2 ${donationsEnabled ? "lg:grid-cols-3" : ""}`}
           >
             <div className="rounded-xl border border-line bg-surface p-6">
               <h3 className="font-display text-lg font-semibold text-ink">
@@ -280,7 +281,7 @@ export default async function Home() {
                 Scrie un gând
               </Link>
             </div>
-            {DONATION_URL && (
+            {donationsEnabled && (
               <div className="rounded-xl border border-line bg-surface p-6">
                 <h3 className="font-display text-lg font-semibold text-ink">
                   Cu o donație
@@ -289,14 +290,7 @@ export default async function Home() {
                   Construirea e gratuită pentru oameni, dar uneltele și
                   găzduirea costă. Orice sumă ajută.
                 </p>
-                <a
-                  href={DONATION_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-secondary mt-4"
-                >
-                  Donează prin Revolut ↗
-                </a>
+                <DonateCard />
               </div>
             )}
           </div>
