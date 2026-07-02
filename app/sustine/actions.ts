@@ -107,7 +107,7 @@ export async function createDonation(
     }
 
     const siteUrl =
-      process.env.NEXT_PUBLIC_SITE_URL ?? "https://rainbowapps.org";
+      process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.rainbowapps.org";
     const res = await fetch("https://merchant.revolut.com/api/orders", {
       method: "POST",
       headers: {

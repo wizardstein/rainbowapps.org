@@ -261,7 +261,7 @@ SUPABASE_SERVICE_ROLE_KEY=     # server-only, never NEXT_PUBLIC
 RESEND_API_KEY=                # server-only
 OWNER_EMAIL=                   # where new-idea notifications go
 RESEND_FROM=idei@rainbowapps.org
-NEXT_PUBLIC_SITE_URL=https://rainbowapps.org
+NEXT_PUBLIC_SITE_URL=https://www.rainbowapps.org
 ```
 
 No public Supabase keys are needed, because all DB/Storage access is server-side. Provide a `.env.example` with these keys and empty values.
