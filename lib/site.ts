@@ -1,5 +1,6 @@
-// Single source of truth for site-level constants.
-// Flipping AVAILABILITY is a one-line commit; Vercel auto-deploys.
+// Site-level constants. Since the admin section (TODO §5), AVAILABILITY and
+// PROJECTS live in the database and are edited at /admin — the values below
+// are FALLBACKS used when the DB is unreachable (see lib/content.ts).
 
 export type Availability = "green" | "amber";
 

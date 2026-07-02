@@ -23,7 +23,7 @@ export default function MultumescPage() {
         </p>
         <Link
           href="/"
-          className="mt-8 inline-flex items-center justify-center rounded-lg border border-line bg-surface px-6 py-3 text-base font-medium text-ink transition-colors hover:border-ink/30"
+          className="btn-secondary mt-8"
         >
           Înapoi la pagina principală
         </Link>

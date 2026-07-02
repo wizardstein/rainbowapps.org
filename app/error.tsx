@@ -26,7 +26,7 @@ export default function ErrorPage({
         <button
           type="button"
           onClick={reset}
-          className="mt-8 inline-flex items-center justify-center rounded-lg bg-ink px-6 py-3 text-base font-medium text-bg transition-opacity hover:opacity-90"
+          className="btn-primary mt-8"
         >
           Încearcă din nou
         </button>

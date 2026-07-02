@@ -2,7 +2,8 @@ import Link from "next/link";
 
 export default function SiteHeader() {
   return (
-    <header className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-6 py-6">
+    <header className="sticky top-0 z-40 border-b border-line/60 bg-bg/85 backdrop-blur">
+      <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-6 py-4">
       <Link
         href="/"
         className="font-display text-lg font-bold tracking-tight text-ink"
@@ -30,11 +31,12 @@ export default function SiteHeader() {
         </Link>
         <Link
           href="/trimite"
-          className="rounded-lg border border-line bg-surface px-4 py-2 font-medium text-ink transition-colors hover:border-ink/30"
+          className="rounded-full border border-line bg-surface px-4 py-2 font-medium text-ink transition-colors hover:border-ink/30"
         >
           Trimite o idee
         </Link>
       </nav>
+      </div>
     </header>
   );
 }

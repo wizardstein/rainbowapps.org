@@ -14,7 +14,7 @@ export default function NotFound() {
         <div className="mt-8 flex flex-wrap items-center gap-5">
           <Link
             href="/"
-            className="inline-flex items-center justify-center rounded-lg border border-line bg-surface px-6 py-3 text-base font-medium text-ink transition-colors hover:border-ink/30"
+            className="btn-secondary"
           >
             Înapoi la pagina principală
           </Link>

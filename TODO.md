@@ -91,15 +91,15 @@ Adelin's existing Anthropic Console credits with a new project-scoped API key.
 
 ### Cost & abuse guardrails ("no tokens for cooking recipes")
 
-- [ ] **Strict system prompt scope**: the only job is clarifying/structuring an app idea, in
+- [x] **Strict system prompt scope**: the only job is clarifying/structuring an app idea, in
   Romanian. If the input is not an app idea (recipe, homework, essay, chat, code request,
   anything else), reply with one fixed short Romanian sentence and nothing more. Worst case
   for off-topic input is a one-sentence response, not a free general-purpose LLM.
-- [ ] **Input cap**: reuse the idea max length (~5,000 chars) — reject longer server-side
+- [x] **Input cap**: reuse the idea max length (~5,000 chars) — reject longer server-side
   before any API call. **Output cap**: `max_tokens` ~1000. Bounds every call to well under
   $0.01 on Haiku.
-- [ ] **Honeypot check runs before any AI call** (same field as the form).
-- [ ] **Per-visitor limit**: e.g. 3 refine calls per form session (signed HTTP-only cookie).
+- [x] **Honeypot check runs before any AI call** (same field as the form).
+- [x] **Per-visitor limit**: e.g. 3 refine calls per form session (signed HTTP-only cookie).
 - [ ] **Platform rate limit**: Vercel WAF rate-limiting rule on the refine endpoint — no new
   service dependency. (SPEC's "no rate-limiting service" predates having a paid API surface;
   a billable endpoint is exactly the "public API someone can script against" §3 warns about.)

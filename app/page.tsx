@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import StatusBadge from "@/components/StatusBadge";
-import { PROJECTS } from "@/lib/site";
+import { getProjects, getTestimonials } from "@/lib/content";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -52,7 +52,12 @@ const MOMENTE = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const [projects, testimonials] = await Promise.all([
+    getProjects(),
+    getTestimonials(),
+  ]);
+
   return (
     <main className="flex-1">
       {/* Hero */}
@@ -61,20 +66,17 @@ export default function Home() {
         <div className="relative mx-auto w-full max-w-5xl px-6 pt-12 pb-20 sm:pt-20 sm:pb-28">
           <div className="max-w-2xl">
             <StatusBadge />
-            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl">
-              Ai o idee bună? O construiesc gratis.
+            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl lg:text-7xl">
+              Ai o idee bună? O construiesc{" "}
+              <span className="underline-spectrum">gratis</span>.
             </h1>
-            <div className="spectrum-rule mt-5 w-44" aria-hidden="true" />
             <p className="mt-6 text-lg leading-relaxed text-ink-soft">
               Sunt Adelin, programator din Cluj. Dacă ai o idee de aplicație
               care ajută oameni, dar nu știi să programezi, o construiesc eu —
               gratuit. Tu păstrezi totul: ideea, codul, domeniul.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-5">
-              <Link
-                href="/trimite"
-                className="inline-flex items-center justify-center rounded-lg bg-ink px-6 py-3 text-base font-medium text-bg transition-opacity hover:opacity-90"
-              >
+              <Link href="/trimite" className="btn-primary">
                 Spune-mi ideea ta
               </Link>
               <Link
@@ -90,7 +92,7 @@ export default function Home() {
 
       {/* Cum funcționează */}
       <section id="cum-functioneaza" className="scroll-mt-20 border-t border-line">
-        <div className="mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
+        <div className="reveal mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
           <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
             Cum funcționează
           </h2>
@@ -117,7 +119,7 @@ export default function Home() {
 
       {/* Povestea mea */}
       <section id="povestea" className="scroll-mt-20 border-t border-line">
-        <div className="mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
+        <div className="reveal mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
           <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
             Povestea mea
           </h2>
@@ -166,7 +168,7 @@ export default function Home() {
 
       {/* De ce fac asta */}
       <section className="border-t border-line">
-        <div className="mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
+        <div className="reveal mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
           <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
             De ce fac asta
           </h2>
@@ -186,7 +188,7 @@ export default function Home() {
 
       {/* Ce nu pot construi */}
       <section className="border-t border-line">
-        <div className="mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
+        <div className="reveal mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
           <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
             Ce nu pot construi
           </h2>
@@ -206,12 +208,12 @@ export default function Home() {
 
       {/* Portofoliu */}
       <section id="portofoliu" className="scroll-mt-20 border-t border-line">
-        <div className="mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
+        <div className="reveal mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
           <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
             Portofoliu
           </h2>
           <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {PROJECTS.map((project) => (
+            {projects.map((project) => (
               <li key={project.url}>
                 <a
                   href={project.url}
@@ -238,16 +240,52 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Testimoniale — rendered only once the first one exists */}
+      {testimonials.length > 0 && (
+        <section className="border-t border-line">
+          <div className="reveal mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
+            <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+              Ce spun oamenii
+            </h2>
+            <ul className="mt-10 grid gap-6 sm:grid-cols-2">
+              {testimonials.map((t) => (
+                <li
+                  key={t.id}
+                  className="rounded-xl border border-line bg-surface p-6"
+                >
+                  <blockquote className="leading-relaxed text-ink-soft">
+                    {t.text}
+                  </blockquote>
+                  <p className="mt-4 font-display text-sm font-semibold text-ink">
+                    {t.author}
+                    {t.url && (
+                      <>
+                        {" · "}
+                        <a
+                          href={t.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-sans font-normal text-ink-soft underline decoration-line underline-offset-4 hover:text-ink"
+                        >
+                          {new URL(t.url).hostname}
+                        </a>
+                      </>
+                    )}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
       {/* CTA repeat */}
       <section className="border-t border-line">
         <div className="mx-auto w-full max-w-5xl px-6 py-16 text-center sm:py-24">
           <p className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
             Ideea ta poate ajuta pe cineva.
           </p>
-          <Link
-            href="/trimite"
-            className="mt-8 inline-flex items-center justify-center rounded-lg bg-ink px-6 py-3 text-base font-medium text-bg transition-opacity hover:opacity-90"
-          >
+          <Link href="/trimite" className="btn-primary mt-8">
             Spune-mi ideea ta
           </Link>
         </div>

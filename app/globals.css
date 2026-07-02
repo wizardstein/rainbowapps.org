@@ -35,6 +35,51 @@ body {
   border-radius: 2px;
 }
 
+/* Shared buttons — one look everywhere. */
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-full bg-ink px-7 py-3 text-base font-medium text-bg transition hover:opacity-90;
+}
+.btn-secondary {
+  @apply inline-flex items-center justify-center rounded-full border border-line bg-surface px-7 py-3 text-base font-medium text-ink transition-colors hover:border-ink/30;
+}
+
+/* The word that matters most, underlined with the signature spectrum. */
+.underline-spectrum {
+  background-image: linear-gradient(
+    90deg,
+    #c0607a 0%,
+    #d99a6b 26%,
+    #c9b45a 48%,
+    #6fa67c 68%,
+    #5e8fb0 86%,
+    #8a6fb0 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 0.09em;
+  background-position: 0 96%;
+  padding-bottom: 0.06em;
+}
+
+/* Gentle scroll-driven reveal — CSS only, progressive enhancement. */
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: reveal-up both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* The signature: one muted "dawn" spectrum, used as a thread.
    Horizontal under the H1, vertical as the spine of the life story.
    Desaturated on purpose — adult, not a primary rainbow. */
@@ -95,7 +140,8 @@ body {
   html {
     scroll-behavior: auto;
   }
-  .spectrum-rule {
+  .spectrum-rule,
+  .reveal {
     animation: none;
     transform: none;
   }

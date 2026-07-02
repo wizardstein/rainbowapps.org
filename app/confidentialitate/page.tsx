@@ -60,7 +60,7 @@ export default function ConfidentialitatePage() {
         </div>
         <Link
           href="/"
-          className="mt-12 inline-flex items-center justify-center rounded-lg border border-line bg-surface px-6 py-3 text-base font-medium text-ink transition-colors hover:border-ink/30"
+          className="btn-secondary mt-12"
         >
           Înapoi la pagina principală
         </Link>

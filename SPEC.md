@@ -296,4 +296,8 @@ No public Supabase keys are needed, because all DB/Storage access is server-side
 
 ## 15. Explicitly out of scope for v1
 
-No AI/LLM calls anywhere on the site · no idea scoring or scores shown to users · no admin panel · no languages other than Romanian · no auth/accounts · no payments or donation processing · no submission queue UI · no rate-limiting service (honeypot only) · no analytics. These can come later, each only when there's a real need.
+No idea scoring or scores shown to users · no languages other than Romanian · no visitor accounts · no payments or donation processing · no submission queue UI · no analytics. These can come later, each only when there's a real need.
+
+**Superseded on 2026-07-02 by owner decisions** (details in `TODO.md` §4–5):
+- ~~No AI/LLM calls~~ → opt-in AI idea refinement on `/trimite`, strict guardrails, form never depends on it.
+- ~~No admin panel / no auth~~ → `/admin` with Google sign-in allowlisted to the owner; availability flag, submissions, portfolio and testimonials managed there (DB-driven with tag revalidation).

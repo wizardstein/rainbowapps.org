@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useRef, useState, useTransition } from "react";
 import { useFormStatus } from "react-dom";
 import { submitIdea } from "@/app/trimite/actions";
+import { refineIdea } from "@/app/trimite/refine";
 import {
   ACCEPT_ATTR,
   EMAIL_MAX,
@@ -37,9 +38,59 @@ function SubmitButton() {
   );
 }
 
+// Shown if the refine call itself can't reach the server (offline, timeout).
+const REFINE_CLIENT_FAIL =
+  "Nu am putut pregăti o sugestie acum. Nicio grijă — ideea ta e bună și așa cum e, o poți trimite direct.";
+
 export default function SubmissionForm() {
   const [state, formAction] = useActionState(submitIdea, null);
   const [clientErrors, setClientErrors] = useState<FieldErrors>({});
+
+  // Optional AI refine flow — completely separate from the submit path.
+  // If anything here fails, the plain form keeps working untouched.
+  const [idea, setIdea] = useState("");
+  const [suggestion, setSuggestion] = useState<string | null>(null);
+  const [refineNote, setRefineNote] = useState<string | null>(null);
+  const [refining, startRefine] = useTransition();
+  const ideaRef = useRef<HTMLTextAreaElement>(null);
+
+  function handleRefine(event: React.MouseEvent<HTMLButtonElement>) {
+    const form = event.currentTarget.form;
+    // Send only the idea text and the honeypot — never the contact fields.
+    const fd = new FormData();
+    fd.set("idea", idea);
+    const honeypot = form?.elements.namedItem("contact_notes");
+    if (honeypot instanceof HTMLInputElement) {
+      fd.set("contact_notes", honeypot.value);
+    }
+    setRefineNote(null);
+    setSuggestion(null);
+    startRefine(async () => {
+      try {
+        const result = await refineIdea(fd);
+        if (result.ok) {
+          setSuggestion(result.suggestion);
+        } else {
+          setRefineNote(result.message);
+        }
+      } catch {
+        setRefineNote(REFINE_CLIENT_FAIL);
+      }
+    });
+  }
+
+  function acceptSuggestion() {
+    if (suggestion) {
+      setIdea(suggestion);
+      setSuggestion(null);
+      ideaRef.current?.focus();
+    }
+  }
+
+  function dismissSuggestion() {
+    setSuggestion(null);
+    ideaRef.current?.focus();
+  }
 
   // Runs before the form action. With JS off it never runs — the form does a
   // native POST to the server action, which re-validates and returns errors.
@@ -158,15 +209,69 @@ export default function SubmissionForm() {
         <textarea
           id="idea"
           name="idea"
+          ref={ideaRef}
           rows={6}
           maxLength={IDEA_MAX}
           required
+          value={idea}
+          onChange={(event) => setIdea(event.target.value)}
           placeholder="Ce vrei să construiești? Cui ar ajuta? Nu trebuie să fie tehnic — scrie cum îți vine."
           aria-invalid={errors.idea ? true : undefined}
           aria-describedby={errors.idea ? "idea-error" : undefined}
           className={`${inputBase} ${borderFor("idea")} resize-y`}
         />
         <FieldError id="idea-error" message={errors.idea} />
+
+        {/* Optional AI helper — quiet by design. The form never depends on it. */}
+        <div className="mt-3">
+          {!suggestion && (
+            <button
+              type="button"
+              onClick={handleRefine}
+              disabled={refining}
+              className="text-sm text-ink-soft underline underline-offset-4 transition-colors hover:text-ink disabled:opacity-60"
+            >
+              {refining
+                ? "Mă uit peste idee…"
+                : "Vrei să te ajut să o structurezi?"}
+            </button>
+          )}
+          <p className="mt-1.5 text-xs text-ink-soft/80">
+            Pasul e opțional. Dacă îl folosești, textul ideii — doar el — e
+            trimis către Anthropic ca să genereze sugestia.
+          </p>
+          <div aria-live="polite">
+            {refineNote && (
+              <p className="mt-2 text-sm text-ink-soft">{refineNote}</p>
+            )}
+            {suggestion && (
+              <div className="mt-3 rounded-lg border border-line bg-surface p-4">
+                <p className="text-sm font-medium text-ink">
+                  O variantă puțin mai structurată — tu decizi:
+                </p>
+                <p className="mt-2 text-sm leading-relaxed whitespace-pre-wrap text-ink-soft">
+                  {suggestion}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={acceptSuggestion}
+                    className="rounded-lg bg-ink px-3 py-1.5 text-sm font-medium text-bg transition-opacity hover:opacity-90"
+                  >
+                    Folosește varianta asta
+                  </button>
+                  <button
+                    type="button"
+                    onClick={dismissSuggestion}
+                    className="rounded-lg border border-line px-3 py-1.5 text-sm text-ink transition-colors hover:bg-line/40"
+                  >
+                    Păstrez ce am scris
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Attachment */}

@@ -59,7 +59,7 @@ export default function ColaborarePage() {
         </div>
         <Link
           href="/trimite"
-          className="mt-12 inline-flex items-center justify-center rounded-lg bg-ink px-6 py-3 text-base font-medium text-bg transition-opacity hover:opacity-90"
+          className="btn-primary mt-12"
         >
           Spune-mi ideea ta
         </Link>
