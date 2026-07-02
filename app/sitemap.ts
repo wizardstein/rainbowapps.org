@@ -7,6 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: siteUrl, priority: 1 },
     { url: `${siteUrl}/trimite`, priority: 0.8 },
     { url: `${siteUrl}/ghid`, priority: 0.6 },
+    { url: `${siteUrl}/sustine`, priority: 0.5 },
     { url: `${siteUrl}/colaborare`, priority: 0.5 },
     { url: `${siteUrl}/confidentialitate`, priority: 0.3 },
   ];

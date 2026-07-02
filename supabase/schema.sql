@@ -92,3 +92,13 @@ select * from (values
    'https://ymarchive.chat', 3)
 ) as seed(title, description, url, sort_order)
 where not exists (select 1 from public.projects);
+
+-- ── Support section additions (2026-07-02) ────────────────────────────────
+
+-- One row per "Susțin inițiativa" click (anonymous, timestamp only).
+create table if not exists public.supporters (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now()
+);
+alter table public.supporters enable row level security;
+grant all privileges on table public.supporters to service_role;

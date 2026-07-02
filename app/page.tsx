@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import StatusBadge from "@/components/StatusBadge";
-import { getProjects, getTestimonials } from "@/lib/content";
+import SupportButton from "@/components/SupportButton";
+import { DONATION_URL } from "@/lib/site";
+import {
+  getProjects,
+  getSupportersCount,
+  getTestimonials,
+} from "@/lib/content";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -53,9 +59,10 @@ const MOMENTE = [
 ];
 
 export default async function Home() {
-  const [projects, testimonials] = await Promise.all([
+  const [projects, testimonials, supporters] = await Promise.all([
     getProjects(),
     getTestimonials(),
+    getSupportersCount(),
   ]);
 
   return (
@@ -240,44 +247,97 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Testimoniale — rendered only once the first one exists */}
-      {testimonials.length > 0 && (
-        <section className="border-t border-line">
-          <div className="reveal mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
-            <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-              Ce spun oamenii
-            </h2>
-            <ul className="mt-10 grid gap-6 sm:grid-cols-2">
-              {testimonials.map((t) => (
-                <li
-                  key={t.id}
-                  className="rounded-xl border border-line bg-surface p-6"
+      {/* Susține inițiativa */}
+      <section id="sustine" className="scroll-mt-20 border-t border-line">
+        <div className="reveal mx-auto w-full max-w-5xl px-6 py-16 sm:py-20">
+          <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+            Susține inițiativa
+          </h2>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ink-soft">
+            Nu ai o idee de trimis, dar îți place ce se întâmplă aici? Poți
+            împinge lucrurile înainte în felul tău.
+          </p>
+          <div
+            className={`mt-10 grid gap-6 sm:grid-cols-2 ${DONATION_URL ? "lg:grid-cols-3" : ""}`}
+          >
+            <div className="rounded-xl border border-line bg-surface p-6">
+              <h3 className="font-display text-lg font-semibold text-ink">
+                Cu un click
+              </h3>
+              <div className="mt-2">
+                <SupportButton initialCount={supporters} />
+              </div>
+            </div>
+            <div className="rounded-xl border border-line bg-surface p-6">
+              <h3 className="font-display text-lg font-semibold text-ink">
+                Cu o vorbă bună
+              </h3>
+              <p className="mt-2 leading-relaxed text-ink-soft">
+                Ai lucrat cu mine sau crezi în idee? Două rânduri de la tine
+                cântăresc mult pentru următorul om.
+              </p>
+              <Link href="/sustine" className="btn-secondary mt-4">
+                Scrie un gând
+              </Link>
+            </div>
+            {DONATION_URL && (
+              <div className="rounded-xl border border-line bg-surface p-6">
+                <h3 className="font-display text-lg font-semibold text-ink">
+                  Cu o donație
+                </h3>
+                <p className="mt-2 leading-relaxed text-ink-soft">
+                  Construirea e gratuită pentru oameni, dar uneltele și
+                  găzduirea costă. Orice sumă ajută.
+                </p>
+                <a
+                  href={DONATION_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-secondary mt-4"
                 >
-                  <blockquote className="leading-relaxed text-ink-soft">
-                    {t.text}
-                  </blockquote>
-                  <p className="mt-4 font-display text-sm font-semibold text-ink">
-                    {t.author}
-                    {t.url && (
-                      <>
-                        {" · "}
-                        <a
-                          href={t.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="font-sans font-normal text-ink-soft underline decoration-line underline-offset-4 hover:text-ink"
-                        >
-                          {new URL(t.url).hostname}
-                        </a>
-                      </>
-                    )}
-                  </p>
-                </li>
-              ))}
-            </ul>
+                  Donează prin Revolut ↗
+                </a>
+              </div>
+            )}
           </div>
-        </section>
-      )}
+
+          {testimonials.length > 0 && (
+            <>
+              <h3 className="mt-14 font-display text-xl font-semibold text-ink">
+                Ce spun oamenii
+              </h3>
+              <ul className="mt-6 grid gap-6 sm:grid-cols-2">
+                {testimonials.map((t) => (
+                  <li
+                    key={t.id}
+                    className="rounded-xl border border-line bg-surface p-6"
+                  >
+                    <blockquote className="leading-relaxed text-ink-soft">
+                      {t.text}
+                    </blockquote>
+                    <p className="mt-4 font-display text-sm font-semibold text-ink">
+                      {t.author}
+                      {t.url && (
+                        <>
+                          {" · "}
+                          <a
+                            href={t.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-sans font-normal text-ink-soft underline decoration-line underline-offset-4 hover:text-ink"
+                          >
+                            {new URL(t.url).hostname}
+                          </a>
+                        </>
+                      )}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      </section>
 
       {/* CTA repeat */}
       <section className="border-t border-line">

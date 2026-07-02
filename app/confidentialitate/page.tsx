@@ -26,6 +26,10 @@ const SECTIONS = [
     body: "În baza mea de date la Supabase (servere în Uniunea Europeană) și în emailurile trimise prin Resend (servere în UE). Site-ul e găzduit de Vercel.",
   },
   {
+    title: "Gândurile publicate",
+    body: "Dacă îmi lași un mesaj de susținere prin formularul „Spune o vorbă bună”, numele și mesajul tău apar public pe site — dar numai după ce le citesc eu și doar cu bifa ta de acord. Poți cere oricând să le scot.",
+  },
+  {
     title: "Cât le păstrez",
     body: "Cât timp lucrăm la idee sau cât e nevoie să îți răspund. Dacă vrei să le șterg, scrie-mi și le șterg — simplu.",
   },

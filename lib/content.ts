@@ -52,6 +52,22 @@ export const getProjects = unstable_cache(
   { tags: ["projects"] },
 );
 
+export const getSupportersCount = unstable_cache(
+  async (): Promise<number> => {
+    try {
+      const supabase = createServiceClient();
+      const { count } = await supabase
+        .from("supporters")
+        .select("id", { count: "exact", head: true });
+      return count ?? 0;
+    } catch {
+      return 0;
+    }
+  },
+  ["supporters"],
+  { tags: ["supporters"] },
+);
+
 export const getTestimonials = unstable_cache(
   async (): Promise<Testimonial[]> => {
     try {
