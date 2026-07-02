@@ -12,9 +12,12 @@ export const ACCEPTED_FILE_TYPES = [
   "image/png",
   "image/webp",
   "image/gif",
+  "image/heic", // iPhone photos
+  "image/heif",
   "application/pdf",
 ];
-export const ACCEPT_ATTR = "image/*,application/pdf";
+// Derived, so the file picker can never offer a type validation rejects.
+export const ACCEPT_ATTR = ACCEPTED_FILE_TYPES.join(",");
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

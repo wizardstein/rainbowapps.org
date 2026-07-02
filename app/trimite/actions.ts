@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { storagePath } from "@/lib/storage-path";
 import { createServiceClient, SKETCHES_BUCKET } from "@/lib/supabase";
 import { sendSubmissionEmails } from "@/lib/email";
 import { validateSubmission, type FieldErrors } from "@/lib/validation";
@@ -12,13 +13,6 @@ export type SubmitState = {
 
 const GENERIC_ERROR =
   "Ceva n-a mers la trimitere. Te rog încearcă din nou peste un moment.";
-
-function storagePath(uuid: string, fileName: string): string {
-  const safe =
-    fileName.replace(/[^\w.\-]+/g, "_").slice(-100).replace(/^_+/, "") ||
-    "fisier";
-  return `submissions/${uuid}/${safe}`;
-}
 
 export async function submitIdea(
   _prevState: SubmitState,
