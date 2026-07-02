@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import StatusBadge from "@/components/StatusBadge";
+import portret from "@/public/adelin.jpg";
 import SupportButton from "@/components/SupportButton";
 import DonateCard from "@/components/DonateCard";
 import {
@@ -71,7 +73,7 @@ export default async function Home() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="hero-glow" aria-hidden="true" />
-        <div className="relative mx-auto w-full max-w-5xl px-6 pt-12 pb-20 sm:pt-20 sm:pb-28">
+        <div className="relative mx-auto grid w-full max-w-5xl items-center gap-10 px-6 pt-12 pb-20 sm:pt-20 sm:pb-28 lg:grid-cols-[1fr_auto]">
           <div className="max-w-2xl">
             <StatusBadge />
             <h1 className="mt-6 font-display text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl lg:text-7xl">
@@ -95,6 +97,14 @@ export default async function Home() {
               </Link>
             </div>
           </div>
+          <Image
+            src={portret}
+            alt="Adelin, zâmbind"
+            placeholder="blur"
+            priority
+            sizes="(min-width: 1024px) 288px, 192px"
+            className="w-48 justify-self-start rounded-3xl border border-line object-cover shadow-sm lg:w-72"
+          />
         </div>
       </section>
 

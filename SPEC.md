@@ -76,6 +76,7 @@ The landing page links prominently to `/trimite`. After a successful submit, red
 - Subtitle: `Sunt Adelin, programator din Cluj. Dacă ai o idee de aplicație care ajută oameni, dar nu știi să programezi, o construiesc eu — gratuit. Tu păstrezi totul: ideea, codul, domeniul.`
 - Primary CTA button → `/trimite`: `Spune-mi ideea ta`
 - Show the **status badge** (section 6.4) near the hero.
+- Portrait photo of Adelin (`public/adelin.jpg`) beside the hero text on desktop, below the CTAs on mobile (added 2026-07-02 — credibility).
 
 **Cum funcționează** (a real 3-step sequence — numbered markers are appropriate here)
 1. `Îmi spui ideea` — `Completezi un formular scurt. Fără jargon, fără cont, fără costuri.`
