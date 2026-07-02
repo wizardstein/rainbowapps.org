@@ -31,14 +31,20 @@ const pill =
 
 /** Share tier: native share sheet on phones (WhatsApp, Messenger, anything
  *  installed), direct platform links + copy elsewhere. The OG tags do the
- *  heavy lifting — every share lands with the full preview card. */
+ *  heavy lifting — every share lands with the full preview card.
+ *
+ *  On phones the web sharer links (especially Facebook's) fight with the
+ *  installed apps and often dead-end, so there we show only the native
+ *  share button + WhatsApp (whose deep link is reliable) + copy. */
 export default function ShareCard() {
-  const [canNativeShare, setCanNativeShare] = useState(false);
+  const [mobileNativeShare, setMobileNativeShare] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    setCanNativeShare(
-      typeof navigator !== "undefined" && Boolean(navigator.share),
+    setMobileNativeShare(
+      typeof navigator !== "undefined" &&
+        Boolean(navigator.share) &&
+        /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent),
     );
   }, []);
 
@@ -64,14 +70,18 @@ export default function ShareCard() {
     }
   }
 
+  const links = mobileNativeShare
+    ? LINKS.filter((link) => link.label === "WhatsApp")
+    : LINKS;
+
   return (
     <div className="mt-4 flex flex-wrap items-center gap-2">
-      {canNativeShare && (
+      {mobileNativeShare && (
         <button type="button" onClick={nativeShare} className="btn-primary !px-5 !py-2 text-sm">
           Distribuie
         </button>
       )}
-      {LINKS.map((link) => (
+      {links.map((link) => (
         <a
           key={link.label}
           href={link.href}
