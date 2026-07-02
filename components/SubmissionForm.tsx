@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useRef, useState, useTransition } from "react";
+import { useActionState, useEffect, useRef, useState, useTransition } from "react";
 import { useFormStatus } from "react-dom";
 import { submitIdea } from "@/app/trimite/actions";
 import { refineIdea } from "@/app/trimite/refine";
@@ -53,6 +53,20 @@ export default function SubmissionForm() {
   const [refineNote, setRefineNote] = useState<string | null>(null);
   const [refining, startRefine] = useTransition();
   const ideaRef = useRef<HTMLTextAreaElement>(null);
+
+  // If the person arrives from the /ghid wizard, their assembled draft is
+  // waiting in sessionStorage — pour it into the textarea, once.
+  useEffect(() => {
+    try {
+      const draft = sessionStorage.getItem("rainbowapps:idee-din-ghid");
+      if (draft) {
+        sessionStorage.removeItem("rainbowapps:idee-din-ghid");
+        setIdea((current) => current || draft);
+      }
+    } catch {
+      // Storage unavailable — nothing to prefill.
+    }
+  }, []);
 
   function handleRefine(event: React.MouseEvent<HTMLButtonElement>) {
     const form = event.currentTarget.form;

@@ -60,6 +60,7 @@ No CMS, no auth library, no i18n library, no AI SDK.
 | `/` | Server Component | Landing: hero, how it works, why, what I don't build, portfolio, status, CTA |
 | `/trimite` | Server Component wrapping a client form | The submission form |
 | `/multumesc` | Server Component | Confirmation page shown after a successful submit |
+| `/ghid` | Server Component wrapping a client wizard | Five-step idea-structuring guide — a short, attributed adaptation of the Foundation Sprint ("Click", Knapp & Zeratsky); assembled draft prefills the /trimite form (added 2026-07-02) |
 | `/colaborare` | Server Component | "Cum colaborăm" — the working agreement: free build, definition of done, ownership, post-handover support (added 2026-07-02) |
 | `/confidentialitate` | Server Component | Privacy policy in plain Romanian — GDPR information duty (added 2026-07-02) |
 

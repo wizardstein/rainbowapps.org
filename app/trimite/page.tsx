@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import SubmissionForm from "@/components/SubmissionForm";
 
 export const metadata: Metadata = {
@@ -18,6 +19,16 @@ export default function TrimitePage() {
         <p className="mt-4 text-lg leading-relaxed text-ink-soft">
           Nu trebuie să fie tehnic și nu trebuie să fie perfect. Scrie-mi pur
           și simplu ce ai în cap.
+        </p>
+        <p className="mt-3 text-ink-soft">
+          Nu știi de unde să începi?{" "}
+          <Link
+            href="/ghid"
+            className="underline decoration-line underline-offset-4 transition-colors hover:text-ink"
+          >
+            Ghidul pas cu pas
+          </Link>{" "}
+          te plimbă prin cinci întrebări simple.
         </p>
         <div className="mt-10">
           <SubmissionForm />
