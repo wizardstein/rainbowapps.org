@@ -302,5 +302,6 @@ No public Supabase keys are needed, because all DB/Storage access is server-side
 No idea scoring or scores shown to users · no languages other than Romanian · no visitor accounts · no payments or donation processing · no submission queue UI · no analytics. These can come later, each only when there's a real need.
 
 **Superseded on 2026-07-02 by owner decisions** (details in `TODO.md` §4–5):
+- ~~No analytics~~ → Vercel Analytics (cookieless, anonymous, aggregate only — privacy page updated accordingly).
 - ~~No AI/LLM calls~~ → opt-in AI idea refinement on `/trimite`, strict guardrails, form never depends on it.
 - ~~No admin panel / no auth~~ → `/admin` with Google sign-in allowlisted to the owner; availability flag, submissions, portfolio and testimonials managed there (DB-driven with tag revalidation).

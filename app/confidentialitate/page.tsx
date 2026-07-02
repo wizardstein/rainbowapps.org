@@ -15,7 +15,7 @@ const SECTIONS = [
   },
   {
     title: "Ce colectez",
-    body: "Doar ce completezi în formular: numele, emailul, telefonul (dacă îl lași), textul ideii și schița atașată (dacă e). Site-ul nu folosește cookies, nu are analytics și nu te urmărește în niciun fel.",
+    body: "Doar ce completezi în formular: numele, emailul, telefonul (dacă îl lași), textul ideii și schița atașată (dacă e). Site-ul nu folosește cookies de urmărire. Folosesc Vercel Analytics ca să văd câți oameni vizitează paginile — date anonime și agregate, fără cookies, fără profiluri individuale.",
   },
   {
     title: "De ce",

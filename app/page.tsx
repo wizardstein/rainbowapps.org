@@ -5,6 +5,7 @@ import StatusBadge from "@/components/StatusBadge";
 import portret from "@/public/adelin.jpg";
 import SupportButton from "@/components/SupportButton";
 import DonateCard from "@/components/DonateCard";
+import ShareCard from "@/components/ShareCard";
 import {
   getProjects,
   getSupportersCount,
@@ -268,9 +269,7 @@ export default async function Home() {
             Nu ai o idee de trimis, dar îți place ce se întâmplă aici? Poți
             împinge lucrurile înainte în felul tău.
           </p>
-          <div
-            className={`mt-10 grid gap-6 sm:grid-cols-2 ${donationsEnabled ? "lg:grid-cols-3" : ""}`}
-          >
+          <div className="mt-10 grid gap-6 sm:grid-cols-2">
             <div className="rounded-xl border border-line bg-surface p-6">
               <h3 className="font-display text-lg font-semibold text-ink">
                 Cu un click
@@ -290,6 +289,16 @@ export default async function Home() {
               <Link href="/sustine" className="btn-secondary mt-4">
                 Scrie un gând
               </Link>
+            </div>
+            <div className="rounded-xl border border-line bg-surface p-6">
+              <h3 className="font-display text-lg font-semibold text-ink">
+                Cu un share
+              </h3>
+              <p className="mt-2 leading-relaxed text-ink-soft">
+                Poate omul cu ideea bună e chiar în lista ta de prieteni. Dă
+                vestea mai departe.
+              </p>
+              <ShareCard />
             </div>
             {donationsEnabled && (
               <div className="rounded-xl border border-line bg-surface p-6">

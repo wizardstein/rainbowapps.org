@@ -1,0 +1,90 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+const SHARE_URL = "https://www.rainbowapps.org";
+const SHARE_TITLE = "RainbowApps — Ai o idee bună? O construiesc gratis.";
+const SHARE_TEXT =
+  "Ai o idee de aplicație care ajută oameni, dar nu știi să programezi? Adelin, un programator din Cluj, o construiește gratis — tu păstrezi totul.";
+
+const LINKS = [
+  {
+    label: "WhatsApp",
+    href: `https://wa.me/?text=${encodeURIComponent(`${SHARE_TEXT} ${SHARE_URL}`)}`,
+  },
+  {
+    label: "Facebook",
+    href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SHARE_URL)}`,
+  },
+  {
+    label: "LinkedIn",
+    href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(SHARE_URL)}`,
+  },
+  {
+    label: "X",
+    href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(SHARE_TEXT)}&url=${encodeURIComponent(SHARE_URL)}`,
+  },
+];
+
+const pill =
+  "rounded-full border border-line bg-bg px-4 py-2 text-sm font-medium text-ink transition-colors hover:border-ink/40";
+
+/** Share tier: native share sheet on phones (WhatsApp, Messenger, anything
+ *  installed), direct platform links + copy elsewhere. The OG tags do the
+ *  heavy lifting — every share lands with the full preview card. */
+export default function ShareCard() {
+  const [canNativeShare, setCanNativeShare] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    setCanNativeShare(
+      typeof navigator !== "undefined" && Boolean(navigator.share),
+    );
+  }, []);
+
+  async function nativeShare() {
+    try {
+      await navigator.share({
+        title: SHARE_TITLE,
+        text: SHARE_TEXT,
+        url: SHARE_URL,
+      });
+    } catch {
+      // Person closed the sheet — nothing to do.
+    }
+  }
+
+  async function copyLink() {
+    try {
+      await navigator.clipboard.writeText(SHARE_URL);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      // Clipboard unavailable — the direct links still work.
+    }
+  }
+
+  return (
+    <div className="mt-4 flex flex-wrap items-center gap-2">
+      {canNativeShare && (
+        <button type="button" onClick={nativeShare} className="btn-primary !px-5 !py-2 text-sm">
+          Distribuie
+        </button>
+      )}
+      {LINKS.map((link) => (
+        <a
+          key={link.label}
+          href={link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={pill}
+        >
+          {link.label}
+        </a>
+      ))}
+      <button type="button" onClick={copyLink} className={pill} aria-live="polite">
+        {copied ? "Copiat ✓" : "Copiază linkul"}
+      </button>
+    </div>
+  );
+}
