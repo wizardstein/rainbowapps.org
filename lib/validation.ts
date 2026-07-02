@@ -3,6 +3,9 @@ import { z } from "zod";
 // Shared by the client form and the server action — one source of truth.
 
 export const IDEA_MIN = 20;
+export const NAME_MAX = 120;
+export const EMAIL_MAX = 254;
+export const IDEA_MAX = 5000;
 export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 export const ACCEPTED_FILE_TYPES = [
   "image/jpeg",
@@ -16,11 +19,16 @@ export const ACCEPT_ATTR = "image/*,application/pdf";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const submissionSchema = z.object({
-  name: z.string().trim().min(1, "Te rog scrie numele tău."),
+  name: z
+    .string()
+    .trim()
+    .min(1, "Te rog scrie numele tău.")
+    .max(NAME_MAX, "Numele e prea lung (maxim 120 de caractere)."),
   email: z
     .string()
     .trim()
     .min(1, "Te rog scrie adresa ta de email.")
+    .max(EMAIL_MAX, "Adresa de email e prea lungă.")
     .refine((v) => EMAIL_RE.test(v), "Adresa de email nu pare validă."),
   phone: z
     .string()
@@ -31,7 +39,8 @@ export const submissionSchema = z.object({
   idea: z
     .string()
     .trim()
-    .min(IDEA_MIN, "Te rog scrie câteva cuvinte despre idee."),
+    .min(IDEA_MIN, "Te rog scrie câteva cuvinte despre idee.")
+    .max(IDEA_MAX, "Ideea e prea lungă (maxim 5.000 de caractere)."),
   consent: z
     .boolean()
     .refine((v) => v === true, "Te rog bifează că ești de acord să te contactez."),

@@ -4,6 +4,9 @@ import { useState } from "react";
 import { submitIdea } from "@/app/trimite/actions";
 import {
   ACCEPT_ATTR,
+  EMAIL_MAX,
+  IDEA_MAX,
+  NAME_MAX,
   validateSubmission,
   type FieldErrors,
 } from "@/lib/validation";
@@ -54,17 +57,33 @@ export default function SubmissionForm() {
     setErrors({});
     setFormError(undefined);
     setSubmitting(true);
-    const result = await submitIdea(fd);
-    // On success the server action redirects; we only land here on error.
-    if (result?.errors) {
-      setErrors(result.errors);
-      const firstKey = Object.keys(result.errors)[0];
-      form.querySelector<HTMLElement>(`[name="${firstKey}"]`)?.focus();
+    try {
+      const result = await submitIdea(fd);
+      // On success the server action redirects; we only land here on error.
+      if (result?.errors) {
+        setErrors(result.errors);
+        const firstKey = Object.keys(result.errors)[0];
+        form.querySelector<HTMLElement>(`[name="${firstKey}"]`)?.focus();
+      }
+      if (result?.formError) {
+        setFormError(result.formError);
+      }
+    } catch (err) {
+      // redirect() in the action throws NEXT_REDIRECT — let Next handle it.
+      if (
+        err instanceof Error &&
+        "digest" in err &&
+        typeof err.digest === "string" &&
+        err.digest.startsWith("NEXT_REDIRECT")
+      ) {
+        throw err;
+      }
+      setFormError(
+        "Ceva n-a mers la trimitere. Te rog încearcă din nou peste un moment.",
+      );
+    } finally {
+      setSubmitting(false);
     }
-    if (result?.formError) {
-      setFormError(result.formError);
-    }
-    setSubmitting(false);
   }
 
   const borderFor = (key: keyof FieldErrors) =>
@@ -91,6 +110,7 @@ export default function SubmissionForm() {
           name="name"
           type="text"
           autoComplete="name"
+          maxLength={NAME_MAX}
           required
           aria-invalid={errors.name ? true : undefined}
           aria-describedby={errors.name ? "name-error" : undefined}
@@ -109,6 +129,7 @@ export default function SubmissionForm() {
           name="email"
           type="email"
           autoComplete="email"
+          maxLength={EMAIL_MAX}
           required
           aria-invalid={errors.email ? true : undefined}
           aria-describedby={errors.email ? "email-error" : undefined}
@@ -143,6 +164,7 @@ export default function SubmissionForm() {
           id="idea"
           name="idea"
           rows={6}
+          maxLength={IDEA_MAX}
           required
           placeholder="Ce vrei să construiești? Cui ar ajuta? Nu trebuie să fie tehnic — scrie cum îți vine."
           aria-invalid={errors.idea ? true : undefined}
@@ -191,10 +213,10 @@ export default function SubmissionForm() {
 
       {/* Honeypot — hidden from people and assistive tech. Must stay empty. */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
-        <label htmlFor="company">Companie</label>
+        <label htmlFor="contact_notes">Note de contact</label>
         <input
-          id="company"
-          name="company"
+          id="contact_notes"
+          name="contact_notes"
           type="text"
           tabIndex={-1}
           autoComplete="off"

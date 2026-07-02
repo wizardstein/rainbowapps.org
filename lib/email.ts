@@ -58,30 +58,38 @@ export async function sendSubmissionEmails(s: SubmissionEmail): Promise<void> {
     return;
   }
 
-  // A) Owner notification
-  try {
-    const { error } = await resend.emails.send({
+  // Both emails in parallel — independent, and failures only get logged.
+  const [ownerResult, submitterResult] = await Promise.allSettled([
+    // A) Owner notification
+    resend.emails.send({
       from,
       to: owner,
       replyTo: s.email,
       subject: `Idee nouă pe RainbowApps — ${s.name}`,
       text: ownerText(s),
-    });
-    if (error) console.error("Owner notification email failed:", error);
-  } catch (err) {
-    console.error("Owner notification email threw:", err);
-  }
-
-  // B) Submitter confirmation
-  try {
-    const { error } = await resend.emails.send({
+    }),
+    // B) Submitter confirmation
+    resend.emails.send({
       from,
       to: s.email,
+      replyTo: owner,
       subject: "Am primit ideea ta — RainbowApps",
       text: submitterText(s),
-    });
-    if (error) console.error("Submitter confirmation email failed:", error);
-  } catch (err) {
-    console.error("Submitter confirmation email threw:", err);
+    }),
+  ]);
+
+  if (ownerResult.status === "rejected") {
+    console.error("Owner notification email threw:", ownerResult.reason);
+  } else if (ownerResult.value.error) {
+    console.error("Owner notification email failed:", ownerResult.value.error);
+  }
+
+  if (submitterResult.status === "rejected") {
+    console.error("Submitter confirmation email threw:", submitterResult.reason);
+  } else if (submitterResult.value.error) {
+    console.error(
+      "Submitter confirmation email failed:",
+      submitterResult.value.error,
+    );
   }
 }

@@ -22,7 +22,7 @@ function storagePath(uuid: string, fileName: string): string {
 
 export async function submitIdea(formData: FormData): Promise<SubmitState> {
   // Honeypot: a bot fills this hidden field. Pretend success, do nothing.
-  const honeypot = String(formData.get("company") ?? "").trim();
+  const honeypot = String(formData.get("contact_notes") ?? "").trim();
   if (honeypot.length > 0) {
     redirect("/multumesc");
   }
