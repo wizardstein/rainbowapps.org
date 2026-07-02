@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
+import { useFormStatus } from "react-dom";
 import { submitIdea } from "@/app/trimite/actions";
 import {
   ACCEPT_ATTR,
@@ -23,13 +24,26 @@ function FieldError({ id, message }: { id: string; message?: string }) {
 const inputBase =
   "mt-2 w-full rounded-lg border bg-surface px-4 py-2.5 text-ink placeholder:text-ink-soft/70";
 
-export default function SubmissionForm() {
-  const [errors, setErrors] = useState<FieldErrors>({});
-  const [formError, setFormError] = useState<string | undefined>(undefined);
-  const [submitting, setSubmitting] = useState(false);
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="inline-flex items-center justify-center rounded-lg bg-ink px-6 py-3 text-base font-medium text-bg transition-opacity hover:opacity-90 disabled:opacity-60"
+    >
+      {pending ? "Se trimite…" : "Trimite ideea"}
+    </button>
+  );
+}
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+export default function SubmissionForm() {
+  const [state, formAction] = useActionState(submitIdea, null);
+  const [clientErrors, setClientErrors] = useState<FieldErrors>({});
+
+  // Runs before the form action. With JS off it never runs — the form does a
+  // native POST to the server action, which re-validates and returns errors.
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     const form = event.currentTarget;
     const fd = new FormData(form);
 
@@ -44,53 +58,34 @@ export default function SubmissionForm() {
     const file =
       fileEntry instanceof File && fileEntry.size > 0 ? fileEntry : null;
 
-    const { errors: clientErrors } = validateSubmission(input, file);
-    if (Object.keys(clientErrors).length > 0) {
-      setErrors(clientErrors);
-      const firstKey = Object.keys(clientErrors)[0];
+    const { errors: nextErrors } = validateSubmission(input, file);
+    if (Object.keys(nextErrors).length > 0) {
+      event.preventDefault();
+      setClientErrors(nextErrors);
+      const firstKey = Object.keys(nextErrors)[0];
       form
         .querySelector<HTMLElement>(`[name="${firstKey}"]`)
         ?.focus();
       return;
     }
 
-    setErrors({});
-    setFormError(undefined);
-    setSubmitting(true);
-    try {
-      const result = await submitIdea(fd);
-      // On success the server action redirects; we only land here on error.
-      if (result?.errors) {
-        setErrors(result.errors);
-        const firstKey = Object.keys(result.errors)[0];
-        form.querySelector<HTMLElement>(`[name="${firstKey}"]`)?.focus();
-      }
-      if (result?.formError) {
-        setFormError(result.formError);
-      }
-    } catch (err) {
-      // redirect() in the action throws NEXT_REDIRECT — let Next handle it.
-      if (
-        err instanceof Error &&
-        "digest" in err &&
-        typeof err.digest === "string" &&
-        err.digest.startsWith("NEXT_REDIRECT")
-      ) {
-        throw err;
-      }
-      setFormError(
-        "Ceva n-a mers la trimitere. Te rog încearcă din nou peste un moment.",
-      );
-    } finally {
-      setSubmitting(false);
-    }
+    setClientErrors({});
   }
+
+  const errors: FieldErrors =
+    Object.keys(clientErrors).length > 0 ? clientErrors : (state?.errors ?? {});
+  const formError = state?.formError;
 
   const borderFor = (key: keyof FieldErrors) =>
     errors[key] ? "border-[#a23a30]" : "border-line";
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-6">
+    <form
+      action={formAction}
+      onSubmit={handleSubmit}
+      noValidate
+      className="space-y-6"
+    >
       {formError && (
         <p
           role="alert"
@@ -223,13 +218,7 @@ export default function SubmissionForm() {
         />
       </div>
 
-      <button
-        type="submit"
-        disabled={submitting}
-        className="inline-flex items-center justify-center rounded-lg bg-ink px-6 py-3 text-base font-medium text-bg transition-opacity hover:opacity-90 disabled:opacity-60"
-      >
-        {submitting ? "Se trimite…" : "Trimite ideea"}
-      </button>
+      <SubmitButton />
     </form>
   );
 }

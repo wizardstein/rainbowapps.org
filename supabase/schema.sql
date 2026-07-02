@@ -24,6 +24,12 @@ alter table public.submissions
 -- Result: only the service_role (used server-side) can read/write.
 alter table public.submissions enable row level security;
 
+-- Needed when this file is run over a direct psql connection (the SQL editor's
+-- default privileges don't apply there): the API's service_role must be able
+-- to touch the table. RLS still blocks anon/authenticated (no policies).
+grant usage on schema public to service_role;
+grant all privileges on table public.submissions to service_role;
+
 -- Private storage bucket for sketches.
 insert into storage.buckets (id, name, public)
 values ('sketches', 'sketches', false)

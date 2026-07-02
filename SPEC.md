@@ -60,6 +60,8 @@ No CMS, no auth library, no i18n library, no AI SDK.
 | `/` | Server Component | Landing: hero, how it works, why, what I don't build, portfolio, status, CTA |
 | `/trimite` | Server Component wrapping a client form | The submission form |
 | `/multumesc` | Server Component | Confirmation page shown after a successful submit |
+| `/colaborare` | Server Component | "Cum colaborăm" — the working agreement: free build, definition of done, ownership, post-handover support (added 2026-07-02) |
+| `/confidentialitate` | Server Component | Privacy policy in plain Romanian — GDPR information duty (added 2026-07-02) |
 
 The landing page links prominently to `/trimite`. After a successful submit, redirect to `/multumesc`.
 

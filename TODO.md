@@ -31,11 +31,12 @@ Ordered by severity within each section.
 
 - [x] Max lengths on text fields (`lib/validation.ts`): name ~120, idea ~5000, email 254 —
   friendly Romanian messages. Matters more once the body limit is raised.
-- [ ] Failed sketch upload is invisible: owner email says "Schiță atașată: nu" whether there
+- [x] Failed sketch upload is invisible: owner email says "Schiță atașată: nu" whether there
   was no sketch or the upload failed (`app/trimite/actions.ts:60-64`). Pass an
-  "upload failed" flag into the owner email. Also: a file uploaded before a failed DB insert
-  is orphaned in the bucket — clean up or accept knowingly.
-- [ ] Form is dead without JavaScript. Consider `<form action={submitIdea}>` + `useActionState`
+  "upload failed" flag into the owner email. (The other half — a file uploaded before a
+  failed DB insert stays orphaned in the bucket — is accepted knowingly: rare, cheap,
+  visible in the Storage UI.)
+- [x] Form is dead without JavaScript. Consider `<form action={submitIdea}>` + `useActionState`
   — native-POST fallback, pending state via `useFormStatus`, and it structurally fixes the
   stuck-button bug.
 - [x] Send the two emails in parallel (`Promise.allSettled`) — the user currently waits through
@@ -49,7 +50,7 @@ Ordered by severity within each section.
 - [x] Hoist header/footer into the layout (or shared components). Currently copy-pasted on all
   three pages and inconsistent: `/trimite` footer has only the privacy line, `/multumesc` only
   the company line, `/` both.
-- [ ] Replace boilerplate `README.md` (still mentions Geist) with: what this is, env setup,
+- [x] Replace boilerplate `README.md` (still mentions Geist) with: what this is, env setup,
   where the schema lives, how to flip `AVAILABILITY`.
 - [x] Check in the SPEC §8 SQL as `supabase/schema.sql`.
 - [ ] Small: ~~`app/sitemap.ts`~~ (done — 2 URLs; `/multumesc` is noindex); align `ACCEPT_ATTR` with `ACCEPTED_FILE_TYPES` so the

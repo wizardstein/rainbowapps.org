@@ -8,6 +8,7 @@ export type SubmissionEmail = {
   phone: string | null;
   idea: string;
   attachmentPath: string | null;
+  uploadFailed: boolean;
 };
 
 function required(name: string): string {
@@ -25,6 +26,11 @@ function ownerText(s: SubmissionEmail): string {
       ? `Schiță atașată: da — în Supabase Storage la ${s.attachmentPath}`
       : "Schiță atașată: nu",
   );
+  if (s.uploadFailed) {
+    lines.push(
+      "Atenție: trimițătorul a atașat o schiță, dar încărcarea a eșuat.",
+    );
+  }
   lines.push("", `ID submisie: ${s.id}`);
   return lines.join("\n");
 }

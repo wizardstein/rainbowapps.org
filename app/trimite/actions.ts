@@ -20,7 +20,10 @@ function storagePath(uuid: string, fileName: string): string {
   return `submissions/${uuid}/${safe}`;
 }
 
-export async function submitIdea(formData: FormData): Promise<SubmitState> {
+export async function submitIdea(
+  _prevState: SubmitState,
+  formData: FormData,
+): Promise<SubmitState> {
   // Honeypot: a bot fills this hidden field. Pretend success, do nothing.
   const honeypot = String(formData.get("contact_notes") ?? "").trim();
   if (honeypot.length > 0) {
@@ -52,6 +55,7 @@ export async function submitIdea(formData: FormData): Promise<SubmitState> {
     // Optional sketch upload. A failed upload must NOT lose the submission —
     // log it and save the idea without the attachment.
     let attachmentPath: string | null = null;
+    let uploadFailed = false;
     if (file) {
       const path = storagePath(id, file.name);
       const { error: uploadError } = await supabase.storage
@@ -59,6 +63,7 @@ export async function submitIdea(formData: FormData): Promise<SubmitState> {
         .upload(path, file, { contentType: file.type, upsert: false });
       if (uploadError) {
         console.error("Sketch upload failed:", uploadError.message);
+        uploadFailed = true;
       } else {
         attachmentPath = path;
       }
@@ -87,6 +92,7 @@ export async function submitIdea(formData: FormData): Promise<SubmitState> {
       phone: data.phone ? data.phone : null,
       idea: data.idea,
       attachmentPath,
+      uploadFailed,
     });
   } catch (err) {
     console.error("Unexpected error saving submission:", err);
