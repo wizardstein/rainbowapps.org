@@ -78,11 +78,36 @@ The landing page links prominently to `/trimite`. After a successful submit, red
 2. `Mă uit peste ea` — `Aleg ideile care ajută oameni și pe care le pot construi singur. Îți răspund oricum, indiferent de răspuns.`
 3. `O construiesc` — `De la un weekend la o lună. Tu plătești doar domeniul (~€10–15/an) și găzduirea (gratuită). Restul e din partea mea.`
 
+**Povestea mea** *(added 2026-07-02, owner request — builds trust through the real arc, without private details)*
+
+Intro (three paragraphs):
+> `Calculatoarele m-au fascinat de mic. Am avut primul PC la 4 ani, iar la 10 am reparat primul calculator „pe bani” — cinci lei. Am și stricat unul între timp (am formatat un hard disk fără backup), dar cam așa se învață.`
+>
+> `De atunci, drumul a trecut prin service-uri de calculatoare și case de marcat, apoi prin testare de software, automatizări și echipe conduse în companii mari. Să programez am învățat singur, din nevoie: întâi ca să-mi ușurez munca, apoi pentru că nu m-am mai putut opri.`
+>
+> `Am urcat și pe scara corporate, destul cât să înțeleg că nu acolo mi-e locul. Cel mai fericit sunt când construiesc ceva care ajută pe cineva. Așa a apărut RainbowApps.`
+
+Timeline (a real chronological sequence — rendered along a vertical spectrum spine, the one place the rainbow signature repeats):
+- `la 4 ani` — `Primul meu calculator.`
+- `la 10 ani` — `Primul calculator reparat pe bani. Cinci lei.`
+- `la 17 ani` — `Anunț în ziar: repar orice calculator, la domiciliu.`
+- `2008` — `Primul job: depanator de calculatoare, apoi de case de marcat.`
+- `2009` — `Primul meu program — scris ca să ușureze munca într-o firmă mică.`
+- `2012` — `M-am mutat la Cluj, în software. Am învățat să programez singur, din nevoie.`
+- `anii de după` — `Automatizare de teste, proiecte internaționale, echipe conduse.`
+- `azi` — `Construiesc aplicații gratuite pentru oameni cu idei bune.`
+
 **De ce fac asta**
 > `Cred că o idee bună nu ar trebui să rămână blocată doar fiindcă omul din spatele ei nu scrie cod. M-au inspirat profesorii care predau gratis și oamenii care construiesc open source. Acesta e felul meu de a da înapoi.`
 
+Second paragraph (added 2026-07-02):
+> `Și pentru că știu exact cum e: am și eu idei care stau în sertar fiindcă nu am cunoștințele să le construiesc singur. Nu vreau ca ideea ta să rămână acolo.`
+
 **Ce nu pot construi** (kept gentle, not a wall of "no")
 > `Las deoparte ideile care țin de jocuri de noroc sau pariuri, politică, religie, sau orice ar putea face rău cuiva. Și, deocamdată, sisteme foarte complexe cu multe părți — sunt un singur om.`
+
+Second paragraph (added 2026-07-02 — profit-first ideas are welcome as long as they help):
+> `În rest, orice idee care ajută e binevenită — inclusiv una din care vrei să câștigi. Nu trebuie să fie caritate: ideea, codul și ce câștigi din ea rămân ale tale.`
 
 **Portofoliu** (section 6.3)
 
@@ -94,11 +119,12 @@ The landing page links prominently to `/trimite`. After a successful submit, red
 - One reassuring line: `Nu trebuie să fie tehnic și nu trebuie să fie perfect. Scrie-mi pur și simplu ce ai în cap.`
 - The form (section 7).
 
-### 6.3 Portfolio cards (hardcoded, 2 items)
+### 6.3 Portfolio cards (hardcoded, 3 items — third added 2026-07-02)
 
 Store as a typed array in `lib/site.ts`. Each card: title, one-line description, URL, opens in new tab.
 
-- `scoala.beard-brothers.ro` — `Platformă educațională construită pentru un ONG din Cluj.` → https://scoala.beard-brothers.ro
+- `scoala.beard-brothers.ro` — `Site-ul campaniei prin care un ONG din Cluj construiește o școală, cărămidă cu cărămidă.` → https://scoala.beard-brothers.ro
+- `joaca.beard-brothers.ro` — `Joc în browser făcut pentru aceeași campanie: prinzi cărămizi, ocolești prejudecăți.` → https://joaca.beard-brothers.ro
 - `ymarchive.chat` — `Cititor de arhive Yahoo Messenger, direct în browser. Nimic nu pleacă de pe calculatorul tău.` → https://ymarchive.chat
 
 ### 6.4 Status badge

@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  /* Palette — warm off-white, never the forbidden cream */
-  --color-bg: #f7f6f4;
-  --color-ink: #232321;
-  --color-ink-soft: #5c5b57;
-  --color-line: #e4e2dd;
-  --color-surface: #ffffff;
+  /* Palette — warm paper, never the forbidden cream */
+  --color-bg: #f7f5f1;
+  --color-ink: #26241f;
+  --color-ink-soft: #5d5a52;
+  --color-line: #e5e1d8;
+  --color-surface: #fffdf9;
   --color-focus: #3a6ea5;
   --color-status-green: #3f9d5a;
   --color-status-amber: #d99a2b;
@@ -14,6 +14,10 @@
   /* Type */
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -31,8 +35,9 @@ body {
   border-radius: 2px;
 }
 
-/* The one bold place: a muted "dawn" spectrum hairline under the H1.
-   Desaturated on purpose — adult, not a primary rainbow. Used once. */
+/* The signature: one muted "dawn" spectrum, used as a thread.
+   Horizontal under the H1, vertical as the spine of the life story.
+   Desaturated on purpose — adult, not a primary rainbow. */
 .spectrum-rule {
   height: 3px;
   border-radius: 2px;
@@ -49,6 +54,31 @@ body {
   animation: spectrum-reveal 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+.spectrum-spine {
+  width: 3px;
+  border-radius: 2px;
+  background: linear-gradient(
+    180deg,
+    #c0607a 0%,
+    #d99a6b 26%,
+    #c9b45a 48%,
+    #6fa67c 68%,
+    #5e8fb0 86%,
+    #8a6fb0 100%
+  );
+}
+
+/* A barely-there wash of the same spectrum behind the hero. */
+.hero-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38rem 22rem at 82% 0%, rgba(94, 143, 176, 0.1), transparent 70%),
+    radial-gradient(30rem 18rem at 100% 45%, rgba(192, 96, 122, 0.07), transparent 70%),
+    radial-gradient(26rem 16rem at 65% 100%, rgba(111, 166, 124, 0.07), transparent 70%);
+}
+
 @keyframes spectrum-reveal {
   from {
     transform: scaleX(0);
@@ -60,8 +90,11 @@ body {
   }
 }
 
-/* Respect reduced motion: render the hairline static, no reveal. */
+/* Respect reduced motion: everything static, no smooth scroll. */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   .spectrum-rule {
     animation: none;
     transform: none;

@@ -19,8 +19,15 @@ export type Project = {
 export const PROJECTS: Project[] = [
   {
     title: "scoala.beard-brothers.ro",
-    description: "Platformă educațională construită pentru un ONG din Cluj.",
+    description:
+      "Site-ul campaniei prin care un ONG din Cluj construiește o școală, cărămidă cu cărămidă.",
     url: "https://scoala.beard-brothers.ro",
+  },
+  {
+    title: "joaca.beard-brothers.ro",
+    description:
+      "Joc în browser făcut pentru aceeași campanie: prinzi cărămizi, ocolești prejudecăți.",
+    url: "https://joaca.beard-brothers.ro",
   },
   {
     title: "ymarchive.chat",
