@@ -4,6 +4,7 @@ import { createHmac } from "node:crypto";
 import { cookies } from "next/headers";
 import { updateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase";
+import { sendOwnerTestimonialEmail } from "@/lib/email";
 
 // Public support actions. Same philosophy as the submission form: validate
 // everything, never crash, fail with a gentle Romanian message.
@@ -175,15 +176,40 @@ export async function submitThought(
     }
 
     const supabase = createServiceClient();
-    const { error } = await supabase.from("testimonials").insert({
+    const { data: inserted, error } = await supabase
+      .from("testimonials")
+      .insert({
+        author,
+        text,
+        url: url || null,
+        published: false, // always moderated — appears only after Adelin approves
+      })
+      .select("id")
+      .single();
+    if (error || !inserted) {
+      console.error("submitThought failed:", error?.message);
+      return { formError: GENERIC };
+    }
+
+    // Owner notification is best-effort — the thought is already saved.
+    // Delivered emails get stamped; the daily cron retries the rest.
+    const sent = await sendOwnerTestimonialEmail({
+      id: inserted.id,
       author,
       text,
       url: url || null,
-      published: false, // always moderated — appears only after Adelin approves
     });
-    if (error) {
-      console.error("submitThought failed:", error.message);
-      return { formError: GENERIC };
+    if (sent) {
+      const { error: markError } = await supabase
+        .from("testimonials")
+        .update({ owner_notified_at: new Date().toISOString() })
+        .eq("id", inserted.id);
+      if (markError) {
+        console.error(
+          "Failed to mark testimonial email delivered:",
+          markError.message,
+        );
+      }
     }
 
     return { ok: true };

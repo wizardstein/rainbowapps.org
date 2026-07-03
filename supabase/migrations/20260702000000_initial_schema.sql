@@ -1,5 +1,6 @@
--- RainbowApps — schema (source: SPEC.md §8)
--- Run this in the Supabase SQL editor of the project you create for rainbowapps.org.
+-- RainbowApps — initial schema (source: SPEC.md §8 + 2026-07-02 additions).
+-- Snapshot of everything applied by hand before migrations existed; already
+-- live in production (baselined via `supabase migration repair`, see README).
 
 create extension if not exists "pgcrypto";
 

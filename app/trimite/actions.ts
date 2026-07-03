@@ -70,6 +70,7 @@ export async function submitIdea(
       phone: data.phone ? data.phone : null,
       idea: data.idea,
       attachment_path: attachmentPath,
+      upload_failed: uploadFailed,
     });
 
     if (insertError) {
@@ -78,8 +79,9 @@ export async function submitIdea(
     }
 
     // Emails are best-effort: the submission is already saved, so a Resend
-    // failure is logged but never fails the request.
-    await sendSubmissionEmails({
+    // failure is logged but never fails the request. Delivered emails get
+    // stamped on the row; anything unstamped is retried by the daily cron.
+    const { ownerSent, submitterSent } = await sendSubmissionEmails({
       id,
       name: data.name,
       email: data.email,
@@ -88,6 +90,22 @@ export async function submitIdea(
       attachmentPath,
       uploadFailed,
     });
+
+    const sentAt = new Date().toISOString();
+    const delivered: Record<string, string> = {};
+    if (ownerSent) delivered.owner_notified_at = sentAt;
+    if (submitterSent) delivered.submitter_notified_at = sentAt;
+    if (Object.keys(delivered).length > 0) {
+      const { error: markError } = await supabase
+        .from("submissions")
+        .update(delivered)
+        .eq("id", id);
+      if (markError) {
+        // Worst case the cron re-sends an already-delivered email — a
+        // duplicate beats a lost notification.
+        console.error("Failed to mark emails delivered:", markError.message);
+      }
+    }
   } catch (err) {
     console.error("Unexpected error saving submission:", err);
     return { formError: GENERIC_ERROR };
