@@ -1,19 +1,27 @@
 @import "tailwindcss";
 
 @theme {
-  /* Palette — warm paper, never the forbidden cream */
-  --color-bg: #f7f5f1;
-  --color-ink: #26241f;
-  --color-ink-soft: #5d5a52;
-  --color-line: #e5e1d8;
-  --color-surface: #fffdf9;
-  --color-focus: #3a6ea5;
-  --color-status-green: #3f9d5a;
-  --color-status-amber: #d99a2b;
+  /* Paleta de brand (assets-brand/culori.css): hârtie, crem, linie, cerneală. */
+  --color-bg: #fbf8f2;
+  --color-surface: #ffffff;
+  --color-crem: #f7f1e6;
+  --color-crem-deep: #f1e7d2;
+  --color-line: #e8e1d4;
+  --color-line-strong: #c9c2b4;
+  --color-ink: #2b2723;
+  --color-ink-soft: #4a443b;
+  --color-ink-muted: #6e675c;
+  --color-ink-faint: #9a9184;
+  /* Albastrul e culoarea funcțională: linkuri și butoane. */
+  --color-blue: #4e7fd0;
+  --color-blue-deep: #3e69b4;
+  --color-focus: #4e7fd0;
+  --color-status-green: #55a45e;
+  --color-status-amber: #f0933d;
 
   /* Type */
-  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-nunito-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 html {
@@ -37,26 +45,30 @@ body {
 
 /* Shared buttons — one look everywhere. */
 .btn-primary {
-  @apply inline-flex items-center justify-center rounded-full bg-ink px-7 py-3 text-base font-medium text-bg transition hover:opacity-90;
+  @apply inline-flex items-center justify-center rounded-full bg-blue px-7 py-3.5 font-display text-base font-bold text-white transition-colors hover:bg-blue-deep;
 }
 .btn-secondary {
-  @apply inline-flex items-center justify-center rounded-full border border-line bg-surface px-7 py-3 text-base font-medium text-ink transition-colors hover:border-ink/30;
+  @apply inline-flex items-center justify-center rounded-full border border-line bg-surface px-7 py-3.5 font-display text-base font-bold text-ink transition-colors hover:border-line-strong;
+}
+.btn-soft {
+  @apply inline-flex items-center justify-center rounded-full border border-line bg-crem px-5 py-2.5 font-display text-sm font-bold text-ink transition-colors hover:bg-crem-deep;
 }
 
-/* The word that matters most, underlined with the signature spectrum. */
+/* The word that matters most, underlined with the 7-node spectrum. */
 .underline-spectrum {
   background-image: linear-gradient(
-    90deg,
-    #c0607a 0%,
-    #d99a6b 26%,
-    #c9b45a 48%,
-    #6fa67c 68%,
-    #5e8fb0 86%,
-    #8a6fb0 100%
+    to right,
+    #e2574c,
+    #f0933d,
+    #efc23f,
+    #55a45e,
+    #3fa39b,
+    #4e7fd0,
+    #8b66c6
   );
   background-repeat: no-repeat;
   background-size: 100% 0.09em;
-  background-position: 0 96%;
+  background-position: left bottom;
   padding-bottom: 0.06em;
 }
 
@@ -80,48 +92,22 @@ body {
   }
 }
 
-/* The signature: one muted "dawn" spectrum, used as a thread.
-   Horizontal under the H1, vertical as the spine of the life story.
-   Desaturated on purpose — adult, not a primary rainbow. */
+/* The signature spectrum as a thin rule (thank-you page). */
 .spectrum-rule {
   height: 3px;
   border-radius: 2px;
   background: linear-gradient(
-    90deg,
-    #c0607a 0%,
-    #d99a6b 26%,
-    #c9b45a 48%,
-    #6fa67c 68%,
-    #5e8fb0 86%,
-    #8a6fb0 100%
+    to right,
+    #e2574c,
+    #f0933d,
+    #efc23f,
+    #55a45e,
+    #3fa39b,
+    #4e7fd0,
+    #8b66c6
   );
   transform-origin: left center;
   animation: spectrum-reveal 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.spectrum-spine {
-  width: 3px;
-  border-radius: 2px;
-  background: linear-gradient(
-    180deg,
-    #c0607a 0%,
-    #d99a6b 26%,
-    #c9b45a 48%,
-    #6fa67c 68%,
-    #5e8fb0 86%,
-    #8a6fb0 100%
-  );
-}
-
-/* A barely-there wash of the same spectrum behind the hero. */
-.hero-glow {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(38rem 22rem at 82% 0%, rgba(94, 143, 176, 0.1), transparent 70%),
-    radial-gradient(30rem 18rem at 100% 45%, rgba(192, 96, 122, 0.07), transparent 70%),
-    radial-gradient(26rem 16rem at 65% 100%, rgba(111, 166, 124, 0.07), transparent 70%);
 }
 
 @keyframes spectrum-reveal {

@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Inter } from "next/font/google";
+import { Nunito, Nunito_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import "./globals.css";
 
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
+const nunito = Nunito({
+  variable: "--font-nunito",
   subsets: ["latin", "latin-ext"],
-  weight: ["600", "700"],
+  weight: ["700", "800"],
   display: "swap",
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const nunitoSans = Nunito_Sans({
+  variable: "--font-nunito-sans",
   subsets: ["latin", "latin-ext"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "600", "700"],
   display: "swap",
 });
 
@@ -60,7 +60,7 @@ export default function RootLayout({
   return (
     <html
       lang="ro"
-      className={`${bricolage.variable} ${inter.variable} h-full`}
+      className={`${nunito.variable} ${nunitoSans.variable} h-full`}
     >
       <body className="min-h-full flex flex-col">
         <SiteHeader />

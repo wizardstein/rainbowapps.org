@@ -26,8 +26,8 @@ export default function SupportButton({
   }
 
   return (
-    <div>
-      <p className="text-ink-soft" aria-live="polite">
+    <div className="flex flex-col gap-3">
+      <p className="text-[14.5px] leading-relaxed text-ink-muted" aria-live="polite">
         {count === 0
           ? "Fii primul care susține."
           : count === 1
@@ -36,7 +36,7 @@ export default function SupportButton({
       </p>
       <div aria-live="polite">
         {done ? (
-          <p className="mt-4 font-medium text-ink">
+          <p className="font-display font-bold text-ink">
             {state?.already
               ? "Mulțumesc — susținerea ta e deja numărată. ♥"
               : "Mulțumesc! ♥"}
@@ -46,13 +46,13 @@ export default function SupportButton({
             type="button"
             onClick={handleClick}
             disabled={pending}
-            className="btn-primary mt-4 disabled:opacity-60"
+            className="btn-soft disabled:opacity-60"
           >
             {pending ? "O secundă…" : "Susțin inițiativa"}
           </button>
         )}
         {state?.error && (
-          <p className="mt-3 text-sm text-ink-soft">{state.error}</p>
+          <p className="mt-3 text-sm text-ink-muted">{state.error}</p>
         )}
       </div>
     </div>

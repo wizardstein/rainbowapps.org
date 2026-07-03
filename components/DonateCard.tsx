@@ -31,9 +31,9 @@ export default function DonateCard() {
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-3">
       <div
-        className="mt-4 flex flex-wrap items-center gap-2"
+        className="flex flex-wrap items-center gap-2"
         role="group"
         aria-label="Alege suma donației"
       >
@@ -43,16 +43,16 @@ export default function DonateCard() {
             type="button"
             onClick={() => setAmount(String(preset))}
             aria-pressed={amount === String(preset)}
-            className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+            className={`rounded-full border px-3.5 py-2 text-[13px] font-bold transition-colors ${
               amount === String(preset)
-                ? "border-ink bg-ink text-bg"
-                : "border-line bg-bg text-ink hover:border-ink/40"
+                ? "border-ink bg-ink text-white"
+                : "border-line bg-crem text-ink hover:bg-crem-deep"
             }`}
           >
             {preset} lei
           </button>
         ))}
-        <label className="flex items-center gap-1.5 text-sm text-ink-soft">
+        <label className="flex items-center gap-1.5 text-[13px] text-ink-muted">
           <span className="sr-only">Altă sumă în lei</span>
           <input
             type="number"
@@ -61,25 +61,25 @@ export default function DonateCard() {
             max={10000}
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="w-24 rounded-full border border-line bg-bg px-4 py-2 text-sm text-ink"
+            className="w-24 rounded-full border border-line bg-surface px-3.5 py-2 text-[13px] text-ink"
           />
           lei
         </label>
+        <button
+          type="button"
+          onClick={donate}
+          disabled={pending}
+          className="rounded-full bg-blue px-4 py-2 font-display text-[13px] font-bold text-white transition-colors hover:bg-blue-deep disabled:opacity-60"
+        >
+          {pending ? "Pregătesc plata…" : "Donează prin Revolut ↗"}
+        </button>
       </div>
-      <button
-        type="button"
-        onClick={donate}
-        disabled={pending}
-        className="btn-secondary mt-4 disabled:opacity-60"
-      >
-        {pending ? "Pregătesc plata…" : "Donează prin Revolut ↗"}
-      </button>
       <div aria-live="polite">
         {state?.error && (
-          <p className="mt-3 text-sm text-ink-soft">{state.error}</p>
+          <p className="text-sm text-ink-muted">{state.error}</p>
         )}
       </div>
-      <p className="mt-3 text-xs text-ink-soft/80">
+      <p className="text-[11.5px] text-ink-faint">
         Plata se face pe pagina securizată Revolut — datele cardului nu trec
         pe aici.
       </p>
