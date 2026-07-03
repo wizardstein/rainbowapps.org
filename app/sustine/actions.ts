@@ -78,8 +78,7 @@ export async function supportInitiative(): Promise<SupportState> {
 
 export type DonationState = { url?: string; error?: string } | null;
 
-const DONATION_MIN_LEI = 5;
-const DONATION_MAX_LEI = 10000;
+const DONATION_MIN_LEI = 1;
 
 /** Creates a Revolut Merchant API order and returns the hosted checkout URL.
  *  The payment itself happens entirely on Revolut's page — no card data ever
@@ -91,14 +90,14 @@ export async function createDonation(
   try {
     const raw = String(formData.get("amount") ?? "").replace(",", ".").trim();
     const amount = Number(raw);
+    // No upper limit by design — only a technical guard so the value in bani
+    // stays a safe integer for Revolut.
     if (
       !Number.isFinite(amount) ||
       amount < DONATION_MIN_LEI ||
-      amount > DONATION_MAX_LEI
+      !Number.isSafeInteger(Math.round(amount * 100))
     ) {
-      return {
-        error: `Alege o sumă între ${DONATION_MIN_LEI} și ${DONATION_MAX_LEI.toLocaleString("ro-RO")} lei.`,
-      };
+      return { error: `Suma minimă e ${DONATION_MIN_LEI} leu.` };
     }
 
     const key = process.env.REVOLUT_SECRET_KEY;

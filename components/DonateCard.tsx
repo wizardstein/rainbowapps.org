@@ -57,8 +57,7 @@ export default function DonateCard() {
           <input
             type="number"
             inputMode="numeric"
-            min={5}
-            max={10000}
+            min={1}
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             className="w-24 rounded-full border border-line bg-surface px-3.5 py-2 text-[13px] text-ink"
