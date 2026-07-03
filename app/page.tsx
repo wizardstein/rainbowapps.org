@@ -12,6 +12,7 @@ import {
   getSupportersCount,
   getTestimonials,
 } from "@/lib/content";
+import { projectNodeColor } from "@/lib/site";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -259,19 +260,24 @@ export default async function Home() {
             Fiecare aplicație, o culoare nouă.
           </h2>
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {projects.map((project, i) => (
+            {projects.map((project, i) => {
+              const chip = projectNodeColor(
+                project.url,
+                SPECTRU[i % SPECTRU.length],
+              );
+              return (
               <li key={project.url} className="h-full">
                 <a
                   href={project.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex h-full flex-col gap-3 rounded-2xl border border-line bg-surface p-[26px] transition-colors hover:border-(--chip)"
-                  style={{ "--chip": SPECTRU[i % SPECTRU.length] } as React.CSSProperties}
+                  style={{ "--chip": chip } as React.CSSProperties}
                 >
                   <span
                     aria-hidden="true"
                     className="size-4 rounded-[5px]"
-                    style={{ background: SPECTRU[i % SPECTRU.length] }}
+                    style={{ background: chip }}
                   />
                   <h3 className="font-display text-[17px] font-extrabold text-ink">
                     {project.title}{" "}
@@ -284,7 +290,8 @@ export default async function Home() {
                   </p>
                 </a>
               </li>
-            ))}
+              );
+            })}
           </ul>
           <p className="mt-3.5 text-[13px] text-ink-faint">
             Restul nodurilor din arc așteaptă idei noi — poate una e a ta.

@@ -17,6 +17,23 @@ export type Project = {
   url: string;
 };
 
+// Owner convention (2026-07-03): every app keeps its own node color in the
+// arc, mapped by hostname. New apps claim a free node — add them here.
+// ymarchive gets violet because it already wears Yahoo's purple (#6f2da8).
+export const PROJECT_NODE_COLORS: Record<string, string> = {
+  "scoala.beard-brothers.ro": "#E2574C", // coral
+  "joaca.beard-brothers.ro": "#F0933D", // portocaliu
+  "ymarchive.chat": "#8B66C6", // violet
+};
+
+export function projectNodeColor(url: string, fallback: string): string {
+  try {
+    return PROJECT_NODE_COLORS[new URL(url).hostname] ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 export const PROJECTS: Project[] = [
   {
     title: "scoala.beard-brothers.ro",
