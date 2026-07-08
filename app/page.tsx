@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import StatusBadge from "@/components/StatusBadge";
 import portret from "@/public/adelin.jpg";
+import previewScoala from "@/public/previews/scoala.jpg";
+import previewJoaca from "@/public/previews/joaca.jpg";
+import previewYmarchive from "@/public/previews/ymarchive.jpg";
+import previewDonfitway from "@/public/previews/donfitway.jpg";
 import ArcMark, { SPECTRU } from "@/components/ArcMark";
+import PortfolioFan from "@/components/PortfolioFan";
 import SupportButton from "@/components/SupportButton";
 import DonateCard from "@/components/DonateCard";
 import ShareCard from "@/components/ShareCard";
@@ -12,10 +17,19 @@ import {
   getSupportersCount,
   getTestimonials,
 } from "@/lib/content";
-import { projectNodeColor } from "@/lib/site";
+import { projectHostname } from "@/lib/site";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
+};
+
+// Static screenshots of the finished apps (public/previews), keyed by
+// hostname like the node colors. Apps without one fall back to a plain card.
+const PREVIEWS: Record<string, StaticImageData> = {
+  "scoala.beard-brothers.ro": previewScoala,
+  "joaca.beard-brothers.ro": previewJoaca,
+  "ymarchive.chat": previewYmarchive,
+  "donfitway.ro": previewDonfitway,
 };
 
 const STEPS = [
@@ -126,13 +140,138 @@ export default async function Home() {
         </div>
       </header>
 
+      {/* Portofoliu */}
+      <section
+        id="portofoliu"
+        className="mx-auto w-full max-w-[70rem] scroll-mt-20 px-6 py-16 sm:px-8"
+      >
+        <div className="reveal">
+          <Kicker color={SPECTRU[0]}>Portofoliu</Kicker>
+          <h2 className="mt-2.5 mb-9 font-display text-3xl font-extrabold tracking-[-0.5px] text-ink sm:text-[34px]">
+            Ce am construit până acum.
+          </h2>
+          <PortfolioFan
+            items={projects.map((project) => {
+              const host = projectHostname(project.url);
+              return { ...project, preview: host ? PREVIEWS[host] : undefined };
+            })}
+          />
+          <p className="mt-6 text-[13px] text-ink-faint">
+            Aici e loc și pentru ideea ta.
+          </p>
+        </div>
+      </section>
+
+      {/* Ce spun oamenii */}
+      {testimonials.length > 0 && (
+        <section
+          id="testimoniale"
+          className="mx-auto w-full max-w-[70rem] scroll-mt-20 px-6 py-16 sm:px-8"
+        >
+          <div className="reveal">
+            <Kicker color={SPECTRU[1]}>Vorbe bune</Kicker>
+            <h2 className="mt-2.5 mb-7 font-display text-3xl font-extrabold tracking-[-0.5px] text-ink sm:text-[34px]">
+              Ce spun oamenii cu care am lucrat.
+            </h2>
+            <div className="rounded-2xl bg-[#26221D] p-5 sm:p-7">
+              <div className="gap-5 md:columns-2">
+                {testimonials.map((t) => (
+                  <figure
+                    key={t.id}
+                    className="mb-5 break-inside-avoid rounded-xl border border-white/10 p-5 last:mb-0"
+                  >
+                    <blockquote className="font-display text-[17px] font-bold leading-[1.55] text-[#F5F1EA] text-pretty">
+                      „{t.text}”
+                    </blockquote>
+                    <figcaption className="mt-3.5 text-[13.5px] text-[#B5AC9C]">
+                      {t.author}
+                      {t.url && (
+                        <>
+                          {" · "}
+                          <a
+                            href={t.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline underline-offset-4 transition-colors hover:text-[#F5F1EA]"
+                          >
+                            {new URL(t.url).hostname.replace(/^www\./, "")}
+                          </a>
+                        </>
+                      )}
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Susține inițiativa */}
+      <section
+        id="sustine"
+        className="mx-auto w-full max-w-[70rem] scroll-mt-20 px-6 py-16 sm:px-8"
+      >
+        <div className="reveal">
+          <Kicker color={SPECTRU[2]}>Susține inițiativa</Kicker>
+          <h2 className="mt-2.5 font-display text-3xl font-extrabold tracking-[-0.5px] text-ink sm:text-[34px]">
+            Nu ai o idee, dar îți place ce se întâmplă aici?
+          </h2>
+          <p className="mt-3 mb-7 text-ink-soft">
+            Poți împinge lucrurile înainte în felul tău.
+          </p>
+          <div className="grid gap-5 md:grid-cols-2">
+            <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-[26px]">
+              <h3 className="font-display text-lg font-extrabold text-ink">
+                Cu un click
+              </h3>
+              <SupportButton initialCount={supporters} />
+            </div>
+            <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-[26px]">
+              <h3 className="font-display text-lg font-extrabold text-ink">
+                Cu o vorbă bună
+              </h3>
+              <p className="text-[14.5px] leading-relaxed text-ink-muted">
+                Ai lucrat cu mine sau crezi în idee? Două rânduri de la tine
+                cântăresc mult pentru următorul om.
+              </p>
+              <Link href="/sustine" className="btn-soft self-start">
+                Scrie un gând
+              </Link>
+            </div>
+            <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-[26px]">
+              <h3 className="font-display text-lg font-extrabold text-ink">
+                Cu un share
+              </h3>
+              <p className="text-[14.5px] leading-relaxed text-ink-muted">
+                Poate omul cu ideea bună e chiar în lista ta de prieteni. Dă
+                vestea mai departe.
+              </p>
+              <ShareCard />
+            </div>
+            {donationsEnabled && (
+              <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-[26px]">
+                <h3 className="font-display text-lg font-extrabold text-ink">
+                  Cu o donație
+                </h3>
+                <p className="text-[14.5px] leading-relaxed text-ink-muted">
+                  Construirea e gratuită pentru oameni, dar uneltele și
+                  găzduirea costă. Orice sumă ajută.
+                </p>
+                <DonateCard />
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* Cum funcționează */}
       <section
         id="cum-functioneaza"
         className="mx-auto w-full max-w-[70rem] scroll-mt-20 px-6 py-16 sm:px-8"
       >
         <div className="reveal">
-          <Kicker color={SPECTRU[0]}>Cum funcționează</Kicker>
+          <Kicker color={SPECTRU[3]}>Cum funcționează</Kicker>
           <h2 className="mt-2.5 mb-7 font-display text-3xl font-extrabold tracking-[-0.5px] text-ink sm:text-[34px]">
             Trei pași, zero costuri.
           </h2>
@@ -167,7 +306,7 @@ export default async function Home() {
         className="mx-auto w-full max-w-[70rem] scroll-mt-20 px-6 py-16 sm:px-8"
       >
         <div className="reveal">
-          <Kicker color={SPECTRU[1]}>Povestea mea</Kicker>
+          <Kicker color={SPECTRU[4]}>Povestea mea</Kicker>
           <div className="mt-2.5 grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
             <div className="flex flex-col gap-4">
               <h2 className="font-display text-3xl font-extrabold tracking-[-0.5px] text-ink sm:text-[34px]">
@@ -221,7 +360,7 @@ export default async function Home() {
       {/* De ce fac asta / Ce nu pot construi */}
       <section className="mx-auto grid w-full max-w-[70rem] gap-5 px-6 py-16 sm:px-8 md:grid-cols-2">
         <div className="reveal flex flex-col gap-3.5 rounded-2xl border border-line bg-surface p-[30px]">
-          <Kicker color={SPECTRU[2]}>De ce fac asta</Kicker>
+          <Kicker color={SPECTRU[5]}>De ce fac asta</Kicker>
           <p className="font-display text-[19px] font-bold leading-normal text-ink text-pretty">
             Cred că o idee bună nu ar trebui să rămână blocată doar fiindcă
             omul din spatele ei nu scrie cod.
@@ -235,7 +374,7 @@ export default async function Home() {
           </p>
         </div>
         <div className="reveal flex flex-col gap-3.5 rounded-2xl border border-line bg-surface p-[30px]">
-          <Kicker color={SPECTRU[3]}>Ce nu pot construi</Kicker>
+          <Kicker color={SPECTRU[6]}>Ce nu pot construi</Kicker>
           <p className="font-display text-[19px] font-bold leading-normal text-ink text-pretty">
             Las deoparte jocurile de noroc, politica, religia sau orice ar
             putea face rău cuiva.
@@ -246,145 +385,6 @@ export default async function Home() {
             una din care vrei să câștigi. Nu trebuie să fie caritate: ideea,
             codul și ce câștigi din ea rămân ale tale.
           </p>
-        </div>
-      </section>
-
-      {/* Portofoliu */}
-      <section
-        id="portofoliu"
-        className="mx-auto w-full max-w-[70rem] scroll-mt-20 px-6 py-16 sm:px-8"
-      >
-        <div className="reveal">
-          <Kicker color={SPECTRU[4]}>Portofoliu</Kicker>
-          <h2 className="mt-2.5 mb-7 font-display text-3xl font-extrabold tracking-[-0.5px] text-ink sm:text-[34px]">
-            Fiecare aplicație, o culoare nouă.
-          </h2>
-          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {projects.map((project, i) => {
-              const chip = projectNodeColor(
-                project.url,
-                SPECTRU[i % SPECTRU.length],
-              );
-              return (
-              <li key={project.url} className="h-full">
-                <a
-                  href={project.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-full flex-col gap-3 rounded-2xl border border-line bg-surface p-[26px] transition-colors hover:border-(--chip)"
-                  style={{ "--chip": chip } as React.CSSProperties}
-                >
-                  <span
-                    aria-hidden="true"
-                    className="size-4 rounded-[5px]"
-                    style={{ background: chip }}
-                  />
-                  <h3 className="font-display text-[17px] font-extrabold text-ink">
-                    {project.title}{" "}
-                    <span aria-hidden="true" className="font-semibold text-ink-faint">
-                      ↗
-                    </span>
-                  </h3>
-                  <p className="text-[14.5px] leading-relaxed text-ink-muted">
-                    {project.description}
-                  </p>
-                </a>
-              </li>
-              );
-            })}
-          </ul>
-          <p className="mt-3.5 text-[13px] text-ink-faint">
-            Restul nodurilor din arc așteaptă idei noi — poate una e a ta.
-          </p>
-        </div>
-      </section>
-
-      {/* Susține inițiativa */}
-      <section
-        id="sustine"
-        className="mx-auto w-full max-w-[70rem] scroll-mt-20 px-6 py-16 sm:px-8"
-      >
-        <div className="reveal">
-          <Kicker color={SPECTRU[5]}>Susține inițiativa</Kicker>
-          <h2 className="mt-2.5 font-display text-3xl font-extrabold tracking-[-0.5px] text-ink sm:text-[34px]">
-            Nu ai o idee, dar îți place ce se întâmplă aici?
-          </h2>
-          <p className="mt-3 mb-7 text-ink-soft">
-            Poți împinge lucrurile înainte în felul tău.
-          </p>
-          <div className="grid gap-5 md:grid-cols-2">
-            <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-[26px]">
-              <h3 className="font-display text-lg font-extrabold text-ink">
-                Cu un click
-              </h3>
-              <SupportButton initialCount={supporters} />
-            </div>
-            <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-[26px]">
-              <h3 className="font-display text-lg font-extrabold text-ink">
-                Cu o vorbă bună
-              </h3>
-              <p className="text-[14.5px] leading-relaxed text-ink-muted">
-                Ai lucrat cu mine sau crezi în idee? Două rânduri de la tine
-                cântăresc mult pentru următorul om.
-              </p>
-              <Link href="/sustine" className="btn-soft self-start">
-                Scrie un gând
-              </Link>
-            </div>
-            <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-[26px]">
-              <h3 className="font-display text-lg font-extrabold text-ink">
-                Cu un share
-              </h3>
-              <p className="text-[14.5px] leading-relaxed text-ink-muted">
-                Poate omul cu ideea bună e chiar în lista ta de prieteni. Dă
-                vestea mai departe.
-              </p>
-              <ShareCard />
-            </div>
-            {donationsEnabled && (
-              <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-[26px]">
-                <h3 className="font-display text-lg font-extrabold text-ink">
-                  Cu o donație
-                </h3>
-                <p className="text-[14.5px] leading-relaxed text-ink-muted">
-                  Construirea e gratuită pentru oameni, dar uneltele și
-                  găzduirea costă. Orice sumă ajută.
-                </p>
-                <DonateCard />
-              </div>
-            )}
-          </div>
-
-          {testimonials.length > 0 && (
-            <div className="mt-5 flex flex-col gap-3.5 rounded-2xl bg-[#26221D] p-[30px]">
-              <h3 className="font-display text-xs font-extrabold uppercase tracking-[1.5px] text-[#7E766A]">
-                Ce spun oamenii
-              </h3>
-              {testimonials.map((t) => (
-                <figure key={t.id} className="flex flex-col gap-3.5">
-                  <blockquote className="max-w-[820px] font-display text-lg font-bold leading-[1.55] text-[#F5F1EA] text-pretty">
-                    „{t.text}”
-                  </blockquote>
-                  <figcaption className="text-[13.5px] text-[#B5AC9C]">
-                    {t.author}
-                    {t.url && (
-                      <>
-                        {" · "}
-                        <a
-                          href={t.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="underline underline-offset-4 transition-colors hover:text-[#F5F1EA]"
-                        >
-                          {new URL(t.url).hostname}
-                        </a>
-                      </>
-                    )}
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
-          )}
         </div>
       </section>
 

@@ -14,18 +14,6 @@ export default function SiteHeader() {
         </Link>
         <nav aria-label="Navigație" className="flex items-center gap-5 text-sm">
           <Link
-            href="/#cum-functioneaza"
-            className="hidden font-semibold text-ink-soft transition-colors hover:text-ink sm:inline"
-          >
-            Cum funcționează
-          </Link>
-          <Link
-            href="/#povestea"
-            className="hidden font-semibold text-ink-soft transition-colors hover:text-ink sm:inline"
-          >
-            Povestea mea
-          </Link>
-          <Link
             href="/#portofoliu"
             className="hidden font-semibold text-ink-soft transition-colors hover:text-ink sm:inline"
           >
@@ -36,6 +24,18 @@ export default function SiteHeader() {
             className="hidden font-semibold text-ink-soft transition-colors hover:text-ink sm:inline"
           >
             Susține
+          </Link>
+          <Link
+            href="/#cum-functioneaza"
+            className="hidden font-semibold text-ink-soft transition-colors hover:text-ink sm:inline"
+          >
+            Cum funcționează
+          </Link>
+          <Link
+            href="/#povestea"
+            className="hidden font-semibold text-ink-soft transition-colors hover:text-ink sm:inline"
+          >
+            Povestea mea
           </Link>
           <Link
             href="/trimite"

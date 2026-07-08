@@ -17,20 +17,12 @@ export type Project = {
   url: string;
 };
 
-// Owner convention (2026-07-03): every app keeps its own node color in the
-// arc, mapped by hostname. New apps claim a free node — add them here.
-// ymarchive gets violet because it already wears Yahoo's purple (#6f2da8).
-export const PROJECT_NODE_COLORS: Record<string, string> = {
-  "scoala.beard-brothers.ro": "#E2574C", // coral
-  "joaca.beard-brothers.ro": "#F0933D", // portocaliu
-  "ymarchive.chat": "#8B66C6", // violet
-};
-
-export function projectNodeColor(url: string, fallback: string): string {
+// Used to key the static preview screenshots in public/previews.
+export function projectHostname(url: string): string | null {
   try {
-    return PROJECT_NODE_COLORS[new URL(url).hostname] ?? fallback;
+    return new URL(url).hostname.replace(/^www\./, "");
   } catch {
-    return fallback;
+    return null;
   }
 }
 
@@ -52,5 +44,11 @@ export const PROJECTS: Project[] = [
     description:
       "Cititor de arhive Yahoo Messenger, direct în browser. Nimic nu pleacă de pe calculatorul tău.",
     url: "https://ymarchive.chat",
+  },
+  {
+    title: "donfitway.ro",
+    description:
+      "Site-ul unui antrenor personal din Cluj: pachete, transformări și programare direct pe WhatsApp.",
+    url: "https://www.donfitway.ro",
   },
 ];
