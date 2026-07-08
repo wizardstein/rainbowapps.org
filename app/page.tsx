@@ -76,6 +76,16 @@ const MOMENTE = [
   },
 ];
 
+function initials(name: string): string {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => word[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
 function Kicker({ color, children }: { color: string; children: string }) {
   return (
     <div className="flex items-center gap-2.5">
@@ -175,32 +185,68 @@ export default async function Home() {
             </h2>
             <div className="rounded-2xl bg-[#26221D] p-5 sm:p-7">
               <div className="gap-5 md:columns-2">
-                {testimonials.map((t) => (
-                  <figure
-                    key={t.id}
-                    className="mb-5 break-inside-avoid rounded-xl border border-white/10 p-5 last:mb-0"
-                  >
-                    <blockquote className="font-display text-[17px] font-bold leading-[1.55] text-[#F5F1EA] text-pretty">
-                      „{t.text}”
-                    </blockquote>
-                    <figcaption className="mt-3.5 text-[13.5px] text-[#B5AC9C]">
-                      {t.author}
-                      {t.url && (
-                        <>
-                          {" · "}
+                {testimonials.map((t, i) => {
+                  const accent = SPECTRU[i % SPECTRU.length];
+                  const host = t.url ? projectHostname(t.url) : null;
+                  const thumb = host ? PREVIEWS[host] : undefined;
+                  return (
+                    <figure
+                      key={t.id}
+                      className="mb-5 break-inside-avoid rounded-xl border border-white/10 p-5 last:mb-0"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="block font-display text-4xl font-extrabold leading-none"
+                        style={{ color: accent }}
+                      >
+                        „
+                      </span>
+                      <blockquote className="mt-1.5 font-display text-[17px] font-bold leading-[1.55] text-[#F5F1EA] text-pretty">
+                        {t.text}
+                      </blockquote>
+                      <figcaption className="mt-4 flex items-center gap-3">
+                        <span
+                          aria-hidden="true"
+                          className="flex size-9 flex-none items-center justify-center rounded-full font-display text-[13px] font-extrabold text-white"
+                          style={{ background: accent }}
+                        >
+                          {initials(t.author)}
+                        </span>
+                        <span className="flex min-w-0 flex-col">
+                          <span className="text-[13.5px] font-bold text-[#F5F1EA]">
+                            {t.author}
+                          </span>
+                          {t.url && (
+                            <a
+                              href={t.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="truncate text-[12.5px] text-[#B5AC9C] underline underline-offset-4 transition-colors hover:text-[#F5F1EA]"
+                            >
+                              {host ?? t.url}
+                            </a>
+                          )}
+                        </span>
+                        {thumb && t.url && (
                           <a
                             href={t.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="underline underline-offset-4 transition-colors hover:text-[#F5F1EA]"
+                            aria-label={`Vezi proiectul ${host}`}
+                            className="ml-auto flex-none"
                           >
-                            {new URL(t.url).hostname.replace(/^www\./, "")}
+                            <Image
+                              src={thumb}
+                              alt=""
+                              sizes="64px"
+                              className="w-16 rotate-2 rounded-md border border-white/20 transition-transform hover:rotate-0"
+                            />
                           </a>
-                        </>
-                      )}
-                    </figcaption>
-                  </figure>
-                ))}
+                        )}
+                      </figcaption>
+                    </figure>
+                  );
+                })}
               </div>
             </div>
           </div>
