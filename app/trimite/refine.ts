@@ -3,6 +3,7 @@
 import { createHmac } from "node:crypto";
 import { cookies } from "next/headers";
 import Anthropic from "@anthropic-ai/sdk";
+import { generateText } from "ai";
 import { IDEA_MAX, IDEA_MIN } from "@/lib/validation";
 
 // Optional AI helper for the idea field. The form NEVER depends on this path —
@@ -91,10 +92,11 @@ export async function refineIdea(formData: FormData): Promise<RefineResult> {
       return { ok: false, message: CAP_REACHED };
     }
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) {
+    const gatewayKey = process.env.AI_GATEWAY_API_KEY;
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+    if (!gatewayKey && !anthropicKey) {
       console.error(
-        "Refine: ANTHROPIC_API_KEY is missing — skipping the AI call.",
+        "Refine: neither AI_GATEWAY_API_KEY nor ANTHROPIC_API_KEY is set — skipping the AI call.",
       );
       return { ok: false, message: GENERIC_FAIL };
     }
@@ -109,25 +111,47 @@ export async function refineIdea(formData: FormData): Promise<RefineResult> {
       maxAge: COOKIE_MAX_AGE,
     });
 
-    // Data minimization: ONLY the idea text goes to Anthropic — never the
-    // name, email, phone, or attachment.
-    const anthropic = new Anthropic({ apiKey });
-    const response = await anthropic.messages.create({
-      model: "claude-haiku-4-5",
-      max_tokens: 1000,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: "user", content: idea }],
-    });
-
-    console.log(
-      `Refine usage: input_tokens=${response.usage.input_tokens} output_tokens=${response.usage.output_tokens}`,
-    );
-
+    // Data minimization: ONLY the idea text goes to the model — never the
+    // name, email, phone, or attachment. Vercel AI Gateway goes first (free
+    // monthly credits, spend visible in the Vercel dashboard); the direct
+    // Anthropic key is the fallback so the helper survives an empty gateway
+    // balance or a gateway outage.
     let text = "";
-    for (const block of response.content) {
-      if (block.type === "text") text += block.text;
+    if (gatewayKey) {
+      try {
+        const result = await generateText({
+          model: "anthropic/claude-haiku-4.5",
+          maxOutputTokens: 1000,
+          system: SYSTEM_PROMPT,
+          prompt: idea,
+        });
+        console.log(
+          `Refine usage (gateway): input_tokens=${result.usage.inputTokens} output_tokens=${result.usage.outputTokens}`,
+        );
+        text = result.text.trim();
+      } catch (err) {
+        console.error(
+          "Refine: gateway call failed, falling back to direct Anthropic:",
+          err,
+        );
+      }
     }
-    text = text.trim();
+    if (!text && anthropicKey) {
+      const anthropic = new Anthropic({ apiKey: anthropicKey });
+      const response = await anthropic.messages.create({
+        model: "claude-haiku-4-5",
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: "user", content: idea }],
+      });
+      console.log(
+        `Refine usage (direct): input_tokens=${response.usage.input_tokens} output_tokens=${response.usage.output_tokens}`,
+      );
+      for (const block of response.content) {
+        if (block.type === "text") text += block.text;
+      }
+      text = text.trim();
+    }
 
     if (!text) {
       return { ok: false, message: GENERIC_FAIL };
