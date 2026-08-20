@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const SECTIONS = [
   {
     title: "Cine sunt",
-    body: "Adelin Cavași, prin Rainbow Engineering SRL, Cluj-Napoca. Eu sunt „operatorul de date” — adică cel responsabil de ce mi-ai trimis. Îmi poți scrie oricând la adelin.cavasi@gmail.com.",
+    body: "Adelin Cavași, prin RAINBOW ENGINEERING S.R.L. (CUI: 49009851, Nr. Reg. Comerțului: J12/4542/2023), Cluj-Napoca. Firma e „operatorul de date” — adică cea responsabilă de ce mi-ai trimis. Îmi poți scrie oricând la adelin.cavasi@gmail.com.",
   },
   {
     title: "Ce colectez",

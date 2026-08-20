@@ -17,6 +17,10 @@ export default function SiteFooter() {
           pe care le trimiți sunt folosite doar ca să te pot contacta despre
           ideea ta. Nu le dau nimănui.
         </p>
+        <p className="max-w-2xl text-xs leading-relaxed text-ink-muted/80">
+          RAINBOW ENGINEERING S.R.L. · CUI: 49009851 · Nr. Reg. Comerțului:
+          J12/4542/2023
+        </p>
         <p className="flex gap-3.5 text-[13px]">
           <Link
             href="/colaborare"
