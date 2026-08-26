@@ -17,6 +17,15 @@ export type Project = {
   url: string;
 };
 
+// "Cât ar fi costat / cât ar fi durat" figures shown in the portfolio, keyed by
+// hostname (see PROJECT_VALUE). These are hand-written market estimates, kept
+// out of the DB on purpose — not owner-editable content.
+export type ProjectValue = {
+  cost: string;
+  time: string;
+  features: string[];
+};
+
 // Used to key the static preview screenshots in public/previews.
 export function projectHostname(url: string): string | null {
   try {
@@ -51,4 +60,70 @@ export const PROJECTS: Project[] = [
       "Site-ul unui antrenor personal din Cluj: pachete, transformări și programare direct pe WhatsApp.",
     url: "https://www.donfitway.ro",
   },
+  {
+    title: "nightshiftfabrications.ro",
+    description:
+      "Site pentru un atelier de fabricație din Cluj: galerie de lucrări, cerere de ofertă și un panou propriu de administrare.",
+    url: "https://nightshiftfabrications.ro",
+  },
 ];
+
+// Value figures keyed by hostname (projectHostname), like the preview
+// screenshots. A missing entry simply hides the value block for that project.
+export const PROJECT_VALUE: Record<string, ProjectValue> = {
+  "scoala.beard-brothers.ro": {
+    cost: "~70.000–100.000 €",
+    time: "~9–10 luni, în echipă",
+    features: [
+      "Un model 3D al școlii, cărămidă cu cărămidă — te plimbi prin clădire direct în browser.",
+      "O cărămidă nu se vinde niciodată de două ori, chiar și când donează sute de oameni în același minut.",
+      "Cele 12.012 cărămizi sunt așezate după planurile reale ale clădirii.",
+      "Plăți reale, cu chitanță pe e-mail și certificat cu cod de verificare.",
+      "Panou de administrare complet, ca banii oamenilor să fie mereu în regulă.",
+    ],
+  },
+  "joaca.beard-brothers.ro": {
+    cost: "~15.000–22.000 €",
+    time: "~6–9 săptămâni",
+    features: [
+      "Motor de joc scris de la zero — perspectivă, mișcare, senzație de joc adevărat, nu un șablon.",
+      "Tot sunetul e făcut din cod, fără fișiere audio — și merge inclusiv pe iPhone, cu butonul silențios pornit.",
+      "Toată grafica e desenată în cod: roaba, cărămizile, cele 14 iconițe.",
+      "Butonul de distribuire merge și în Facebook sau Instagram, unde de obicei se blochează.",
+      "Se joacă în română și engleză, cu tot textul tradus cu grijă, nu pe jumătate.",
+    ],
+  },
+  "ymarchive.chat": {
+    cost: "~18.000–25.000 €",
+    time: "~2–3 luni",
+    features: [
+      "Citește formatul vechi de arhivă Yahoo, descâlcit byte cu byte — nu există unealtă gata-făcută pentru asta.",
+      "Totul se întâmplă pe calculatorul tău; nicio conversație nu pleacă nicăieri — poți verifica singur.",
+      "Merge lin și la mii de mesaje, fără să înghețe browserul.",
+      "Îți exporți conversațiile într-un PDF frumos, cu cuprins pe luni.",
+      "Mesajele apar exact cum le-ai scris atunci — cu diacriticele la locul lor, nu semne stricate.",
+    ],
+  },
+  "donfitway.ro": {
+    cost: "~9.000–16.000 €",
+    time: "~6–9 săptămâni, în echipă",
+    features: [
+      "Pagină de prezentare gândită să transforme vizitatorii în clienți.",
+      "Clienții scriu direct pe WhatsApp, dintr-o atingere.",
+      "Galerie de transformări înainte/după, cu pachete și prețuri clare.",
+      "Panou propriu: schimbă texte, poze și prețuri singur, fără programator.",
+      "Recenzii cu aprobare și cererile clienților, toate într-un loc.",
+    ],
+  },
+  "nightshiftfabrications.ro": {
+    cost: "~12.000–19.000 €",
+    time: "~2–3 luni",
+    features: [
+      "Barna își schimbă singur tot ce apare pe site — poze, prețuri, noutăți, recenzii — dintr-un panou privat, fără să depindă de nimeni.",
+      "Galeria adună peste 130 de poze din lucrări reale, aranjate pe camere; la un clic, fiecare se deschide mare și o poți răsfoi cu degetul sau din tastatură.",
+      "Când cineva cere o ofertă, completează un formular scurt care se adaptează după cum e persoană fizică sau firmă, iar cererea ajunge direct pe mail.",
+      "Pozele urcate din panou se micșorează și se optimizează singure, așa că site-ul rămâne rapid chiar și cu sute de imagini.",
+      "Pagina de pornire prezintă atelierul cap-coadă — lucrări, cifre, recenzii și pașii de lucru — clar și rapid pe telefon.",
+    ],
+  },
+};

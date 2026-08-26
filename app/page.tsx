@@ -7,6 +7,7 @@ import previewScoala from "@/public/previews/scoala.jpg";
 import previewJoaca from "@/public/previews/joaca.jpg";
 import previewYmarchive from "@/public/previews/ymarchive.jpg";
 import previewDonfitway from "@/public/previews/donfitway.jpg";
+import previewNsfab from "@/public/previews/nsfab.jpg";
 import ArcMark, { SPECTRU } from "@/components/ArcMark";
 import PortfolioFan from "@/components/PortfolioFan";
 import SupportButton from "@/components/SupportButton";
@@ -17,7 +18,7 @@ import {
   getSupportersCount,
   getTestimonials,
 } from "@/lib/content";
-import { projectHostname } from "@/lib/site";
+import { projectHostname, PROJECT_VALUE } from "@/lib/site";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -30,7 +31,11 @@ const PREVIEWS: Record<string, StaticImageData> = {
   "joaca.beard-brothers.ro": previewJoaca,
   "ymarchive.chat": previewYmarchive,
   "donfitway.ro": previewDonfitway,
+  "nightshiftfabrications.ro": previewNsfab,
 };
+
+// The 7-node spectrum as a gradient, for the value-band underline.
+const SPECTRU_GRADIENT = `linear-gradient(90deg, ${SPECTRU.join(", ")})`;
 
 const STEPS = [
   {
@@ -150,6 +155,29 @@ export default async function Home() {
         </div>
       </header>
 
+      {/* Cât ar fi costat totul — și că e din partea mea. */}
+      <section className="mx-auto w-full max-w-[70rem] px-6 sm:px-8">
+        <div className="reveal rounded-2xl border border-line bg-gradient-to-br from-crem to-crem-deep p-[26px]">
+          <p className="max-w-[46rem] text-[15.5px] leading-relaxed text-ink-soft">
+            Puse cap la cap, la prețuri de Cluj, cele cinci ar fi costat peste{" "}
+            <span className="relative inline-block whitespace-nowrap font-display text-[19px] font-extrabold leading-none text-ink">
+              120.000 €
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-0 -bottom-[4px] h-[3px] rounded-full opacity-70"
+                style={{ background: SPECTRU_GRADIENT }}
+              />
+            </span>
+            . Pentru oamenii care le-au primit, au fost gratis — e felul meu de a
+            da înapoi.
+          </p>
+          <p className="mt-2.5 text-[13px] text-ink-faint">
+            Cifre estimate pe piața din Cluj, 2026. Sunt intervale orientative,
+            nu facturi.
+          </p>
+        </div>
+      </section>
+
       {/* Portofoliu */}
       <section
         id="portofoliu"
@@ -163,7 +191,11 @@ export default async function Home() {
           <PortfolioFan
             items={projects.map((project) => {
               const host = projectHostname(project.url);
-              return { ...project, preview: host ? PREVIEWS[host] : undefined };
+              return {
+                ...project,
+                preview: host ? PREVIEWS[host] : undefined,
+                value: host ? PROJECT_VALUE[host] : undefined,
+              };
             })}
           />
           <p className="mt-6 text-[13px] text-ink-faint">

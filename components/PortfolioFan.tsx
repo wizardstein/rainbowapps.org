@@ -2,13 +2,15 @@
 
 import { useRef, useState } from "react";
 import Image, { type StaticImageData } from "next/image";
-import ArcMark from "@/components/ArcMark";
+import ArcMark, { SPECTRU } from "@/components/ArcMark";
+import type { ProjectValue } from "@/lib/site";
 
 export type FanItem = {
   title: string;
   description: string;
   url: string;
   preview?: StaticImageData;
+  value?: ProjectValue;
 };
 
 // How far each card behind the front one sits. The horizontal step lives in
@@ -207,6 +209,45 @@ export default function PortfolioFan({ items }: { items: FanItem[] }) {
         <p className="text-[15px] leading-relaxed text-ink-muted" aria-live="polite">
           {current.description}
         </p>
+        {current.value && (
+          <div>
+            {/* Cât ar fi costat / cât ar fi durat, la prețuri de Cluj. */}
+            <div className="flex flex-wrap gap-2.5">
+              <div className="rounded-full border border-line bg-crem px-3.5 py-1.5">
+                <div className="text-[11px] uppercase tracking-wide text-ink-faint">
+                  Ar fi costat
+                </div>
+                <div className="font-display text-[15px] font-extrabold leading-tight text-ink">
+                  {current.value.cost}
+                </div>
+              </div>
+              <div className="rounded-full border border-line bg-crem px-3.5 py-1.5">
+                <div className="text-[11px] uppercase tracking-wide text-ink-faint">
+                  Timp de lucru
+                </div>
+                <div className="font-display text-[15px] font-extrabold leading-tight text-ink">
+                  {current.value.time}
+                </div>
+              </div>
+            </div>
+            <ul className="mt-4 space-y-2.5">
+              {current.value.features.map((text, i) => (
+                <li key={i} className="flex items-start gap-2.5">
+                  <span
+                    aria-hidden="true"
+                    className="mt-[3px] select-none font-display text-[13px] font-extrabold leading-none"
+                    style={{ color: SPECTRU[i % SPECTRU.length] }}
+                  >
+                    ✓
+                  </span>
+                  <span className="text-[14.5px] leading-relaxed text-ink-muted">
+                    {text}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <div className="mt-2 flex items-center gap-3">
           <button
             type="button"
