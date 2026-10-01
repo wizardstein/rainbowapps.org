@@ -62,7 +62,7 @@ No CMS, no auth library, no i18n library, no AI SDK.
 | `/multumesc` | Server Component | Confirmation page shown after a successful submit |
 | `/ghid` | Server Component wrapping a client wizard | Five-step idea-structuring guide — a short, attributed adaptation of the Foundation Sprint ("Click", Knapp & Zeratsky); assembled draft prefills the /trimite form (added 2026-07-02) |
 | `/sustine` | Server Component wrapping a client form | Public testimonial ("vorbă bună") form — always lands unpublished, moderated from /admin (added 2026-07-02) |
-| `/colaborare` | Server Component | "Cum colaborăm" — the working agreement: free build, definition of done, ownership, post-handover support (added 2026-07-02) |
+| `/colaborare` | Server Component | "Cum colaborăm" — the working agreement: price from 0 lei (free for NGOs / good causes / small projects, paid for larger ones — no public prices), definition of done, ownership, post-handover support (added 2026-07-02, repositioned 2026-10-01) |
 | `/confidentialitate` | Server Component | Privacy policy in plain Romanian — GDPR information duty (added 2026-07-02) |
 
 The landing page links prominently to `/trimite`. After a successful submit, redirect to `/multumesc`.
@@ -72,16 +72,18 @@ The landing page links prominently to `/trimite`. After a successful submit, red
 ### 6.1 Landing `/`
 
 **Hero**
-- H1: `Ai o idee bună? O construiesc gratis.`
-- Subtitle: `Sunt Adelin, programator din Cluj. Dacă ai o idee de aplicație care ajută oameni, dar nu știi să programezi, o construiesc eu — gratuit. Tu păstrezi totul: ideea, codul, domeniul.`
+- H1: `Ai o idee bună? O construiesc, de la 0 lei.` *(repositioned 2026-10-01 — "de la 0 lei": free for NGOs / good causes / small projects, paid for larger ones, no public prices, no form field)*
+- Subtitle: `Sunt Adelin, programator din Cluj. Dacă ai o idee de aplicație care ajută oameni, dar nu știi să programezi, o construiesc eu. Gratuit pentru ONG-uri, cauze bune și multe idei mici; contra cost pentru proiecte mai mari — îți spun dinainte. Tu păstrezi totul: ideea, codul, domeniul.` *(repositioned 2026-10-01)*
 - Primary CTA button → `/trimite`: `Spune-mi ideea ta`
 - Show the **status badge** (section 6.4) near the hero.
 - Portrait photo of Adelin (`public/adelin.jpg`) beside the hero text on desktop, below the CTAs on mobile (added 2026-07-02 — credibility).
 
 **Cum funcționează** (a real 3-step sequence — numbered markers are appropriate here)
-1. `Îmi spui ideea` — `Completezi un formular scurt. Fără jargon, fără cont, fără costuri.`
+1. `Îmi spui ideea` — `Completezi un formular scurt. Fără jargon, fără cont, fără obligații.` *(repositioned 2026-10-01)*
 2. `Mă uit peste ea` — `Aleg ideile care ajută oameni și pe care le pot construi singur. Îți răspund oricum, indiferent de răspuns.`
-3. `O construiesc` — `De la un weekend la o lună. Singurul tău cost e domeniul, ~10–15 € pe an. Găzduirea e gratuită, iar restul e din partea mea.` *(reworded 2026-07-02 — the old "plătești doar domeniul (...) și găzduirea (gratuită)" read as paying for both)*
+3. `O construiesc` — `De la un weekend la o lună. Pentru ONG-uri, cauze bune și proiecte mici, singurul tău cost e domeniul, ~10–15 € pe an. Pentru proiecte mai mari îți spun un preț înainte să încep.` *(reworded 2026-07-02 — the old "plătești doar domeniul (...) și găzduirea (gratuită)" read as paying for both; repositioned 2026-10-01)*
+
+Section heading: `Trei pași, fără surprize.` *(was "zero costuri" — repositioned 2026-10-01)*
 
 **Povestea mea** *(added 2026-07-02, owner request — builds trust through the real arc, without private details)*
 
@@ -100,7 +102,7 @@ Timeline (a real chronological sequence — rendered along a vertical spectrum s
 - `2009` — `Primul meu program — scris ca să ușureze munca într-o firmă mică.`
 - `2012` — `M-am mutat la Cluj, în software. Am învățat să programez singur, din nevoie.`
 - `anii de după` — `Automatizare de teste, proiecte internaționale, echipe conduse.`
-- `azi` — `Construiesc aplicații gratuite pentru oameni cu idei bune.`
+- `azi` — `Construiesc aplicații pentru oameni cu idei bune — de la 0 lei.` *(repositioned 2026-10-01)*
 
 **De ce fac asta**
 > `Cred că o idee bună nu ar trebui să rămână blocată doar fiindcă omul din spatele ei nu scrie cod. M-au inspirat profesorii care predau gratis și oamenii care construiesc open source. Acesta e felul meu de a da înapoi.`
@@ -122,6 +124,7 @@ Second paragraph (added 2026-07-02 — profit-first ideas are welcome as long as
 
 - Short heading: `Trimite-mi ideea ta`
 - One reassuring line: `Nu trebuie să fie tehnic și nu trebuie să fie perfect. Scrie-mi pur și simplu ce ai în cap.`
+- A second, muted line (added 2026-10-01 — pricing is triaged from the idea text, never asked in the form): `Nu trebuie să știi acum dacă intră la „gratuit” sau nu. Îți spun eu, sincer, după ce o citesc.`
 - The form (section 7).
 
 ### 6.3 Portfolio cards (hardcoded, 3 items — third added 2026-07-02)

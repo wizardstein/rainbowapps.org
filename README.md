@@ -1,8 +1,9 @@
 # rainbowapps.org
 
-Free service run by Adelin (Cluj-Napoca, Rainbow Engineering SRL): people with a good
-app idea who can't code submit it through a form; Adelin builds it for free; they keep
-everything — idea, code, domain. Romanian-only UI.
+Service run by Adelin (Cluj-Napoca, Rainbow Engineering SRL): people with a good app
+idea who can't code submit it through a form; Adelin builds it "de la 0 lei" — free for
+NGOs, good causes and many small projects, paid for larger ones (no public price list,
+decided case by case). They keep everything — idea, code, domain. Romanian-only UI.
 
 **Read `SPEC.md` (product source of truth) and `CLAUDE.md` (hard rules) before changing anything.**
 Open work lives in `TODO.md`.

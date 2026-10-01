@@ -20,6 +20,10 @@ export default function TrimitePage() {
           Nu trebuie să fie tehnic și nu trebuie să fie perfect. Scrie-mi pur
           și simplu ce ai în cap.
         </p>
+        <p className="mt-3 text-[15px] leading-relaxed text-ink-muted">
+          Nu trebuie să știi acum dacă intră la „gratuit” sau nu. Îți spun eu,
+          sincer, după ce o citesc.
+        </p>
         <div className="mt-6 rounded-xl border border-line bg-surface p-5">
           <p className="font-display text-lg font-semibold text-ink">
             Nu știi de unde să începi?

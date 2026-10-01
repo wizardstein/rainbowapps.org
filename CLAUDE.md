@@ -1,6 +1,6 @@
 # RainbowApps — Project Guide
 
-RainbowApps (rainbowapps.org) is a free service run by one person (Adelin, Cluj-Napoca, under Rainbow Engineering SRL): I build apps for people who have a good idea but can't code. They keep everything — idea, code, domain. This website lets people submit an idea and shows my past work so they trust me.
+RainbowApps (rainbowapps.org) is a service run by one person (Adelin, Cluj-Napoca, under Rainbow Engineering SRL): I build apps for people who have a good idea but can't code. **Pricing is "de la 0 lei"** (owner decision 2026-10-01): free for NGOs, good causes and many small projects; larger/complex projects (typically companies) are paid, priced case by case after reading the idea. No public price list, no pricing/organisation field in the form — triage happens from the idea text. They keep everything — idea, code, domain. This website lets people submit an idea and shows my past work so they trust me.
 
 **Read `SPEC.md` in full before planning or building anything.** This file is only the quick reference.
 

@@ -4,14 +4,14 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Cum colaborăm — RainbowApps",
   description:
-    "Regulile colaborării, puține și simple: construirea e gratuită, stabilim împreună ce înseamnă „gata”, și totul rămâne al tău.",
+    "Regulile colaborării, puține și simple: de la 0 lei, stabilim împreună ce înseamnă „gata”, și totul rămâne al tău.",
   alternates: { canonical: "/colaborare" },
 };
 
 const REGULI = [
   {
-    title: "Construirea e gratuită.",
-    body: "De la ideea ta la o aplicație funcțională, nu mă plătești. Singurul cost e domeniul, ~10–15 € pe an. Găzduirea e de regulă gratuită la început.",
+    title: "De la 0 lei.",
+    body: "Pentru ONG‑uri, cauze bune și multe proiecte mici nu mă plătești: singurul cost e domeniul, ~10–15 € pe an, iar găzduirea e de regulă gratuită la început. Proiectele mai mari sau mai complexe — de obicei ale unor firme — sunt contra cost. Nu am o listă de prețuri: după ce îmi spui ideea, îți spun sincer unde se încadrează și, dacă e cazul, cât ar costa, înainte să scriu o linie de cod.",
   },
   {
     title: "Stabilim împreună ce înseamnă „gata”.",
@@ -23,7 +23,7 @@ const REGULI = [
   },
   {
     title: "După predare, aplicația e a ta.",
-    body: "O poți duce mai departe singur, cu altcineva sau cu mine. Dacă vrei să continuăm — funcționalități noi, întreținere, ajutor — stabilim atunci, separat. E posibil ca partea asta să nu mai fie gratuită; construirea, da, întotdeauna.",
+    body: "O poți duce mai departe singur, cu altcineva sau cu mine. Dacă vrei să continuăm — funcționalități noi, întreținere, ajutor — stabilim atunci, separat, și îți spun dinainte dacă și cât costă.",
   },
   {
     title: "Un singur proiect o dată.",

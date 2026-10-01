@@ -40,7 +40,7 @@ const SPECTRU_GRADIENT = `linear-gradient(90deg, ${SPECTRU.join(", ")})`;
 const STEPS = [
   {
     title: "Îmi spui ideea",
-    body: "Completezi un formular scurt. Fără jargon, fără cont, fără costuri.",
+    body: "Completezi un formular scurt. Fără jargon, fără cont, fără obligații.",
     color: SPECTRU[0],
   },
   {
@@ -50,7 +50,7 @@ const STEPS = [
   },
   {
     title: "O construiesc",
-    body: "De la un weekend la o lună. Singurul tău cost e domeniul, ~10–15 € pe an. Găzduirea e gratuită, iar restul e din partea mea.",
+    body: "De la un weekend la o lună. Pentru ONG‑uri, cauze bune și proiecte mici, singurul tău cost e domeniul, ~10–15 € pe an. Pentru proiecte mai mari îți spun un preț înainte să încep.",
     color: SPECTRU[3],
   },
 ];
@@ -122,12 +122,14 @@ export default async function Home() {
           <StatusBadge />
           <h1 className="font-display text-[40px] font-extrabold leading-[1.12] tracking-[-1px] text-ink text-balance sm:text-[56px]">
             Ai o idee <span className="underline-spectrum">bună</span>? O
-            construiesc gratis.
+            construiesc, de la 0 lei.
           </h1>
           <p className="max-w-[520px] text-lg leading-[1.65] text-ink-soft text-pretty">
             Sunt Adelin, programator din Cluj. Dacă ai o idee de aplicație care
-            ajută oameni, dar nu știi să programezi, o construiesc eu —
-            gratuit. Tu păstrezi totul: ideea, codul, domeniul.
+            ajută oameni, dar nu știi să programezi, o construiesc eu. Gratuit
+            pentru ONG‑uri, cauze bune și multe idei mici; contra cost pentru
+            proiecte mai mari — îți spun dinainte. Tu păstrezi totul: ideea,
+            codul, domeniul.
           </p>
           <div className="mt-1.5 flex flex-wrap gap-3">
             <Link href="/trimite" className="btn-primary">
@@ -333,8 +335,8 @@ export default async function Home() {
                   Cu o donație
                 </h3>
                 <p className="text-[14.5px] leading-relaxed text-ink-muted">
-                  Construirea e gratuită pentru oameni, dar uneltele și
-                  găzduirea costă. Orice sumă ajută.
+                  Pentru ONG‑uri și cauze bune construiesc gratuit, dar
+                  uneltele și găzduirea costă. Orice sumă ajută.
                 </p>
                 <DonateCard />
               </div>
@@ -351,7 +353,7 @@ export default async function Home() {
         <div className="reveal">
           <Kicker color={SPECTRU[3]}>Cum funcționează</Kicker>
           <h2 className="mt-2.5 mb-7 font-display text-3xl font-extrabold tracking-[-0.5px] text-ink sm:text-[34px]">
-            Trei pași, zero costuri.
+            Trei pași, fără surprize.
           </h2>
           <ol className="grid gap-5 sm:grid-cols-3">
             {STEPS.map((step, i) => (
@@ -427,7 +429,7 @@ export default async function Home() {
                 <ArcMark className="mt-0.5 h-3.5 flex-none" />
                 <p className="text-sm leading-normal text-ink-soft">
                   <strong className="text-ink">azi</strong> · Construiesc
-                  aplicații gratuite pentru oameni cu idei bune.
+                  aplicații pentru oameni cu idei bune — de la 0 lei.
                 </p>
               </li>
             </ol>

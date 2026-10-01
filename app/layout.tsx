@@ -20,9 +20,9 @@ const nunitoSans = Nunito_Sans({
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.rainbowapps.org";
-const title = "RainbowApps — Ai o idee bună? O construiesc gratis.";
+const title = "RainbowApps — Ai o idee bună? O construiesc, de la 0 lei.";
 const description =
-  "Sunt Adelin, programator din Cluj. Dacă ai o idee de aplicație care ajută oameni, dar nu știi să programezi, o construiesc eu — gratuit.";
+  "Sunt Adelin, programator din Cluj. Dacă ai o idee de aplicație care ajută oameni, dar nu știi să programezi, o construiesc eu — gratuit pentru ONG‑uri și cauze bune, contra cost pentru proiecte mai mari.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
         url: "/og.png",
         width: 1200,
         height: 630,
-        alt: "RainbowApps — Ai o idee bună? O construiesc gratis.",
+        alt: title,
       },
     ],
   },
