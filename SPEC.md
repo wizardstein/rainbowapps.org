@@ -135,6 +135,8 @@ Store as a typed array in `lib/site.ts`. Each card: title, one-line description,
 - `joaca.beard-brothers.ro` — `Joc în browser făcut pentru aceeași campanie: prinzi cărămizi, ocolești prejudecăți.` → https://joaca.beard-brothers.ro
 - `ymarchive.chat` — `Cititor de arhive Yahoo Messenger, direct în browser. Nimic nu pleacă de pe calculatorul tău.` → https://ymarchive.chat
 
+*(Updated 2026-10-02.)* The portfolio now lives in the DB (edited at /admin, `lib/site.ts` PROJECTS is the fallback) and includes donfitway.ro, nightshiftfabrications.ro and the first native app, **Beard Brothers — aplicația de voluntariat** (`https://app.beard-brothers.ro`, iOS + Android + web). Hand-written per-project data in `lib/site.ts`, keyed by hostname: `PROJECT_VALUE` (cost / time / 5 features) and `PROJECT_PLATFORM` (web vs. app + App Store / Google Play links). Each fan card carries a badge (`Site web` / `iOS · Android`); app cards show platform pills and two store buttons. Section subtitle: `Site-uri web și aplicații mobile publicate în App Store și Google Play.` The value band under the hero sums the lower bounds of the projects shown, so it updates itself.
+
 ### 6.4 Status badge
 
 A small pill: a colored dot + label. Driven by a single constant `AVAILABILITY: 'green' | 'amber'` in `lib/site.ts` (flipping it is a one-line commit; Vercel auto-deploys).

@@ -26,6 +26,32 @@ export type ProjectValue = {
   features: string[];
 };
 
+// What kind of thing a portfolio project is. Web sites are the default; native
+// apps carry their store links. Keyed by hostname like PROJECT_VALUE —
+// hand-written, not owner-editable content.
+export type ProjectPlatform =
+  | { kind: "web" }
+  | { kind: "app"; appStore: string; googlePlay: string };
+
+export const PROJECT_PLATFORM: Record<string, ProjectPlatform> = {
+  "app.beard-brothers.ro": {
+    kind: "app",
+    appStore: "https://apps.apple.com/ro/app/id6789177473",
+    googlePlay: "https://play.google.com/store/apps/details?id=ro.beardbrothers.app",
+  },
+};
+
+export function projectPlatform(host: string | null): ProjectPlatform {
+  return (host && PROJECT_PLATFORM[host]) || { kind: "web" };
+}
+
+// Lower bound of a cost range like "~70.000–100.000 €", in euro. Used to add up
+// the "cât ar fi costat" band under the hero.
+export function costFloorEur(cost: string): number {
+  const m = cost.match(/\d{1,3}(?:\.\d{3})*/);
+  return m ? Number(m[0].replace(/\./g, "")) : 0;
+}
+
 // Used to key the static preview screenshots in public/previews.
 export function projectHostname(url: string): string | null {
   try {
@@ -36,6 +62,12 @@ export function projectHostname(url: string): string | null {
 }
 
 export const PROJECTS: Project[] = [
+  {
+    title: "Beard Brothers — aplicația de voluntariat",
+    description:
+      "Aplicația de voluntariat a unui ONG din Cluj: proiecte, check-in pe teren, chat, contracte și certificate, direct pe telefon.",
+    url: "https://app.beard-brothers.ro",
+  },
   {
     title: "scoala.beard-brothers.ro",
     description:
@@ -71,6 +103,17 @@ export const PROJECTS: Project[] = [
 // Value figures keyed by hostname (projectHostname), like the preview
 // screenshots. A missing entry simply hides the value block for that project.
 export const PROJECT_VALUE: Record<string, ProjectValue> = {
+  "app.beard-brothers.ro": {
+    cost: "~160.000–240.000 €",
+    time: "~10–12 luni, în echipă",
+    features: [
+      "Aceeași aplicație pe iPhone, Android și web, publicată în App Store și Google Play. Actualizările ajung fără reinstalare.",
+      "Voluntarii își semnează contractul direct pe telefon și primesc certificate de voluntariat în PDF, conforme cu Legea 78/2014.",
+      "Check-in automat: telefonul observă când ajungi la locul proiectului și îți propune pontajul. Merge și cu cod QR.",
+      "Chat complet pentru echipă, în timp real: canale, mesaje private, fire de discuție, sondaje, poze și video.",
+      "Merge și fără semnal: ce scrii se salvează pe telefon și pleacă singur când revine conexiunea. Notificările chiar ajung.",
+    ],
+  },
   "scoala.beard-brothers.ro": {
     cost: "~70.000–100.000 €",
     time: "~9–10 luni, în echipă",

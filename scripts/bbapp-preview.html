@@ -1,0 +1,34 @@
+<!doctype html>
+<!--
+  Source for public/previews/bbapp.jpg (1200×900, the 4:3 portfolio card).
+  Three raw phone screenshots from the bbapp store assets, framed as phones.
+  Regenerate: copy the screenshots into scripts/preview-src/ (not committed), serve
+  scripts/ over HTTP, screenshot at a 1200×900 viewport as JPEG.
+-->
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <title>bbapp preview</title>
+  <style>
+    html, body { margin: 0; }
+    body {
+      width: 1200px; height: 900px; overflow: hidden;
+      background: radial-gradient(120% 90% at 50% 0%, #f7f1e6 0%, #f1e7d2 100%);
+      display: flex; align-items: flex-start; justify-content: center; gap: 44px;
+      padding-top: 70px; box-sizing: border-box;
+    }
+    .phone {
+      width: 300px; aspect-ratio: 1320 / 2868; border-radius: 44px;
+      background: #1d1b19; padding: 11px; box-sizing: border-box;
+      box-shadow: 0 30px 60px -20px rgba(43,39,35,.35), 0 8px 18px -8px rgba(43,39,35,.25);
+    }
+    .phone img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 34px; }
+    .phone.mid { margin-top: 70px; }
+  </style>
+</head>
+<body>
+  <div class="phone"><img src="preview-src/01-proiecte.png" alt=""></div>
+  <div class="phone mid"><img src="preview-src/03-checkin.png" alt=""></div>
+  <div class="phone"><img src="preview-src/06-chat-poze.png" alt=""></div>
+</body>
+</html>

@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import Image, { type StaticImageData } from "next/image";
 import ArcMark, { SPECTRU } from "@/components/ArcMark";
-import type { ProjectValue } from "@/lib/site";
+import type { ProjectPlatform, ProjectValue } from "@/lib/site";
 
 export type FanItem = {
   title: string;
@@ -11,7 +11,14 @@ export type FanItem = {
   url: string;
   preview?: StaticImageData;
   value?: ProjectValue;
+  platform?: ProjectPlatform;
 };
+
+/** Short platform label shown on the card itself, so web sites and store apps
+ *  are told apart at a glance in the fan. */
+function platformBadge(platform?: ProjectPlatform): string {
+  return platform?.kind === "app" ? "iOS · Android" : "Site web";
+}
 
 // How far each card behind the front one sits. The horizontal step lives in
 // the --fan-step CSS var so it can shrink on small screens.
@@ -148,7 +155,12 @@ export default function PortfolioFan({ items }: { items: FanItem[] }) {
               ? "none"
               : "transform 450ms cubic-bezier(0.22, 1, 0.36, 1), opacity 300ms ease",
           };
-          const face = item.preview ? (
+          const badge = (
+            <span className="pointer-events-none absolute bottom-3 left-3 z-10 rounded-full bg-ink/80 px-2.5 py-1 font-display text-[11.5px] font-bold tracking-wide text-white backdrop-blur-sm">
+              {platformBadge(item.platform)}
+            </span>
+          );
+          const image = item.preview ? (
             <Image
               src={item.preview}
               alt={p === 0 ? `Captură de ecran din ${item.title}` : ""}
@@ -161,6 +173,12 @@ export default function PortfolioFan({ items }: { items: FanItem[] }) {
             <span className="flex size-full items-center justify-center bg-surface">
               <ArcMark className="h-10 opacity-60" />
             </span>
+          );
+          const face = (
+            <>
+              {image}
+              {badge}
+            </>
           );
           return p === 0 ? (
             <a
@@ -206,9 +224,41 @@ export default function PortfolioFan({ items }: { items: FanItem[] }) {
             ↗
           </span>
         </a>
+        <ul className="flex flex-wrap gap-1.5" aria-label="Platforme">
+          {(current.platform?.kind === "app"
+            ? ["Aplicație mobilă", "iOS", "Android", "Web"]
+            : ["Site web"]
+          ).map((label) => (
+            <li
+              key={label}
+              className="rounded-full border border-line bg-surface px-2.5 py-0.5 text-[12.5px] font-semibold text-ink-soft"
+            >
+              {label}
+            </li>
+          ))}
+        </ul>
         <p className="text-[15px] leading-relaxed text-ink-muted" aria-live="polite">
           {current.description}
         </p>
+        {current.platform?.kind === "app" && (
+          <div className="flex flex-wrap gap-2.5">
+            {[
+              { label: "App Store", href: current.platform.appStore },
+              { label: "Google Play", href: current.platform.googlePlay },
+            ].map((store) => (
+              <a
+                key={store.label}
+                href={store.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2 font-display text-[14px] font-bold text-white transition-colors hover:bg-ink-soft"
+              >
+                {store.label}
+                <span aria-hidden="true" className="text-white/70">↗</span>
+              </a>
+            ))}
+          </div>
+        )}
         {current.value && (
           <div>
             {/* Cât ar fi costat / cât ar fi durat, la prețuri de Cluj. */}

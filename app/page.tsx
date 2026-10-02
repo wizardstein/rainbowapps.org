@@ -8,6 +8,7 @@ import previewJoaca from "@/public/previews/joaca.jpg";
 import previewYmarchive from "@/public/previews/ymarchive.jpg";
 import previewDonfitway from "@/public/previews/donfitway.jpg";
 import previewNsfab from "@/public/previews/nsfab.jpg";
+import previewBbapp from "@/public/previews/bbapp.jpg";
 import ArcMark, { SPECTRU } from "@/components/ArcMark";
 import PortfolioFan from "@/components/PortfolioFan";
 import SupportButton from "@/components/SupportButton";
@@ -18,7 +19,12 @@ import {
   getSupportersCount,
   getTestimonials,
 } from "@/lib/content";
-import { projectHostname, PROJECT_VALUE } from "@/lib/site";
+import {
+  costFloorEur,
+  projectHostname,
+  projectPlatform,
+  PROJECT_VALUE,
+} from "@/lib/site";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -32,7 +38,15 @@ const PREVIEWS: Record<string, StaticImageData> = {
   "ymarchive.chat": previewYmarchive,
   "donfitway.ro": previewDonfitway,
   "nightshiftfabrications.ro": previewNsfab,
+  "app.beard-brothers.ro": previewBbapp,
 };
+
+const NUMERALE = ["", "unul", "cele două", "cele trei", "cele patru", "cele cinci", "cele șase", "cele șapte", "cele opt", "cele nouă", "cele zece"];
+
+/** "cele șase" for 6, "cele 11" past ten. */
+function celeN(n: number): string {
+  return NUMERALE[n] ?? `cele ${n}`;
+}
 
 // The 7-node spectrum as a gradient, for the value-band underline.
 const SPECTRU_GRADIENT = `linear-gradient(90deg, ${SPECTRU.join(", ")})`;
@@ -114,6 +128,26 @@ export default async function Home() {
   ]);
   const donationsEnabled = Boolean(process.env.REVOLUT_SECRET_KEY);
 
+  // The value band adds up the lower bounds of the projects actually shown,
+  // so it stays right when a project is added or hidden from /admin.
+  const fanItems = projects.map((project) => {
+    const host = projectHostname(project.url);
+    return {
+      ...project,
+      preview: host ? PREVIEWS[host] : undefined,
+      value: host ? PROJECT_VALUE[host] : undefined,
+      platform: projectPlatform(host),
+    };
+  });
+  const valued = fanItems.filter((item) => item.value);
+  const totalFloor =
+    Math.floor(
+      valued.reduce((sum, item) => sum + costFloorEur(item.value!.cost), 0) /
+        10_000,
+    ) * 10_000;
+  const totalLabel = `${String(totalFloor).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} €`;
+  const hasApps = fanItems.some((item) => item.platform.kind === "app");
+
   return (
     <main className="flex-1">
       {/* Hero */}
@@ -158,27 +192,30 @@ export default async function Home() {
       </header>
 
       {/* Cât ar fi costat totul — și că e din partea mea. */}
-      <section className="mx-auto w-full max-w-[70rem] px-6 sm:px-8">
-        <div className="reveal rounded-2xl border border-line bg-gradient-to-br from-crem to-crem-deep p-[26px]">
-          <p className="max-w-[46rem] text-[15.5px] leading-relaxed text-ink-soft">
-            Puse cap la cap, la prețuri de Cluj, cele cinci ar fi costat peste{" "}
-            <span className="relative inline-block whitespace-nowrap font-display text-[19px] font-extrabold leading-none text-ink">
-              120.000 €
-              <span
-                aria-hidden="true"
-                className="absolute inset-x-0 -bottom-[4px] h-[3px] rounded-full opacity-70"
-                style={{ background: SPECTRU_GRADIENT }}
-              />
-            </span>
-            . Pentru oamenii care le-au primit, au fost gratis — e felul meu de a
-            da înapoi.
-          </p>
-          <p className="mt-2.5 text-[13px] text-ink-faint">
-            Cifre estimate pe piața din Cluj, 2026. Sunt intervale orientative,
-            nu facturi.
-          </p>
-        </div>
-      </section>
+      {valued.length > 1 && (
+        <section className="mx-auto w-full max-w-[70rem] px-6 sm:px-8">
+          <div className="reveal rounded-2xl border border-line bg-gradient-to-br from-crem to-crem-deep p-[26px]">
+            <p className="max-w-[46rem] text-[15.5px] leading-relaxed text-ink-soft">
+              Puse cap la cap, la prețuri de Cluj, {celeN(valued.length)} ar fi
+              costat peste{" "}
+              <span className="relative inline-block whitespace-nowrap font-display text-[19px] font-extrabold leading-none text-ink">
+                {totalLabel}
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-x-0 -bottom-[4px] h-[3px] rounded-full opacity-70"
+                  style={{ background: SPECTRU_GRADIENT }}
+                />
+              </span>
+              . Pentru oamenii care le-au primit, au fost gratis — e felul meu de a
+              da înapoi.
+            </p>
+            <p className="mt-2.5 text-[13px] text-ink-faint">
+              Cifre estimate pe piața din Cluj, 2026. Sunt intervale orientative,
+              nu facturi.
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* Portofoliu */}
       <section
@@ -187,19 +224,15 @@ export default async function Home() {
       >
         <div className="reveal">
           <Kicker color={SPECTRU[0]}>Portofoliu</Kicker>
-          <h2 className="mt-2.5 mb-9 font-display text-3xl font-extrabold tracking-[-0.5px] text-ink sm:text-[34px]">
+          <h2 className="mt-2.5 font-display text-3xl font-extrabold tracking-[-0.5px] text-ink sm:text-[34px]">
             Ce am construit până acum.
           </h2>
-          <PortfolioFan
-            items={projects.map((project) => {
-              const host = projectHostname(project.url);
-              return {
-                ...project,
-                preview: host ? PREVIEWS[host] : undefined,
-                value: host ? PROJECT_VALUE[host] : undefined,
-              };
-            })}
-          />
+          <p className="mt-2 mb-9 text-[15.5px] text-ink-muted">
+            {hasApps
+              ? "Site-uri web și aplicații mobile publicate în App Store și Google Play."
+              : "Site-uri și aplicații web, în producție."}
+          </p>
+          <PortfolioFan items={fanItems} />
           <p className="mt-6 text-[13px] text-ink-faint">
             Aici e loc și pentru ideea ta.
           </p>
