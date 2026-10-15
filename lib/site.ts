@@ -69,6 +69,12 @@ export const PROJECTS: Project[] = [
     url: "https://app.beard-brothers.ro",
   },
   {
+    title: "vreaumate.online",
+    description:
+      "Site-ul unui profesor de matematică cu meditații online: orarul din calendar, probleme rezolvate, cereri plătite, teste generate pe loc și un panou din care își schimbă singur totul.",
+    url: "https://www.vreaumate.online",
+  },
+  {
     title: "scoala.beard-brothers.ro",
     description:
       "Site-ul campaniei prin care un ONG din Cluj construiește o școală, cărămidă cu cărămidă.",
@@ -102,6 +108,9 @@ export const PROJECTS: Project[] = [
 
 // Value figures keyed by hostname (projectHostname), like the preview
 // screenshots. A missing entry simply hides the value block for that project.
+// Scale (owner decision 2026-10-15): price new projects as what one senior
+// freelancer in Cluj would have charged working solo, not as an agency team —
+// see CLAUDE.md "Portfolio cost estimates". Don't inflate.
 export const PROJECT_VALUE: Record<string, ProjectValue> = {
   "app.beard-brothers.ro": {
     cost: "~160.000–240.000 €",
@@ -112,6 +121,17 @@ export const PROJECT_VALUE: Record<string, ProjectValue> = {
       "Check-in automat: telefonul observă când ajungi la locul proiectului și îți propune pontajul. Merge și cu cod QR.",
       "Chat complet pentru echipă, în timp real: canale, mesaje private, fire de discuție, sondaje, poze și video.",
       "Merge și fără semnal: ce scrii se salvează pe telefon și pleacă singur când revine conexiunea. Notificările chiar ajung.",
+    ],
+  },
+  "vreaumate.online": {
+    cost: "~50.000–70.000 €",
+    time: "~7–8 luni, un singur programator",
+    features: [
+      "Teste-fulger la comandă: elevul alege clasa, capitolele și câte probleme vrea, plătește câțiva bani pe problemă și primește pe loc un PDF cu numele lui pe el, cules cu LaTeX ca într-un manual adevărat, dintr-o bancă de peste 30.000 de probleme, cu rezolvările separat.",
+      "Tot ce se plătește pe site — meditațiile, cererile de rezolvare, abonamentele la fișe și testele — merge cu cardul, Apple Pay sau Google Pay, cu chitanță în PDF pe email și rambursare după reguli clare, dintr-un buton din panoul lui Abel.",
+      "Orarul lui Abel vine direct din Google Calendar: orele libere sunt verzi și deschid WhatsApp cu mesajul gata scris, iar părinții pot răsfoi și lunile trecute, să vadă cum a fost ocupat.",
+      "Abel schimbă singur orice cuvânt de pe site — de la texte și întrebări frecvente până la mailurile trimise elevilor — cu ciornă, previzualizare și istoric, fără să depindă de un programator.",
+      "Cereri de rezolvare: elevul trimite poza problemei, plătește înainte, vorbește cu Abel în pagină și primește videoul cu rezolvarea; biblioteca de probleme rezolvate se sincronizează singură cu canalul lui de YouTube.",
     ],
   },
   "scoala.beard-brothers.ro": {

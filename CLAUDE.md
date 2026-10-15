@@ -26,5 +26,15 @@ RainbowApps (rainbowapps.org) is a service run by one person (Adelin, Cluj-Napoc
 6. **Secrets are server-only.** The Supabase service-role key, Resend key, and owner email never reach the client bundle. All Supabase/Resend access happens in a Server Action or route handler.
 7. **Don't add scope.** If it isn't in `SPEC.md`, ask before building it.
 
+## Portfolio cost estimates (`PROJECT_VALUE` in `lib/site.ts`)
+Owner feedback, 2026-10-15: **don't inflate the "ar fi costat" figures.** Price every new
+project as what one good senior freelancer in Cluj would have charged working solo
+(~30–40 €/h, i.e. ~4.500–6.500 €/month; add a designer only where there is real identity or
+design work), not as an agency team with PM and QA. Content volume (e.g. generated problem
+banks) is never billed. Reference point: vreaumate.online (~24k lines, 59 routes, four paid
+products, LaTeX service, CMS, admin) = `~50.000–70.000 €`, `~7–8 luni, un singur programator`.
+The six older entries were priced at agency level and stay as they are. When in doubt, go
+lower, and show the owner the breakdown before a number goes on the site.
+
 ## Voice (for all UI copy)
 Modest, warm, genuine, human. No hype, no salesmanship, no "we" — it's one person. Empowering and kind. Romanian copy is provided verbatim in `SPEC.md` — use it, don't reinvent it.

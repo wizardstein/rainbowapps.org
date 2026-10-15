@@ -9,6 +9,7 @@ import previewYmarchive from "@/public/previews/ymarchive.jpg";
 import previewDonfitway from "@/public/previews/donfitway.jpg";
 import previewNsfab from "@/public/previews/nsfab.jpg";
 import previewBbapp from "@/public/previews/bbapp.jpg";
+import previewVreaumate from "@/public/previews/vreaumate.jpg";
 import ArcMark, { SPECTRU } from "@/components/ArcMark";
 import PortfolioFan from "@/components/PortfolioFan";
 import SupportButton from "@/components/SupportButton";
@@ -39,6 +40,7 @@ const PREVIEWS: Record<string, StaticImageData> = {
   "donfitway.ro": previewDonfitway,
   "nightshiftfabrications.ro": previewNsfab,
   "app.beard-brothers.ro": previewBbapp,
+  "vreaumate.online": previewVreaumate,
 };
 
 const NUMERALE = ["", "unul", "cele două", "cele trei", "cele patru", "cele cinci", "cele șase", "cele șapte", "cele opt", "cele nouă", "cele zece"];
