@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image, { type StaticImageData } from "next/image";
 import ArcMark, { SPECTRU } from "@/components/ArcMark";
 import type { ProjectPlatform, ProjectValue } from "@/lib/site";
@@ -41,6 +41,44 @@ export default function PortfolioFan({ items }: { items: FanItem[] }) {
   const cardPx = useRef(400);
   const moved = useRef(false);
   const n = items.length;
+  const root = useRef<HTMLDivElement>(null);
+  const inView = useRef(false);
+
+  // Keyboard: ← → flip the cards while the portfolio is on screen (or the fan
+  // itself has focus); Home/End jump to the ends only when the fan has focus,
+  // so they keep scrolling the page everywhere else. Typing in a field is
+  // never intercepted, and no modifier combos are touched.
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        inView.current = entry.intersectionRatio >= 0.4;
+      },
+      { threshold: [0, 0.4, 1] },
+    );
+    io.observe(el);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.repeat)
+        return;
+      const t = e.target as HTMLElement | null;
+      if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))
+        return;
+      const focused = el.contains(document.activeElement);
+      if (!inView.current && !focused) return;
+      if (e.key === "ArrowRight") setActive((a) => (a + 1) % n);
+      else if (e.key === "ArrowLeft") setActive((a) => (a - 1 + n) % n);
+      else if (e.key === "Home" && focused) setActive(0);
+      else if (e.key === "End" && focused) setActive(n - 1);
+      else return;
+      e.preventDefault();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      io.disconnect();
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [n]);
 
   const next = () => setActive((a) => (a + 1) % n);
   const prev = () => setActive((a) => (a - 1 + n) % n);
@@ -96,10 +134,18 @@ export default function PortfolioFan({ items }: { items: FanItem[] }) {
   const widthCss = `calc(100% - var(--fan-step) * ${Math.min(VISIBLE - 1, n - 1)})`;
 
   return (
-    <div className="grid items-start gap-8 lg:grid-cols-[1.2fr_1fr] lg:gap-14">
+    <div
+      ref={root}
+      className="grid items-start gap-8 lg:grid-cols-[1.2fr_1fr] lg:gap-14"
+    >
       {/* The fan. A hidden sizer card in normal flow gives the block its
           height; the real cards stack absolutely on top of it. */}
       <div
+        tabIndex={0}
+        role="group"
+        aria-roledescription="carusel"
+        aria-label={`Cardurile proiectelor, ${n} în total. Săgețile stânga și dreapta schimbă cardul.`}
+        aria-keyshortcuts="ArrowLeft ArrowRight Home End"
         className="relative cursor-grab select-none [--fan-step:36px] [touch-action:pan-y] active:cursor-grabbing sm:[--fan-step:56px]"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
