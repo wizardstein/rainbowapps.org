@@ -129,6 +129,15 @@ function pillLabel(item: RailItem): string {
   return item.title;
 }
 
+/** The featured quote shrinks as it gets longer: real testimonials run
+ *  240–600 characters, and the display size only suits a short one. */
+function featuredQuoteSize(text: string): string {
+  const n = text.length;
+  if (n <= 140) return "text-[clamp(28px,3.4vw,44px)] leading-[1.2]";
+  if (n <= 320) return "text-[clamp(22px,2.6vw,32px)] leading-[1.3]";
+  return "text-[clamp(19px,2vw,24px)] leading-[1.4]";
+}
+
 const H2 =
   "font-display text-[clamp(32px,3.6vw,48px)] font-semibold leading-[1.08] tracking-[-0.025em] text-ink";
 const H2_SMALL =
@@ -267,7 +276,9 @@ export default async function Home() {
           </p>
 
           <blockquote className="relative mt-14 flex max-w-[960px] flex-col gap-6">
-            <p className="font-display text-[clamp(28px,3.4vw,44px)] font-medium leading-[1.2] tracking-[-0.02em] text-ink text-pretty">
+            <p
+              className={`font-display font-medium tracking-[-0.02em] text-ink text-pretty ${featuredQuoteSize(featured.text)}`}
+            >
               {featured.text}
             </p>
             <footer className="flex items-center gap-3.5">
@@ -296,10 +307,13 @@ export default async function Home() {
           </blockquote>
 
           {otherTestimonials.length > 0 && (
-            <div className="relative mt-14 grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-10 border-t border-rule pt-10">
+            <div className="relative mt-14 gap-x-10 border-t border-rule pt-2 md:columns-2">
               {otherTestimonials.map((t) => (
-                <blockquote key={t.id} className="flex flex-col gap-4">
-                  <p className="text-lg leading-normal text-ink">{t.text}</p>
+                <blockquote
+                  key={t.id}
+                  className="flex break-inside-avoid flex-col gap-4 border-t border-rule pt-6 pb-8 first:border-t-0"
+                >
+                  <p className="text-[17px] leading-[1.55] text-ink text-pretty">{t.text}</p>
                   <footer className="flex flex-col gap-0.5">
                     <cite className="text-[15px] font-semibold text-ink not-italic">
                       {t.author}

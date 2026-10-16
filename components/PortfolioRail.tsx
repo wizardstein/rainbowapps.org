@@ -52,28 +52,20 @@ function bare(s: string): string {
   return s.replace(/^~\s*/, "");
 }
 
-function ValueRow({
-  value,
-  compact = false,
-}: {
-  value: ProjectValue;
-  compact?: boolean;
-}) {
-  const num = compact
-    ? "font-display text-lg font-semibold leading-[1.1] text-ink"
-    : "font-display text-[22px] font-semibold leading-[1.1] text-ink";
-  const label = compact ? "text-xs text-ink-muted" : "text-[13px] text-ink-muted";
+function ValueRow({ value }: { value: ProjectValue }) {
   return (
-    <div
-      className={`flex flex-wrap gap-x-6 gap-y-3 border-t border-line pt-3 ${compact ? "mt-auto" : ""}`}
-    >
+    <div className="flex flex-wrap gap-x-6 gap-y-3 border-t border-line pt-3">
       <div className="flex flex-col gap-0.5">
-        <span className={num}>{bare(value.cost)}</span>
-        <span className={label}>valoare estimată</span>
+        <span className="font-display text-[22px] font-semibold leading-[1.1] text-ink">
+          {bare(value.cost)}
+        </span>
+        <span className="text-[13px] text-ink-muted">valoare estimată</span>
       </div>
       <div className="flex flex-col gap-0.5">
-        <span className={num}>{bare(value.time)}</span>
-        <span className={label}>timp de lucru</span>
+        <span className="font-display text-[22px] font-semibold leading-[1.1] text-ink">
+          {bare(value.time)}
+        </span>
+        <span className="text-[13px] text-ink-muted">timp de lucru</span>
       </div>
     </div>
   );
@@ -135,20 +127,23 @@ function TitleLink({ item, className }: { item: RailItem; className: string }) {
   );
 }
 
-/** The extended card: a native app gets its features and store links. */
-function BigCard({ item }: { item: RailItem }) {
+/** One card per project, the same layout for all: screenshot and the
+ *  cost/time figures on the left, tags, title, description, the five
+ *  features and (for native apps) the store links on the right. On phones it
+ *  stacks: screenshot, text, figures. */
+function Card({ item }: { item: RailItem }) {
   return (
     <article
       id={item.slug}
       data-card
-      className="grid w-[min(920px,92vw)] shrink-0 snap-start scroll-mt-24 items-start gap-6 rounded-[20px] border border-line bg-surface p-5 sm:p-8 md:grid-cols-2 md:gap-8"
+      className="grid w-[min(920px,92vw)] shrink-0 snap-start scroll-mt-24 grid-cols-1 items-start gap-5 rounded-[20px] border border-line bg-surface p-5 sm:p-8 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:grid-rows-[auto_1fr] md:gap-x-8 md:gap-y-5"
     >
       <Preview
         item={item}
-        className="aspect-[4/3] md:aspect-auto md:min-h-[420px] md:self-stretch"
-        sizes="(min-width: 768px) 440px, 90vw"
+        className="aspect-[4/3] md:col-start-1 md:row-start-1"
+        sizes="(min-width: 768px) 400px, 90vw"
       />
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 md:col-start-2 md:row-span-2 md:row-start-1">
         <div className="flex flex-wrap gap-2">
           {item.tags.map((tag) => (
             <span key={tag} className="tag">
@@ -199,38 +194,18 @@ function BigCard({ item }: { item: RailItem }) {
             ))}
           </div>
         )}
-        {item.value && <ValueRow value={item.value} />}
       </div>
-    </article>
-  );
-}
-
-function SmallCard({ item }: { item: RailItem }) {
-  return (
-    <article
-      id={item.slug}
-      data-card
-      className="flex w-[min(360px,86vw)] shrink-0 snap-start scroll-mt-24 flex-col gap-4 rounded-[20px] border border-line bg-surface p-5"
-    >
-      <Preview item={item} className="h-[220px]" sizes="360px" />
-      <div className="flex flex-col gap-2">
-        <span className="tag self-start">{item.tags.join(" · ")}</span>
-        <TitleLink
-          item={item}
-          className="font-display text-[22px] font-semibold leading-[1.2] tracking-[-0.015em] text-ink"
-        />
-        <p className="text-[15px] leading-normal text-ink-soft">
-          {item.description}
-        </p>
-      </div>
-      {item.value && <ValueRow value={item.value} compact />}
+      {item.value && (
+        <div className="md:col-start-1 md:row-start-2">
+          <ValueRow value={item.value} />
+        </div>
+      )}
     </article>
   );
 }
 
 /** The portfolio as a horizontal rail of cards: swipe on phones, arrows or
- *  ← → keys on desktop, one card per step, snapping to the card's edge.
- *  Native apps get the extended card with features; sites the compact one. */
+ *  ← → keys on desktop, one card per step, snapping to the card's edge. */
 export default function PortfolioRail({ items }: { items: RailItem[] }) {
   const root = useRef<HTMLElement>(null);
   const rail = useRef<HTMLDivElement>(null);
@@ -366,13 +341,9 @@ export default function PortfolioRail({ items }: { items: RailItem[] }) {
         aria-keyshortcuts="ArrowLeft ArrowRight Home End"
         className="rail relative -mx-4 mt-8 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-pl-4 px-4 pt-2 pb-6 sm:-mx-8 sm:scroll-pl-8 sm:px-8"
       >
-        {items.map((item) =>
-          item.platform.kind === "app" ? (
-            <BigCard key={item.url} item={item} />
-          ) : (
-            <SmallCard key={item.url} item={item} />
-          ),
-        )}
+        {items.map((item) => (
+          <Card key={item.url} item={item} />
+        ))}
       </div>
     </section>
   );
