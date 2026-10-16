@@ -307,11 +307,11 @@ export default async function Home() {
           </blockquote>
 
           {otherTestimonials.length > 0 && (
-            <div className="relative mt-14 gap-x-10 border-t border-rule pt-2 md:columns-2">
+            <div className="relative mt-10 gap-x-10 md:columns-2">
               {otherTestimonials.map((t) => (
                 <blockquote
                   key={t.id}
-                  className="flex break-inside-avoid flex-col gap-4 border-t border-rule pt-6 pb-8 first:border-t-0"
+                  className="flex break-inside-avoid flex-col gap-4 border-t border-rule pt-6 pb-8"
                 >
                   <p className="text-[17px] leading-[1.55] text-ink text-pretty">{t.text}</p>
                   <footer className="flex flex-col gap-0.5">
