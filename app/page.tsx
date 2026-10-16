@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import Image, { type StaticImageData } from "next/image";
+import type { StaticImageData } from "next/image";
 import Link from "next/link";
 import StatusBadge from "@/components/StatusBadge";
-import portret from "@/public/adelin.jpg";
 import previewScoala from "@/public/previews/scoala.jpg";
 import previewJoaca from "@/public/previews/joaca.jpg";
 import previewYmarchive from "@/public/previews/ymarchive.jpg";
@@ -11,7 +10,7 @@ import previewNsfab from "@/public/previews/nsfab.jpg";
 import previewBbapp from "@/public/previews/bbapp.jpg";
 import previewVreaumate from "@/public/previews/vreaumate.jpg";
 import ArcMark, { SPECTRU } from "@/components/ArcMark";
-import PortfolioFan from "@/components/PortfolioFan";
+import PortfolioRail, { type RailItem } from "@/components/PortfolioRail";
 import SupportButton from "@/components/SupportButton";
 import DonateCard from "@/components/DonateCard";
 import ShareCard from "@/components/ShareCard";
@@ -24,6 +23,8 @@ import {
   costFloorEur,
   projectHostname,
   projectPlatform,
+  projectSlug,
+  projectTags,
   PROJECT_VALUE,
 } from "@/lib/site";
 
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
 };
 
 // Static screenshots of the finished apps (public/previews), keyed by
-// hostname like the node colors. Apps without one fall back to a plain card.
+// hostname like the value figures. Apps without one fall back to a plain card.
 const PREVIEWS: Record<string, StaticImageData> = {
   "scoala.beard-brothers.ro": previewScoala,
   "joaca.beard-brothers.ro": previewJoaca,
@@ -43,31 +44,26 @@ const PREVIEWS: Record<string, StaticImageData> = {
   "vreaumate.online": previewVreaumate,
 };
 
-const NUMERALE = ["", "unul", "cele două", "cele trei", "cele patru", "cele cinci", "cele șase", "cele șapte", "cele opt", "cele nouă", "cele zece"];
+// "Șapte aplicații" — the count in words, capitalised, for the hero lead.
+const NUMERALE = ["", "O", "Două", "Trei", "Patru", "Cinci", "Șase", "Șapte", "Opt", "Nouă", "Zece"];
 
-/** "cele șase" for 6, "cele 11" past ten. */
-function celeN(n: number): string {
-  return NUMERALE[n] ?? `cele ${n}`;
+function numeral(n: number): string {
+  return NUMERALE[n] ?? String(n);
 }
 
-// The 7-node spectrum as a gradient, for the value-band underline.
-const SPECTRU_GRADIENT = `linear-gradient(90deg, ${SPECTRU.join(", ")})`;
-
+// The three steps, as a real sequence (SPEC §10: numbered markers only here).
 const STEPS = [
   {
-    title: "Îmi spui ideea",
-    body: "Completezi un formular scurt. Fără jargon, fără cont, fără obligații.",
-    color: SPECTRU[0],
+    title: "Îmi trimiți ideea",
+    body: "Un formular scurt. Spui ce problemă rezolvă și pe cine ajută.",
   },
   {
-    title: "Mă uit peste ea",
-    body: "Aleg ideile care ajută oameni și pe care le pot construi singur. Îți răspund oricum, indiferent de răspuns.",
-    color: SPECTRU[2],
+    title: "O citesc și îți răspund",
+    body: "Primești răspuns în orice caz — da, nu, sau „hai să vorbim”.",
   },
   {
     title: "O construiesc",
-    body: "De la un weekend la o lună. Pentru ONG‑uri, cauze bune și proiecte mici, singurul tău cost e domeniul, ~10–15 € pe an. Pentru proiecte mai mari îți spun un preț înainte să încep.",
-    color: SPECTRU[3],
+    body: "De la un weekend la o lună. Proiectele mici costă doar domeniul (10–15 €/an). Pentru cele mari, preț stabilit de la început.",
   },
 ];
 
@@ -107,20 +103,36 @@ function initials(name: string): string {
     .toUpperCase();
 }
 
-function Kicker({ color, children }: { color: string; children: string }) {
+function Arrow() {
   return (
-    <div className="flex items-center gap-2.5">
-      <span
-        aria-hidden="true"
-        className="size-3 rounded-[4px]"
-        style={{ background: color }}
-      />
-      <span className="font-display text-xs font-extrabold uppercase tracking-[1.5px] text-ink-faint">
-        {children}
-      </span>
-    </div>
+    <svg
+      aria-hidden="true"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
   );
 }
+
+/** Short name for the hero pills: sites by hostname, the app by its name. */
+function pillLabel(item: RailItem): string {
+  if (item.platform.kind === "app") {
+    return `${item.title.split(/\s[—–-]\s/)[0]} · app iOS/Android`;
+  }
+  return item.title;
+}
+
+const H2 =
+  "font-display text-[clamp(32px,3.6vw,48px)] font-semibold leading-[1.08] tracking-[-0.025em] text-ink";
+const H2_SMALL =
+  "font-display text-[clamp(28px,3vw,40px)] font-semibold leading-[1.1] tracking-[-0.025em] text-ink";
 
 export default async function Home() {
   const [projects, testimonials, supporters] = await Promise.all([
@@ -130,388 +142,346 @@ export default async function Home() {
   ]);
   const donationsEnabled = Boolean(process.env.REVOLUT_SECRET_KEY);
 
-  // The value band adds up the lower bounds of the projects actually shown,
-  // so it stays right when a project is added or hidden from /admin.
-  const fanItems = projects.map((project) => {
+  const items: RailItem[] = projects.map((project) => {
     const host = projectHostname(project.url);
     return {
       ...project,
+      host,
+      slug: projectSlug(host),
       preview: host ? PREVIEWS[host] : undefined,
       value: host ? PROJECT_VALUE[host] : undefined,
       platform: projectPlatform(host),
+      tags: projectTags(host),
     };
   });
-  const valued = fanItems.filter((item) => item.value);
+  const n = items.length;
+
+  // The headline adds up the lower bounds of the projects actually shown, so
+  // it stays right when a project is added or hidden from /admin.
   const totalFloor =
     Math.floor(
-      valued.reduce((sum, item) => sum + costFloorEur(item.value!.cost), 0) /
-        10_000,
+      items.reduce(
+        (sum, item) => sum + (item.value ? costFloorEur(item.value.cost) : 0),
+        0,
+      ) / 10_000,
     ) * 10_000;
   const totalLabel = `${String(totalFloor).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} €`;
-  const hasApps = fanItems.some((item) => item.platform.kind === "app");
+
+  const [featured, ...otherTestimonials] = testimonials;
+
+  const supportItems = [
+    {
+      lead: "Trimite link-ul",
+      rest: "cuiva care are o idee sau un ONG care are nevoie de o aplicație.",
+      control: <ShareCard />,
+    },
+    {
+      lead: "Scrie două rânduri",
+      rest: "de recomandare dacă am lucrat împreună.",
+      control: (
+        <Link href="/sustine" className="btn-soft self-start">
+          Scrie un gând
+        </Link>
+      ),
+    },
+    ...(donationsEnabled
+      ? [
+          {
+            lead: "Donează prin Revolut",
+            rest: "— 20, 50, 100 lei sau cât vrei. Nu procesez carduri pe site.",
+            control: <DonateCard />,
+          },
+        ]
+      : []),
+  ];
 
   return (
     <main className="flex-1">
-      {/* Hero */}
-      <header className="mx-auto grid w-full max-w-[70rem] items-center gap-12 px-6 pt-14 pb-16 sm:px-8 sm:pt-[72px] sm:pb-20 lg:grid-cols-[1.25fr_1fr] lg:gap-14">
-        <div className="flex flex-col items-start gap-[22px]">
+      {/* Hero (direcția B): cifrele ca titlu. */}
+      <header className="mx-auto flex w-full max-w-[1200px] flex-col gap-10 px-4 pt-14 pb-14 sm:px-8 sm:pt-[72px]">
+        <div className="flex flex-col gap-5">
           <StatusBadge />
-          <h1 className="font-display text-[40px] font-extrabold leading-[1.12] tracking-[-1px] text-ink text-balance sm:text-[56px]">
-            Ai o idee <span className="underline-spectrum">bună</span>? O
-            construiesc, de la 0 lei.
+          <h1 className="font-display text-[clamp(52px,10vw,148px)] font-semibold leading-[0.96] tracking-[-0.045em] text-ink text-balance">
+            <span className="block">
+              <span className="text-spectrum">{totalLabel}</span> de software.
+            </span>
+            <span className="block">0 lei ceruți.</span>
           </h1>
-          <p className="max-w-[520px] text-lg leading-[1.65] text-ink-soft text-pretty">
-            Sunt Adelin, programator din Cluj. Dacă ai o idee de aplicație care
-            ajută oameni, dar nu știi să programezi, o construiesc eu. Gratuit
-            pentru ONG‑uri, cauze bune și multe idei mici; contra cost pentru
-            proiecte mai mari — îți spun dinainte. Tu păstrezi totul: ideea,
-            codul, domeniul.
+        </div>
+
+        <div className="grid items-end gap-8 lg:grid-cols-2 lg:gap-10">
+          <p className="max-w-[560px] text-xl leading-normal text-ink-soft text-pretty">
+            {numeral(n)} aplicații construite gratuit pentru ONG-uri și cauze
+            bune, de un programator din Cluj. Următoarea poate fi ideea ta — nu
+            trebuie să fie perfectă, trebuie doar să ajute pe cineva.
           </p>
-          <div className="mt-1.5 flex flex-wrap gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <Link href="/trimite" className="btn-primary">
-              Spune-mi ideea ta
+              Spune-mi ideea ta <Arrow />
             </Link>
-            <Link href="/#povestea" className="btn-secondary">
-              Cine sunt eu
-            </Link>
+            <a href="#portofoliu" className="btn-secondary">
+              Vezi cele {n} proiecte
+            </a>
           </div>
         </div>
-        <div className="relative max-w-sm lg:max-w-none">
-          <div
-            aria-hidden="true"
-            className="absolute rounded-3xl bg-gradient-to-br from-crem to-crem-deep"
-            style={{ inset: "14px -14px -14px 14px" }}
-          />
-          <Image
-            src={portret}
-            alt="Adelin, zâmbind"
-            placeholder="blur"
-            priority
-            sizes="(min-width: 1024px) 420px, (min-width: 640px) 384px, 100vw"
-            className="relative aspect-[4/4.4] w-full rounded-3xl border border-line object-cover"
-          />
+
+        <div className="flex flex-col gap-3.5 border-t border-rule pt-6">
+          <p className="text-[13px] font-medium uppercase tracking-[0.08em] text-ink-muted">
+            Construite până acum
+          </p>
+          <ul className="flex flex-wrap gap-3">
+            {items.map((item) => (
+              <li key={item.url}>
+                <a
+                  href={`#${item.slug}`}
+                  className="inline-flex min-h-11 items-center rounded-full border border-line-strong bg-surface px-4 text-[15px] font-medium text-ink transition-colors hover:border-ink"
+                >
+                  {pillLabel(item)}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p className="text-[13px] text-ink-muted">
+            Valoarea e o estimare de piață, nu facturi.
+          </p>
         </div>
       </header>
 
-      {/* Cât ar fi costat totul — și că e din partea mea. */}
-      {valued.length > 1 && (
-        <section className="mx-auto w-full max-w-[70rem] px-6 sm:px-8">
-          <div className="reveal rounded-2xl border border-line bg-gradient-to-br from-crem to-crem-deep p-[26px]">
-            <p className="max-w-[46rem] text-[15.5px] leading-relaxed text-ink-soft">
-              Puse cap la cap, la prețuri de Cluj, {celeN(valued.length)} ar fi
-              costat peste{" "}
-              <span className="relative inline-block whitespace-nowrap font-display text-[19px] font-extrabold leading-none text-ink">
-                {totalLabel}
-                <span
-                  aria-hidden="true"
-                  className="absolute inset-x-0 -bottom-[4px] h-[3px] rounded-full opacity-70"
-                  style={{ background: SPECTRU_GRADIENT }}
-                />
-              </span>
-              . Pentru oamenii care le-au primit, au fost gratis — e felul meu de a
-              da înapoi.
-            </p>
-            <p className="mt-2.5 text-[13px] text-ink-faint">
-              Cifre estimate pe piața din Cluj, 2026. Sunt intervale orientative,
-              nu facturi.
-            </p>
-          </div>
-        </section>
-      )}
-
-      {/* Portofoliu */}
-      <section
-        id="portofoliu"
-        className="mx-auto w-full max-w-[70rem] scroll-mt-20 px-6 py-16 sm:px-8"
-      >
-        <div className="reveal">
-          <Kicker color={SPECTRU[0]}>Portofoliu</Kicker>
-          <h2 className="mt-2.5 font-display text-3xl font-extrabold tracking-[-0.5px] text-ink sm:text-[34px]">
-            Ce am construit până acum.
-          </h2>
-          <p className="mt-2 mb-9 text-[15.5px] text-ink-muted">
-            {hasApps
-              ? "Site-uri web și aplicații mobile publicate în App Store și Google Play."
-              : "Site-uri și aplicații web, în producție."}
-          </p>
-          <PortfolioFan items={fanItems} />
-          <p className="mt-6 text-[13px] text-ink-faint">
-            Aici e loc și pentru ideea ta.
-          </p>
-        </div>
-      </section>
+      {/* Portofoliu: rail de carduri, swipe / săgeți / tastatură. */}
+      <PortfolioRail items={items} />
 
       {/* Ce spun oamenii */}
-      {testimonials.length > 0 && (
+      {featured && (
         <section
           id="testimoniale"
-          className="mx-auto w-full max-w-[70rem] scroll-mt-20 px-6 py-16 sm:px-8"
+          className="relative mx-auto w-full max-w-[1200px] scroll-mt-20 px-4 pt-20 pb-20 sm:px-8"
         >
-          <div className="reveal">
-            <Kicker color={SPECTRU[1]}>Vorbe bune</Kicker>
-            <h2 className="mt-2.5 mb-7 font-display text-3xl font-extrabold tracking-[-0.5px] text-ink sm:text-[34px]">
-              Ce spun oamenii cu care am lucrat.
-            </h2>
-            <div className="rounded-2xl bg-[#26221D] p-5 sm:p-7">
-              <div className="gap-5 md:columns-2">
-                {testimonials.map((t, i) => {
-                  const accent = SPECTRU[i % SPECTRU.length];
-                  const host = t.url ? projectHostname(t.url) : null;
-                  const thumb = host ? PREVIEWS[host] : undefined;
-                  return (
-                    <figure
-                      key={t.id}
-                      className="mb-5 break-inside-avoid rounded-xl border border-white/10 p-5 last:mb-0"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="block font-display text-4xl font-extrabold leading-none"
-                        style={{ color: accent }}
+          <span
+            aria-hidden="true"
+            className="quote-glyph pointer-events-none absolute top-2 left-2 select-none"
+          >
+            “
+          </span>
+          <p className="relative pt-16 text-sm font-medium uppercase tracking-[0.08em] text-ink-muted">
+            Ce spun oamenii cu care am lucrat
+          </p>
+
+          <blockquote className="relative mt-14 flex max-w-[960px] flex-col gap-6">
+            <p className="font-display text-[clamp(28px,3.4vw,44px)] font-medium leading-[1.2] tracking-[-0.02em] text-ink text-pretty">
+              {featured.text}
+            </p>
+            <footer className="flex items-center gap-3.5">
+              <span
+                aria-hidden="true"
+                className="flex size-11 flex-none items-center justify-center rounded-full bg-ink font-display text-base font-semibold text-bg"
+              >
+                {initials(featured.author)}
+              </span>
+              <span className="flex min-w-0 flex-col gap-0.5">
+                <cite className="text-base font-semibold text-ink not-italic">
+                  {featured.author}
+                </cite>
+                {featured.url && (
+                  <a
+                    href={featured.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="truncate text-sm text-ink-muted transition-colors hover:text-ink"
+                  >
+                    {projectHostname(featured.url) ?? featured.url}
+                  </a>
+                )}
+              </span>
+            </footer>
+          </blockquote>
+
+          {otherTestimonials.length > 0 && (
+            <div className="relative mt-14 grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-10 border-t border-rule pt-10">
+              {otherTestimonials.map((t) => (
+                <blockquote key={t.id} className="flex flex-col gap-4">
+                  <p className="text-lg leading-normal text-ink">{t.text}</p>
+                  <footer className="flex flex-col gap-0.5">
+                    <cite className="text-[15px] font-semibold text-ink not-italic">
+                      {t.author}
+                    </cite>
+                    {t.url && (
+                      <a
+                        href={t.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[13px] text-ink-muted transition-colors hover:text-ink"
                       >
-                        „
-                      </span>
-                      <blockquote className="mt-1.5 font-display text-[17px] font-bold leading-[1.55] text-[#F5F1EA] text-pretty">
-                        {t.text}
-                      </blockquote>
-                      <figcaption className="mt-4 flex items-center gap-3">
-                        <span
-                          aria-hidden="true"
-                          className="flex size-9 flex-none items-center justify-center rounded-full font-display text-[13px] font-extrabold text-white"
-                          style={{ background: accent }}
-                        >
-                          {initials(t.author)}
-                        </span>
-                        <span className="flex min-w-0 flex-col">
-                          <span className="text-[13.5px] font-bold text-[#F5F1EA]">
-                            {t.author}
-                          </span>
-                          {t.url && (
-                            <a
-                              href={t.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="truncate text-[12.5px] text-[#B5AC9C] underline underline-offset-4 transition-colors hover:text-[#F5F1EA]"
-                            >
-                              {host ?? t.url}
-                            </a>
-                          )}
-                        </span>
-                        {thumb && t.url && (
-                          <a
-                            href={t.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`Vezi proiectul ${host}`}
-                            className="ml-auto flex-none"
-                          >
-                            <Image
-                              src={thumb}
-                              alt=""
-                              sizes="64px"
-                              className="w-16 rotate-2 rounded-md border border-white/20 transition-transform hover:rotate-0"
-                            />
-                          </a>
-                        )}
-                      </figcaption>
-                    </figure>
-                  );
-                })}
-              </div>
+                        {projectHostname(t.url) ?? t.url}
+                      </a>
+                    )}
+                  </footer>
+                </blockquote>
+              ))}
             </div>
-          </div>
+          )}
         </section>
       )}
-
-      {/* Susține inițiativa */}
-      <section
-        id="sustine"
-        className="mx-auto w-full max-w-[70rem] scroll-mt-20 px-6 py-16 sm:px-8"
-      >
-        <div className="reveal">
-          <Kicker color={SPECTRU[2]}>Susține inițiativa</Kicker>
-          <h2 className="mt-2.5 font-display text-3xl font-extrabold tracking-[-0.5px] text-ink sm:text-[34px]">
-            Nu ai o idee, dar îți place ce se întâmplă aici?
-          </h2>
-          <p className="mt-3 mb-7 text-ink-soft">
-            Poți împinge lucrurile înainte în felul tău.
-          </p>
-          <div className="grid gap-5 md:grid-cols-2">
-            <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-[26px]">
-              <h3 className="font-display text-lg font-extrabold text-ink">
-                Cu un click
-              </h3>
-              <SupportButton initialCount={supporters} />
-            </div>
-            <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-[26px]">
-              <h3 className="font-display text-lg font-extrabold text-ink">
-                Cu o vorbă bună
-              </h3>
-              <p className="text-[14.5px] leading-relaxed text-ink-muted">
-                Ai lucrat cu mine sau crezi în idee? Două rânduri de la tine
-                cântăresc mult pentru următorul om.
-              </p>
-              <Link href="/sustine" className="btn-soft self-start">
-                Scrie un gând
-              </Link>
-            </div>
-            <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-[26px]">
-              <h3 className="font-display text-lg font-extrabold text-ink">
-                Cu un share
-              </h3>
-              <p className="text-[14.5px] leading-relaxed text-ink-muted">
-                Poate omul cu ideea bună e chiar în lista ta de prieteni. Dă
-                vestea mai departe.
-              </p>
-              <ShareCard />
-            </div>
-            {donationsEnabled && (
-              <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-[26px]">
-                <h3 className="font-display text-lg font-extrabold text-ink">
-                  Cu o donație
-                </h3>
-                <p className="text-[14.5px] leading-relaxed text-ink-muted">
-                  Pentru ONG‑uri și cauze bune construiesc gratuit, dar
-                  uneltele și găzduirea costă. Orice sumă ajută.
-                </p>
-                <DonateCard />
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
 
       {/* Cum funcționează */}
       <section
         id="cum-functioneaza"
-        className="mx-auto w-full max-w-[70rem] scroll-mt-20 px-6 py-16 sm:px-8"
+        className="scroll-mt-20 border-y border-line bg-surface"
       >
-        <div className="reveal">
-          <Kicker color={SPECTRU[3]}>Cum funcționează</Kicker>
-          <h2 className="mt-2.5 mb-7 font-display text-3xl font-extrabold tracking-[-0.5px] text-ink sm:text-[34px]">
-            Trei pași, fără surprize.
-          </h2>
-          <ol className="grid gap-5 sm:grid-cols-3">
+        <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-10 px-4 py-20 sm:px-8">
+          <div className="flex max-w-[640px] flex-col gap-2.5">
+            <h2 className={H2}>Cum funcționează</h2>
+            <p className="text-[17px] leading-normal text-ink-soft">
+              Fără cont, fără pitch deck. O idee descrisă în câteva rânduri e
+              suficientă.
+            </p>
+          </div>
+          <ol className="grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-8">
             {STEPS.map((step, i) => (
               <li
                 key={step.title}
-                className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-[26px]"
+                className="flex flex-col gap-3.5 border-t-[1.5px] border-ink pt-5"
               >
-                <span
-                  aria-hidden="true"
-                  className="flex size-[34px] items-center justify-center rounded-[10px] font-display text-base font-extrabold text-white"
-                  style={{ background: step.color }}
-                >
-                  {i + 1}
+                <span className="font-display text-[15px] font-semibold text-ink-muted">
+                  0{i + 1}
                 </span>
-                <h3 className="font-display text-[19px] font-extrabold text-ink">
+                <h3 className="font-display text-2xl font-semibold leading-[1.2] tracking-[-0.015em] text-ink">
                   {step.title}
                 </h3>
-                <p className="text-[14.5px] leading-relaxed text-ink-muted">
+                <p className="text-base leading-normal text-ink-soft">
                   {step.body}
                 </p>
               </li>
             ))}
           </ol>
+          <p className="max-w-[760px] text-[15px] leading-normal text-ink-muted text-pretty">
+            Las deoparte jocurile de noroc, politica, religia sau orice ar putea
+            face rău cuiva — și, deocamdată, sistemele foarte complexe cu multe
+            părți: sunt un singur om. În rest, orice idee care ajută e
+            binevenită, inclusiv una din care vrei să câștigi.
+          </p>
         </div>
       </section>
 
-      {/* Povestea mea */}
-      <section
-        id="povestea"
-        className="mx-auto w-full max-w-[70rem] scroll-mt-20 px-6 py-16 sm:px-8"
-      >
-        <div className="reveal">
-          <Kicker color={SPECTRU[4]}>Povestea mea</Kicker>
-          <div className="mt-2.5 grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
-            <div className="flex flex-col gap-4">
-              <h2 className="font-display text-3xl font-extrabold tracking-[-0.5px] text-ink sm:text-[34px]">
-                De la cinci lei la RainbowApps.
-              </h2>
-              <p className="leading-[1.7] text-ink-soft text-pretty">
-                Calculatoarele m-au fascinat de mic. Am avut primul PC la 4
-                ani, iar la 10 am reparat primul calculator „pe bani” — cinci
-                lei. Am și stricat unul între timp (am formatat un hard disk
-                fără backup), dar cam așa se învață.
-              </p>
-              <p className="leading-[1.7] text-ink-soft text-pretty">
+      {/* Povestea mea + Susține */}
+      <section className="mx-auto grid w-full max-w-[1200px] items-start gap-12 px-4 py-20 sm:px-8 lg:grid-cols-2 lg:gap-16">
+        <div id="povestea" className="flex scroll-mt-20 flex-col gap-4.5">
+          <h2 className={H2_SMALL}>Povestea mea</h2>
+          <p className="text-[17px] leading-[1.55] text-ink-soft text-pretty">
+            Calculatoarele m-au fascinat de mic. Am avut primul PC la 4 ani,
+            iar la 10 am reparat primul calculator „pe bani” — cinci lei. Am și
+            stricat unul formatând un hard fără backup; așa se învață.
+          </p>
+          <p className="text-[17px] leading-[1.55] text-ink-soft text-pretty">
+            Din 2012 lucrez în software, la Cluj. RainbowApps e felul meu de a
+            pune meseria în slujba unor oameni care au idei bune, dar nu și
+            buget.
+          </p>
+          <details className="group">
+            <summary className="cursor-pointer list-none self-start text-base font-semibold text-ink underline underline-offset-4 [&::-webkit-details-marker]:hidden">
+              <span className="group-open:hidden">Citește toată povestea</span>
+              <span className="hidden group-open:inline">Strânge povestea</span>
+            </summary>
+            <div className="mt-5 flex flex-col gap-4">
+              <p className="text-[17px] leading-[1.55] text-ink-soft text-pretty">
                 De atunci, drumul a trecut prin service-uri de calculatoare și
                 case de marcat, apoi prin testare de software, automatizări și
                 echipe conduse în companii mari. Să programez am învățat
                 singur, din nevoie: întâi ca să-mi ușurez munca, apoi pentru
                 că nu m-am mai putut opri.
               </p>
-              <p className="leading-[1.7] text-ink-soft text-pretty">
+              <p className="text-[17px] leading-[1.55] text-ink-soft text-pretty">
                 Am urcat și pe scara corporate, destul cât să înțeleg că nu
                 acolo mi-e locul. Cel mai fericit sunt când construiesc ceva
                 care ajută pe cineva. Așa a apărut RainbowApps.
               </p>
-            </div>
-            <ol className="self-start rounded-2xl border border-line bg-surface px-[26px] pt-[26px] pb-[22px]">
-              {MOMENTE.map((moment, i) => (
-                <li key={moment.cand} className="flex gap-3.5 py-[9px]">
-                  <span
-                    aria-hidden="true"
-                    className="mt-[3px] size-3 flex-none rounded-[4px]"
-                    style={{ background: SPECTRU[i] }}
-                  />
-                  <p className="text-sm leading-normal text-ink-soft">
-                    <strong className="text-ink">{moment.cand}</strong> ·{" "}
-                    {moment.ce}
+              <p className="text-[17px] leading-[1.55] text-ink-soft text-pretty">
+                M-au inspirat profesorii care predau gratis și oamenii care
+                construiesc open source. Și știu exact cum e: am și eu idei
+                care stau în sertar fiindcă nu am cunoștințele să le construiesc
+                singur. Nu vreau ca ideea ta să rămână acolo.
+              </p>
+              <ol className="mt-2 border-t border-rule pt-3">
+                {MOMENTE.map((moment, i) => (
+                  <li key={moment.cand} className="flex gap-3.5 py-2">
+                    <span
+                      aria-hidden="true"
+                      className="mt-[5px] size-2.5 flex-none rounded-[3px]"
+                      style={{ background: SPECTRU[i] }}
+                    />
+                    <p className="text-[15px] leading-normal text-ink-soft">
+                      <strong className="font-semibold text-ink">
+                        {moment.cand}
+                      </strong>{" "}
+                      · {moment.ce}
+                    </p>
+                  </li>
+                ))}
+                <li className="mt-1 flex gap-3.5 border-t border-dashed border-rule py-2.5">
+                  <ArcMark className="mt-0.5 h-3.5 flex-none" />
+                  <p className="text-[15px] leading-normal text-ink-soft">
+                    <strong className="font-semibold text-ink">azi</strong> ·
+                    Construiesc aplicații pentru oameni cu idei bune — de la 0
+                    lei.
                   </p>
                 </li>
-              ))}
-              <li className="mt-1.5 flex gap-3.5 border-t border-dashed border-line py-[9px]">
-                <ArcMark className="mt-0.5 h-3.5 flex-none" />
-                <p className="text-sm leading-normal text-ink-soft">
-                  <strong className="text-ink">azi</strong> · Construiesc
-                  aplicații pentru oameni cu idei bune — de la 0 lei.
-                </p>
+              </ol>
+            </div>
+          </details>
+        </div>
+
+        <div
+          id="sustine"
+          className="flex scroll-mt-20 flex-col gap-4.5 rounded-[20px] border border-line bg-surface p-6 sm:p-8"
+        >
+          <h2 className={H2_SMALL}>Susține inițiativa</h2>
+          <p className="text-base leading-[1.55] text-ink-soft">
+            Totul e autofinanțat. Dacă ți se pare că merită,{" "}
+            {supportItems.length === 3 ? "trei" : "două"} lucruri ajută cu
+            adevărat:
+          </p>
+          <ol className="flex flex-col gap-6">
+            {supportItems.map((item, i) => (
+              <li key={item.lead} className="flex gap-3">
+                <span
+                  aria-hidden="true"
+                  className="mt-0.5 flex-none font-display text-sm font-semibold text-ink-muted"
+                >
+                  {i + 1}
+                </span>
+                <div className="flex min-w-0 flex-1 flex-col gap-3">
+                  <p className="text-base leading-normal text-ink">
+                    <strong className="font-semibold">{item.lead}</strong>{" "}
+                    {item.rest}
+                  </p>
+                  {item.control}
+                </div>
               </li>
-            </ol>
+            ))}
+          </ol>
+          <div className="border-t border-line pt-4">
+            <SupportButton initialCount={supporters} />
           </div>
         </div>
       </section>
 
-      {/* De ce fac asta / Ce nu pot construi */}
-      <section className="mx-auto grid w-full max-w-[70rem] gap-5 px-6 py-16 sm:px-8 md:grid-cols-2">
-        <div className="reveal flex flex-col gap-3.5 rounded-2xl border border-line bg-surface p-[30px]">
-          <Kicker color={SPECTRU[5]}>De ce fac asta</Kicker>
-          <p className="font-display text-[19px] font-bold leading-normal text-ink text-pretty">
-            Cred că o idee bună nu ar trebui să rămână blocată doar fiindcă
-            omul din spatele ei nu scrie cod.
-          </p>
-          <p className="text-[15px] leading-[1.65] text-ink-soft text-pretty">
-            M-au inspirat profesorii care predau gratis și oamenii care
-            construiesc open source. Acesta e felul meu de a da înapoi. Și
-            pentru că știu exact cum e: am și eu idei care stau în sertar
-            fiindcă nu am cunoștințele să le construiesc singur. Nu vreau ca
-            ideea ta să rămână acolo.
-          </p>
-        </div>
-        <div className="reveal flex flex-col gap-3.5 rounded-2xl border border-line bg-surface p-[30px]">
-          <Kicker color={SPECTRU[6]}>Ce nu pot construi</Kicker>
-          <p className="font-display text-[19px] font-bold leading-normal text-ink text-pretty">
-            Las deoparte jocurile de noroc, politica, religia sau orice ar
-            putea face rău cuiva.
-          </p>
-          <p className="text-[15px] leading-[1.65] text-ink-soft text-pretty">
-            Deocamdată, nici sisteme foarte complexe cu multe părți — sunt un
-            singur om. În rest, orice idee care ajută e binevenită — inclusiv
-            una din care vrei să câștigi. Nu trebuie să fie caritate: ideea,
-            codul și ce câștigi din ea rămân ale tale.
-          </p>
-        </div>
-      </section>
-
       {/* CTA final */}
-      <section className="mx-auto flex w-full max-w-[70rem] flex-col items-center gap-5 px-6 pt-16 pb-[88px] text-center sm:px-8">
-        <ArcMark className="h-[58px]" />
-        <h2 className="font-display text-3xl font-extrabold tracking-[-0.6px] text-ink text-balance sm:text-[38px]">
-          Ideea ta poate ajuta pe cineva.
-        </h2>
-        <Link href="/trimite" className="btn-primary">
-          Spune-mi ideea ta
-        </Link>
+      <section id="idee" className="bg-ink text-bg">
+        <div className="mx-auto flex w-full max-w-[1200px] flex-col items-start gap-7 px-4 py-20 sm:px-8 sm:py-24">
+          <span
+            aria-hidden="true"
+            className="spectrum-bar block h-1.5 w-[72px] rounded-full"
+          />
+          <h2 className="max-w-[820px] font-display text-[clamp(36px,4.6vw,64px)] font-semibold leading-[1.05] tracking-[-0.03em] text-balance">
+            Ai o idee care ar ajuta pe cineva? Spune-mi-o. Nu trebuie să fie
+            perfectă.
+          </h2>
+          <p className="max-w-[560px] text-lg leading-normal text-paper-dim">
+            Două minute, fără cont. Răspund la toate.
+          </p>
+          <Link href="/trimite" className="btn-light">
+            Spune-mi ideea ta <Arrow />
+          </Link>
+        </div>
       </section>
     </main>
   );

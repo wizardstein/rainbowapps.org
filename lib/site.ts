@@ -45,6 +45,29 @@ export function projectPlatform(host: string | null): ProjectPlatform {
   return (host && PROJECT_PLATFORM[host]) || { kind: "web" };
 }
 
+// Short labels shown as tags on the portfolio cards (homepage redesign,
+// 2026-10-16): what kind of thing it is and for whom. Keyed by hostname,
+// hand-written like PROJECT_VALUE. Missing entry → ["Site web"].
+export const PROJECT_TAGS: Record<string, string[]> = {
+  "app.beard-brothers.ro": ["iOS", "Android", "Web", "ONG"],
+  "scoala.beard-brothers.ro": ["Site web", "ONG"],
+  "joaca.beard-brothers.ro": ["Joc în browser", "ONG"],
+  "ymarchive.chat": ["Aplicație web"],
+  "donfitway.ro": ["Site web", "Fitness"],
+  "nightshiftfabrications.ro": ["Site web", "Atelier"],
+  "vreaumate.online": ["Site web", "Educație"],
+};
+
+export function projectTags(host: string | null): string[] {
+  return (host && PROJECT_TAGS[host]) || ["Site web"];
+}
+
+// Anchor id for a project card, e.g. "proiect-vreaumate-online", so the hero
+// pills can jump to the card in the rail.
+export function projectSlug(host: string | null): string {
+  return `proiect-${(host ?? "x").replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`;
+}
+
 // Lower bound of a cost range like "~70.000–100.000 €", in euro. Used to add up
 // the "cât ar fi costat" band under the hero.
 export function costFloorEur(cost: string): number {

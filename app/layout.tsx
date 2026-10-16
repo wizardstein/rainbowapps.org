@@ -1,21 +1,26 @@
 import type { Metadata } from "next";
-import { Nunito, Nunito_Sans } from "next/font/google";
+import { Bricolage_Grotesque, Instrument_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import "./globals.css";
 
-const nunito = Nunito({
-  variable: "--font-nunito",
+// Homepage redesign (2026-10-16, Claude Design canvas "RainbowApps — redesign
+// homepage"): Bricolage Grotesque for display, Instrument Sans for body. Both
+// variable, with latin-ext for ș/ț.
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin", "latin-ext"],
-  weight: ["700", "800"],
+  weight: "variable",
+  axes: ["opsz"],
   display: "swap",
 });
 
-const nunitoSans = Nunito_Sans({
-  variable: "--font-nunito-sans",
+const instrument = Instrument_Sans({
+  variable: "--font-instrument",
   subsets: ["latin", "latin-ext"],
-  weight: ["400", "600", "700"],
+  weight: "variable",
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -60,7 +65,7 @@ export default function RootLayout({
   return (
     <html
       lang="ro"
-      className={`${nunito.variable} ${nunitoSans.variable} h-full`}
+      className={`${bricolage.variable} ${instrument.variable} h-full`}
     >
       <body className="min-h-full flex flex-col">
         <SiteHeader />

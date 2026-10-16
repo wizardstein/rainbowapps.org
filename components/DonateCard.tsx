@@ -43,10 +43,10 @@ export default function DonateCard() {
             type="button"
             onClick={() => setAmount(String(preset))}
             aria-pressed={amount === String(preset)}
-            className={`rounded-full border px-3.5 py-2 text-[13px] font-bold transition-colors ${
+            className={`inline-flex min-h-10 items-center rounded-full border px-3.5 text-[13px] font-semibold transition-colors ${
               amount === String(preset)
-                ? "border-ink bg-ink text-white"
-                : "border-line bg-crem text-ink hover:bg-crem-deep"
+                ? "border-ink bg-ink text-bg"
+                : "border-line-strong bg-surface text-ink hover:border-ink"
             }`}
           >
             {preset} lei
@@ -60,7 +60,7 @@ export default function DonateCard() {
             min={1}
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="w-24 rounded-full border border-line bg-surface px-3.5 py-2 text-[13px] text-ink"
+            className="min-h-10 w-24 rounded-full border border-line-strong bg-surface px-3.5 text-[13px] text-ink"
           />
           lei
         </label>
@@ -68,7 +68,7 @@ export default function DonateCard() {
           type="button"
           onClick={donate}
           disabled={pending}
-          className="rounded-full bg-blue px-4 py-2 font-display text-[13px] font-bold text-white transition-colors hover:bg-blue-deep disabled:opacity-60"
+          className="inline-flex min-h-10 items-center rounded-full border border-ink bg-ink px-4 text-[13px] font-semibold text-bg transition-colors hover:bg-ink-hover disabled:opacity-60"
         >
           {pending ? "Pregătesc plata…" : "Donează prin Revolut ↗"}
         </button>

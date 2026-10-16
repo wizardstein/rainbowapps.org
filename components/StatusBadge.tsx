@@ -6,12 +6,14 @@ const DOT_COLOR: Record<Availability, string> = {
   amber: "bg-status-amber",
 };
 
+/** Availability pill, owner-controlled from /admin. Sits above the hero
+ *  headline as its eyebrow. */
 export default async function StatusBadge() {
   const availability = await getAvailability();
   const { label } = STATUS[availability];
 
   return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-[7px] text-[13px] font-semibold text-ink-soft">
+    <span className="tag gap-2 self-start py-1">
       <span
         aria-hidden="true"
         className={`size-2 rounded-full ${DOT_COLOR[availability]}`}

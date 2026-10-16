@@ -36,7 +36,7 @@ export default function SupportButton({
       </p>
       <div aria-live="polite">
         {done ? (
-          <p className="font-display font-bold text-ink">
+          <p className="text-[15px] font-semibold text-ink">
             {state?.already
               ? "Mulțumesc — susținerea ta e deja numărată. ♥"
               : "Mulțumesc! ♥"}

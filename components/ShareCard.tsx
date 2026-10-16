@@ -27,7 +27,7 @@ const LINKS = [
 ];
 
 const pill =
-  "rounded-full border border-line bg-crem px-3.5 py-2 text-[13px] font-semibold text-ink-soft transition-colors hover:bg-crem-deep";
+  "inline-flex min-h-10 items-center rounded-full border border-line-strong bg-surface px-3.5 text-[13px] font-medium text-ink transition-colors hover:border-ink";
 
 /** Share tier: native share sheet on phones (WhatsApp, Messenger, anything
  *  installed), direct platform links + copy elsewhere. The OG tags do the
@@ -80,7 +80,7 @@ export default function ShareCard() {
         <button
           type="button"
           onClick={nativeShare}
-          className="rounded-full bg-blue px-4 py-2 font-display text-[13px] font-bold text-white transition-colors hover:bg-blue-deep"
+          className="inline-flex min-h-10 items-center rounded-full border border-ink bg-ink px-4 text-[13px] font-semibold text-bg transition-colors hover:bg-ink-hover"
         >
           Distribuie
         </button>
