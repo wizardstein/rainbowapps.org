@@ -133,7 +133,8 @@ export const PROJECTS: Project[] = [
 // screenshots. A missing entry simply hides the value block for that project.
 // Scale (owner decision 2026-10-15): price new projects as what one senior
 // freelancer in Cluj would have charged working solo, not as an agency team —
-// see CLAUDE.md "Portfolio cost estimates". Don't inflate.
+// see CLAUDE.md "Portfolio cost estimates". Don't inflate. joaca and ymarchive
+// were brought down to that scale by the owner on 2026-10-18.
 export const PROJECT_VALUE: Record<string, ProjectValue> = {
   "app.beard-brothers.ro": {
     cost: "~160.000–240.000 €",
@@ -169,7 +170,7 @@ export const PROJECT_VALUE: Record<string, ProjectValue> = {
     ],
   },
   "joaca.beard-brothers.ro": {
-    cost: "~15.000–22.000 €",
+    cost: "~8.000–11.000 €",
     time: "~6–9 săptămâni",
     features: [
       "Motor de joc scris de la zero — perspectivă, mișcare, senzație de joc adevărat, nu un șablon.",
@@ -180,8 +181,8 @@ export const PROJECT_VALUE: Record<string, ProjectValue> = {
     ],
   },
   "ymarchive.chat": {
-    cost: "~18.000–25.000 €",
-    time: "~2–3 luni",
+    cost: "~6.000–8.000 €",
+    time: "~4–6 săptămâni",
     features: [
       "Citește formatul vechi de arhivă Yahoo, descâlcit byte cu byte — nu există unealtă gata-făcută pentru asta.",
       "Totul se întâmplă pe calculatorul tău; nicio conversație nu pleacă nicăieri — poți verifica singur.",

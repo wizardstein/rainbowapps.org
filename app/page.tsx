@@ -129,14 +129,10 @@ function pillLabel(item: RailItem): string {
   return item.title;
 }
 
-/** The featured quote shrinks as it gets longer: real testimonials run
- *  240–600 characters, and the display size only suits a short one. */
-function featuredQuoteSize(text: string): string {
-  const n = text.length;
-  if (n <= 140) return "text-[clamp(28px,3.4vw,44px)] leading-[1.2]";
-  if (n <= 320) return "text-[clamp(22px,2.6vw,32px)] leading-[1.3]";
-  return "text-[clamp(19px,2vw,24px)] leading-[1.4]";
-}
+const FIGURE =
+  "font-display text-[clamp(60px,7.8vw,116px)] font-semibold leading-[0.9] tracking-[-0.045em]";
+const FIGURE_LABEL =
+  "font-display text-[clamp(22px,2.4vw,32px)] font-semibold leading-[1.15] tracking-[-0.02em] text-ink";
 
 const H2 =
   "font-display text-[clamp(32px,3.6vw,48px)] font-semibold leading-[1.08] tracking-[-0.025em] text-ink";
@@ -176,8 +172,6 @@ export default async function Home() {
     ) * 10_000;
   const totalLabel = `${String(totalFloor).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} €`;
 
-  const [featured, ...otherTestimonials] = testimonials;
-
   const supportItems = [
     {
       lead: "Trimite link-ul",
@@ -206,22 +200,60 @@ export default async function Home() {
 
   return (
     <main className="flex-1">
-      {/* Hero (direcția B): cifrele ca titlu. */}
+      {/* Hero (direcția B): cifrele ca titlu — two figures, each with its
+          meaning right under it and its proof next to it (owner, 2026-10-18).
+          The h1 carries the sentence; the figures are its visual form. */}
       <header className="mx-auto flex w-full max-w-[1200px] flex-col gap-10 px-4 pt-14 pb-14 sm:px-8 sm:pt-[72px]">
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-8">
           <StatusBadge />
-          <h1 className="font-display text-[clamp(52px,10vw,148px)] font-semibold leading-[0.96] tracking-[-0.045em] text-ink text-balance">
-            <span className="block">
-              <span className="text-spectrum">{totalLabel}</span> de software.
-            </span>
-            <span className="block">0 lei ceruți.</span>
+          <h1 className="sr-only">
+            {totalLabel} de software livrat. 100% clienți mulțumiți.
           </h1>
+          <div className="grid gap-10 sm:grid-cols-2">
+            <div className="flex flex-col gap-4">
+              <p aria-hidden="true" className="flex flex-col gap-2">
+                <span className={`${FIGURE} text-spectrum self-start`}>
+                  {totalLabel}
+                </span>
+                <span className={FIGURE_LABEL}>de software livrat</span>
+              </p>
+              <p className="text-[15px] leading-normal text-ink-muted">
+                Valoarea e o estimare de piață, nu facturi.
+              </p>
+            </div>
+            <div className="flex flex-col gap-4">
+              <p aria-hidden="true" className="flex flex-col gap-2">
+                <span className={`${FIGURE} text-ink`}>100%</span>
+                <span className={FIGURE_LABEL}>clienți mulțumiți</span>
+              </p>
+              {testimonials.length > 0 && (
+                <a
+                  href="#testimoniale"
+                  className="group inline-flex items-center gap-3 self-start text-[15px] font-medium text-ink"
+                >
+                  <span aria-hidden="true" className="flex -space-x-1.5">
+                    {testimonials.map((t) => (
+                      <span
+                        key={t.id}
+                        className="flex size-9 items-center justify-center rounded-full bg-ink font-display text-[13px] font-semibold text-bg ring-2 ring-bg"
+                      >
+                        {initials(t.author)}
+                      </span>
+                    ))}
+                  </span>
+                  <span className="underline decoration-line-strong underline-offset-4 transition-colors group-hover:decoration-ink">
+                    Citește ce au scris
+                  </span>
+                </a>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="grid items-end gap-8 lg:grid-cols-2 lg:gap-10">
           <p className="max-w-[560px] text-xl leading-normal text-ink-soft text-pretty">
-            {numeral(n)} aplicații construite gratuit pentru ONG-uri și cauze
-            bune, de un programator din Cluj. Următoarea poate fi ideea ta — nu
+            {numeral(n)} aplicații construite pentru ONG-uri și cauze bune, de
+            un programator din Cluj. Următoarea poate fi ideea ta — nu
             trebuie să fie perfectă, trebuie doar să ajute pe cineva.
           </p>
           <div className="flex flex-wrap items-center gap-3">
@@ -250,9 +282,6 @@ export default async function Home() {
               </li>
             ))}
           </ul>
-          <p className="text-[13px] text-ink-muted">
-            Valoarea e o estimare de piață, nu facturi.
-          </p>
         </div>
       </header>
 
@@ -260,7 +289,7 @@ export default async function Home() {
       <PortfolioRail items={items} />
 
       {/* Ce spun oamenii */}
-      {featured && (
+      {testimonials.length > 0 && (
         <section
           id="testimoniale"
           className="relative mx-auto w-full max-w-[1200px] scroll-mt-20 px-4 pt-20 pb-20 sm:px-8"
@@ -275,47 +304,26 @@ export default async function Home() {
             Ce spun oamenii cu care am lucrat
           </p>
 
-          <blockquote className="relative mt-14 flex max-w-[960px] flex-col gap-6">
-            <p
-              className={`font-display font-medium tracking-[-0.02em] text-ink text-pretty ${featuredQuoteSize(featured.text)}`}
-            >
-              {featured.text}
-            </p>
-            <footer className="flex items-center gap-3.5">
-              <span
-                aria-hidden="true"
-                className="flex size-11 flex-none items-center justify-center rounded-full bg-ink font-display text-base font-semibold text-bg"
+          {/* All quotes at one large size (owner decision 2026-10-18): the
+              size is fixed, not by length, and suits the longest (~600 chars). */}
+          <div className="relative mt-14 flex flex-col">
+            {testimonials.map((t) => (
+              <blockquote
+                key={t.id}
+                className="flex max-w-[960px] flex-col gap-6 border-t border-rule py-10 first:border-t-0 first:pt-0"
               >
-                {initials(featured.author)}
-              </span>
-              <span className="flex min-w-0 flex-col gap-0.5">
-                <cite className="text-base font-semibold text-ink not-italic">
-                  {featured.author}
-                </cite>
-                {featured.url && (
-                  <a
-                    href={featured.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="truncate text-sm text-ink-muted transition-colors hover:text-ink"
+                <p className="font-display text-[clamp(21px,2.3vw,28px)] font-medium leading-[1.4] tracking-[-0.015em] text-ink text-pretty">
+                  {t.text}
+                </p>
+                <footer className="flex items-center gap-3.5">
+                  <span
+                    aria-hidden="true"
+                    className="flex size-11 flex-none items-center justify-center rounded-full bg-ink font-display text-base font-semibold text-bg"
                   >
-                    {projectHostname(featured.url) ?? featured.url}
-                  </a>
-                )}
-              </span>
-            </footer>
-          </blockquote>
-
-          {otherTestimonials.length > 0 && (
-            <div className="relative mt-10 gap-x-10 md:columns-2">
-              {otherTestimonials.map((t) => (
-                <blockquote
-                  key={t.id}
-                  className="flex break-inside-avoid flex-col gap-4 border-t border-rule pt-6 pb-8"
-                >
-                  <p className="text-[17px] leading-[1.55] text-ink text-pretty">{t.text}</p>
-                  <footer className="flex flex-col gap-0.5">
-                    <cite className="text-[15px] font-semibold text-ink not-italic">
+                    {initials(t.author)}
+                  </span>
+                  <span className="flex min-w-0 flex-col gap-0.5">
+                    <cite className="text-base font-semibold text-ink not-italic">
                       {t.author}
                     </cite>
                     {t.url && (
@@ -323,16 +331,16 @@ export default async function Home() {
                         href={t.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[13px] text-ink-muted transition-colors hover:text-ink"
+                        className="truncate text-sm text-ink-muted transition-colors hover:text-ink"
                       >
                         {projectHostname(t.url) ?? t.url}
                       </a>
                     )}
-                  </footer>
-                </blockquote>
-              ))}
-            </div>
-          )}
+                  </span>
+                </footer>
+              </blockquote>
+            ))}
+          </div>
         </section>
       )}
 

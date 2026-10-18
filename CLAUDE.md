@@ -33,7 +33,7 @@ project as what one good senior freelancer in Cluj would have charged working so
 design work), not as an agency team with PM and QA. Content volume (e.g. generated problem
 banks) is never billed. Reference point: vreaumate.online (~24k lines, 59 routes, four paid
 products, LaTeX service, CMS, admin) = `~50.000–70.000 €`, `~7–8 luni, un singur programator`.
-The six older entries were priced at agency level and stay as they are. When in doubt, go
+The older entries were priced at agency level; on 2026-10-18 the owner brought joaca (`~8.000–11.000 €`) and ymarchive (`~6.000–8.000 €`) down to freelancer scale, the rest stay as they are unless the owner says otherwise. When in doubt, go
 lower, and show the owner the breakdown before a number goes on the site.
 
 ## Voice (for all UI copy)
