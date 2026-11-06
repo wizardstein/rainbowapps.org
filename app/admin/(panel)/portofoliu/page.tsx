@@ -1,6 +1,11 @@
 import { createServiceClient } from "@/lib/supabase";
 import ActionForm from "@/components/admin/ActionForm";
-import { saveProject, deleteProject } from "@/app/admin/actions";
+import SortableList from "@/components/admin/SortableList";
+import {
+  saveProject,
+  deleteProject,
+  reorderProjects,
+} from "@/app/admin/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +14,6 @@ type ProjectRow = {
   title: string;
   description: string;
   url: string;
-  sort_order: number;
   published: boolean;
 };
 
@@ -48,15 +52,6 @@ function ProjectFields({ p }: { p?: ProjectRow }) {
       </label>
       <div className="flex flex-wrap items-center gap-5">
         <label className="flex items-center gap-2 text-sm">
-          Ordine
-          <input
-            name="sort_order"
-            type="number"
-            defaultValue={p?.sort_order ?? 0}
-            className="w-20 rounded-lg border border-line bg-bg px-3 py-2"
-          />
-        </label>
-        <label className="flex items-center gap-2 text-sm">
           <input
             name="published"
             type="checkbox"
@@ -79,8 +74,9 @@ export default async function AdminPortofoliu() {
   const supabase = createServiceClient();
   const { data } = await supabase
     .from("projects")
-    .select("id, title, description, url, sort_order, published")
-    .order("sort_order", { ascending: true });
+    .select("id, title, description, url, published")
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: true });
   const projects = (data ?? []) as ProjectRow[];
 
   return (
@@ -89,32 +85,43 @@ export default async function AdminPortofoliu() {
         Portofoliu
       </h1>
       <p className="mt-2 text-sm text-ink-soft">
-        Cardurile publicate apar pe pagina principală în câteva secunde.
+        Ordinea de aici e ordinea de pe site. Trage un card de mâner ca să-l
+        muți; se salvează singur și apare pe site în câteva secunde.
       </p>
 
-      <ul className="mt-6 space-y-4">
-        {projects.map((p) => (
-          <li key={p.id} className="rounded-xl border border-line bg-surface p-6">
-            <ActionForm action={saveProject}>
-              <ProjectFields p={p} />
-            </ActionForm>
-            <ActionForm action={deleteProject} className="mt-3">
-              <input type="hidden" name="id" value={p.id} />
-              <button
-                type="submit"
-                className="text-sm text-red-700 underline decoration-line underline-offset-4"
-              >
-                Șterge cardul
-              </button>
-            </ActionForm>
-          </li>
-        ))}
-      </ul>
+      <SortableList
+        onReorder={reorderProjects}
+        rows={projects.map((p) => ({
+          id: p.id,
+          title: p.title,
+          meta: p.url,
+          published: p.published,
+          body: (
+            <>
+              <ActionForm action={saveProject}>
+                <ProjectFields p={p} />
+              </ActionForm>
+              <ActionForm action={deleteProject} className="mt-3">
+                <input type="hidden" name="id" value={p.id} />
+                <button
+                  type="submit"
+                  className="text-sm text-red-700 underline decoration-line underline-offset-4"
+                >
+                  Șterge cardul
+                </button>
+              </ActionForm>
+            </>
+          ),
+        }))}
+      />
 
       <section className="mt-8 rounded-xl border border-dashed border-line p-6">
         <h2 className="font-display text-lg font-semibold text-ink">
           Adaugă un proiect
         </h2>
+        <p className="mt-1 text-sm text-ink-soft">
+          Apare la finalul listei; îl muți apoi unde vrei.
+        </p>
         <ActionForm action={saveProject} className="mt-4">
           <ProjectFields />
         </ActionForm>

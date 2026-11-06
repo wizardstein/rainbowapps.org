@@ -79,7 +79,6 @@ export async function saveProject(
     title: String(formData.get("title") ?? "").trim(),
     description: String(formData.get("description") ?? "").trim(),
     url: String(formData.get("url") ?? "").trim(),
-    sort_order: Number(formData.get("sort_order") ?? 0) || 0,
     published: formData.get("published") === "on",
   };
   if (!row.title || !row.description || !row.url) {
@@ -89,7 +88,9 @@ export async function saveProject(
   const supabase = createServiceClient();
   const { error } = id
     ? await supabase.from("projects").update(row).eq("id", id)
-    : await supabase.from("projects").insert(row);
+    : await supabase
+        .from("projects")
+        .insert({ ...row, sort_order: await nextSortOrder("projects") });
   if (error) {
     console.error("saveProject failed:", error.message);
     return { error: GENERIC };
@@ -127,7 +128,6 @@ export async function saveTestimonial(
     author: String(formData.get("author") ?? "").trim(),
     text: String(formData.get("text") ?? "").trim(),
     url: url || null,
-    sort_order: Number(formData.get("sort_order") ?? 0) || 0,
     published: formData.get("published") === "on",
   };
   if (!row.author || !row.text) {
@@ -137,7 +137,9 @@ export async function saveTestimonial(
   const supabase = createServiceClient();
   const { error } = id
     ? await supabase.from("testimonials").update(row).eq("id", id)
-    : await supabase.from("testimonials").insert(row);
+    : await supabase
+        .from("testimonials")
+        .insert({ ...row, sort_order: await nextSortOrder("testimonials") });
   if (error) {
     console.error("saveTestimonial failed:", error.message);
     return { error: GENERIC };
@@ -162,4 +164,63 @@ export async function deleteTestimonial(
   updateTag("testimonials");
   revalidatePath("/admin/testimoniale");
   return { ok: true };
+}
+
+// ── Ordering by drag and drop (owner, 2026-11-06) ──────────────────────────
+// The admin lists are sorted by dragging; the server stores the position as
+// sort_order 1..n. Nobody types an index any more: rows added from the admin
+// go to the end, testimonials sent from /sustine arrive with the default 0,
+// so they show first in the admin list until they are moved.
+
+type OrderedTable = "projects" | "testimonials";
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function nextSortOrder(table: OrderedTable): Promise<number> {
+  const supabase = createServiceClient();
+  const { data } = await supabase
+    .from(table)
+    .select("sort_order")
+    .order("sort_order", { ascending: false })
+    .limit(1);
+  return ((data?.[0]?.sort_order as number | undefined) ?? 0) + 1;
+}
+
+async function saveOrder(
+  table: OrderedTable,
+  ids: unknown,
+): Promise<AdminActionState> {
+  if (!(await requireAdmin())) return { error: NOT_ALLOWED };
+  if (
+    !Array.isArray(ids) ||
+    ids.length === 0 ||
+    ids.length > 500 ||
+    !ids.every((id) => typeof id === "string" && UUID.test(id)) ||
+    new Set(ids).size !== ids.length
+  ) {
+    return { error: GENERIC };
+  }
+
+  const supabase = createServiceClient();
+  const results = await Promise.all(
+    (ids as string[]).map((id, i) =>
+      supabase.from(table).update({ sort_order: i + 1 }).eq("id", id),
+    ),
+  );
+  const failed = results.find((r) => r.error);
+  if (failed?.error) {
+    console.error(`saveOrder(${table}) failed:`, failed.error.message);
+    return { error: GENERIC };
+  }
+  updateTag(table);
+  revalidatePath(table === "projects" ? "/admin/portofoliu" : "/admin/testimoniale");
+  return { ok: true };
+}
+
+export async function reorderProjects(ids: string[]): Promise<AdminActionState> {
+  return saveOrder("projects", ids);
+}
+
+export async function reorderTestimonials(ids: string[]): Promise<AdminActionState> {
+  return saveOrder("testimonials", ids);
 }

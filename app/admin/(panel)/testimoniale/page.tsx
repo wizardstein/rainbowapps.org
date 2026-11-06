@@ -1,6 +1,11 @@
 import { createServiceClient } from "@/lib/supabase";
 import ActionForm from "@/components/admin/ActionForm";
-import { saveTestimonial, deleteTestimonial } from "@/app/admin/actions";
+import SortableList from "@/components/admin/SortableList";
+import {
+  saveTestimonial,
+  deleteTestimonial,
+  reorderTestimonials,
+} from "@/app/admin/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +14,6 @@ type TestimonialRow = {
   author: string;
   text: string;
   url: string | null;
-  sort_order: number;
   published: boolean;
 };
 
@@ -47,15 +51,6 @@ function TestimonialFields({ t }: { t?: TestimonialRow }) {
       </label>
       <div className="flex flex-wrap items-center gap-5">
         <label className="flex items-center gap-2 text-sm">
-          Ordine
-          <input
-            name="sort_order"
-            type="number"
-            defaultValue={t?.sort_order ?? 0}
-            className="w-20 rounded-lg border border-line bg-bg px-3 py-2"
-          />
-        </label>
-        <label className="flex items-center gap-2 text-sm">
           <input
             name="published"
             type="checkbox"
@@ -74,12 +69,18 @@ function TestimonialFields({ t }: { t?: TestimonialRow }) {
   );
 }
 
+function excerpt(text: string): string {
+  const flat = text.replace(/\s+/g, " ").trim();
+  return flat.length > 90 ? `${flat.slice(0, 90)}…` : flat;
+}
+
 export default async function AdminTestimoniale() {
   const supabase = createServiceClient();
   const { data } = await supabase
     .from("testimonials")
-    .select("id, author, text, url, sort_order, published")
-    .order("sort_order", { ascending: true });
+    .select("id, author, text, url, published")
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: true });
   const testimonials = (data ?? []) as TestimonialRow[];
 
   return (
@@ -88,33 +89,45 @@ export default async function AdminTestimoniale() {
         Testimoniale
       </h1>
       <p className="mt-2 text-sm text-ink-soft">
-        Secțiunea „Ce spun oamenii” apare pe pagina principală doar când există
-        cel puțin un testimonial publicat.
+        Ordinea de aici e ordinea de pe bandă. Trage un testimonial de mâner ca
+        să-l muți; se salvează singur. Cele trimise de pe site apar sus,
+        nepublicate, până le muți. Banda apare pe pagina principală doar când
+        există cel puțin unul publicat.
       </p>
 
-      <ul className="mt-6 space-y-4">
-        {testimonials.map((t) => (
-          <li key={t.id} className="rounded-xl border border-line bg-surface p-6">
-            <ActionForm action={saveTestimonial}>
-              <TestimonialFields t={t} />
-            </ActionForm>
-            <ActionForm action={deleteTestimonial} className="mt-3">
-              <input type="hidden" name="id" value={t.id} />
-              <button
-                type="submit"
-                className="text-sm text-red-700 underline decoration-line underline-offset-4"
-              >
-                Șterge testimonialul
-              </button>
-            </ActionForm>
-          </li>
-        ))}
-      </ul>
+      <SortableList
+        onReorder={reorderTestimonials}
+        rows={testimonials.map((t) => ({
+          id: t.id,
+          title: t.author,
+          meta: excerpt(t.text),
+          published: t.published,
+          body: (
+            <>
+              <ActionForm action={saveTestimonial}>
+                <TestimonialFields t={t} />
+              </ActionForm>
+              <ActionForm action={deleteTestimonial} className="mt-3">
+                <input type="hidden" name="id" value={t.id} />
+                <button
+                  type="submit"
+                  className="text-sm text-red-700 underline decoration-line underline-offset-4"
+                >
+                  Șterge testimonialul
+                </button>
+              </ActionForm>
+            </>
+          ),
+        }))}
+      />
 
       <section className="mt-8 rounded-xl border border-dashed border-line p-6">
         <h2 className="font-display text-lg font-semibold text-ink">
           Adaugă un testimonial
         </h2>
+        <p className="mt-1 text-sm text-ink-soft">
+          Apare la finalul listei; îl muți apoi unde vrei.
+        </p>
         <ActionForm action={saveTestimonial} className="mt-4">
           <TestimonialFields />
         </ActionForm>

@@ -41,7 +41,8 @@ export const getProjects = unstable_cache(
         .from("projects")
         .select("title, description, url")
         .eq("published", true)
-        .order("sort_order", { ascending: true });
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: true });
       if (error || !data || data.length === 0) return PROJECTS;
       return data;
     } catch {
@@ -76,7 +77,8 @@ export const getTestimonials = unstable_cache(
         .from("testimonials")
         .select("id, author, text, url")
         .eq("published", true)
-        .order("sort_order", { ascending: true });
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: true });
       if (error || !data) return [];
       return data;
     } catch {
