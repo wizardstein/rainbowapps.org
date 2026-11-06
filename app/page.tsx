@@ -9,6 +9,7 @@ import previewDonfitway from "@/public/previews/donfitway.jpg";
 import previewNsfab from "@/public/previews/nsfab.jpg";
 import previewBbapp from "@/public/previews/bbapp.jpg";
 import previewVreaumate from "@/public/previews/vreaumate.jpg";
+import previewVreaumateApp from "@/public/previews/vreaumate-app.jpg";
 import ArcMark, { SPECTRU } from "@/components/ArcMark";
 import PortfolioRail, { type RailItem } from "@/components/PortfolioRail";
 import SupportButton from "@/components/SupportButton";
@@ -22,6 +23,7 @@ import {
 import {
   costFloorEur,
   projectHostname,
+  projectKey,
   projectPlatform,
   projectSlug,
   projectTags,
@@ -33,7 +35,7 @@ export const metadata: Metadata = {
 };
 
 // Static screenshots of the finished apps (public/previews), keyed by
-// hostname like the value figures. Apps without one fall back to a plain card.
+// projectKey like the value figures. Apps without one fall back to a plain card.
 const PREVIEWS: Record<string, StaticImageData> = {
   "scoala.beard-brothers.ro": previewScoala,
   "joaca.beard-brothers.ro": previewJoaca,
@@ -42,6 +44,7 @@ const PREVIEWS: Record<string, StaticImageData> = {
   "nightshiftfabrications.ro": previewNsfab,
   "app.beard-brothers.ro": previewBbapp,
   "vreaumate.online": previewVreaumate,
+  "vreaumate.online/aplicatie": previewVreaumateApp,
 };
 
 // "Șapte aplicații" — the count in words, capitalised, for the hero lead.
@@ -149,14 +152,15 @@ export default async function Home() {
 
   const items: RailItem[] = projects.map((project) => {
     const host = projectHostname(project.url);
+    const key = projectKey(project.url);
     return {
       ...project,
       host,
-      slug: projectSlug(host),
-      preview: host ? PREVIEWS[host] : undefined,
-      value: host ? PROJECT_VALUE[host] : undefined,
-      platform: projectPlatform(host),
-      tags: projectTags(host),
+      slug: projectSlug(key),
+      preview: key ? PREVIEWS[key] : undefined,
+      value: key ? PROJECT_VALUE[key] : undefined,
+      platform: projectPlatform(key),
+      tags: projectTags(key),
     };
   });
   const n = items.length;

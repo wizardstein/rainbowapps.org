@@ -27,7 +27,7 @@ export type ProjectValue = {
 };
 
 // What kind of thing a portfolio project is. Web sites are the default; native
-// apps carry their store links. Keyed by hostname like PROJECT_VALUE —
+// apps carry their store links. Keyed by projectKey like PROJECT_VALUE —
 // hand-written, not owner-editable content.
 export type ProjectPlatform =
   | { kind: "web" }
@@ -39,14 +39,19 @@ export const PROJECT_PLATFORM: Record<string, ProjectPlatform> = {
     appStore: "https://apps.apple.com/ro/app/id6789177473",
     googlePlay: "https://play.google.com/store/apps/details?id=ro.beardbrothers.app",
   },
+  "vreaumate.online/aplicatie": {
+    kind: "app",
+    appStore: "https://apps.apple.com/ro/app/id6824840717",
+    googlePlay: "https://play.google.com/store/apps/details?id=online.vreaumate.app",
+  },
 };
 
-export function projectPlatform(host: string | null): ProjectPlatform {
-  return (host && PROJECT_PLATFORM[host]) || { kind: "web" };
+export function projectPlatform(key: string | null): ProjectPlatform {
+  return (key && PROJECT_PLATFORM[key]) || { kind: "web" };
 }
 
 // Short labels shown as tags on the portfolio cards (homepage redesign,
-// 2026-10-16): what kind of thing it is and for whom. Keyed by hostname,
+// 2026-10-16): what kind of thing it is and for whom. Keyed by projectKey,
 // hand-written like PROJECT_VALUE. Missing entry → ["Site web"].
 export const PROJECT_TAGS: Record<string, string[]> = {
   "app.beard-brothers.ro": ["iOS", "Android", "Web", "ONG"],
@@ -56,16 +61,18 @@ export const PROJECT_TAGS: Record<string, string[]> = {
   "donfitway.ro": ["Site web", "Fitness"],
   "nightshiftfabrications.ro": ["Site web", "Atelier"],
   "vreaumate.online": ["Site web", "Educație"],
+  "vreaumate.online/aplicatie": ["iOS", "Android", "Educație"],
 };
 
-export function projectTags(host: string | null): string[] {
-  return (host && PROJECT_TAGS[host]) || ["Site web"];
+export function projectTags(key: string | null): string[] {
+  return (key && PROJECT_TAGS[key]) || ["Site web"];
 }
 
-// Anchor id for a project card, e.g. "proiect-vreaumate-online", so the hero
-// pills can jump to the card in the rail.
-export function projectSlug(host: string | null): string {
-  return `proiect-${(host ?? "x").replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`;
+// Anchor id for a project card, e.g. "proiect-vreaumate-online" (or
+// "proiect-vreaumate-online-aplicatie"), so the hero pills can jump to the
+// card in the rail.
+export function projectSlug(key: string | null): string {
+  return `proiect-${(key ?? "x").replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`;
 }
 
 // Lower bound of a cost range like "~70.000–100.000 €", in euro. Used to add up
@@ -84,6 +91,18 @@ export function projectHostname(url: string): string | null {
   }
 }
 
+// Key for the hand-written per-project data (PROJECT_VALUE, PROJECT_PLATFORM,
+// PROJECT_TAGS, the previews): the hostname, plus the path when the project
+// lives on a sub-page — "vreaumate.online" is the site and
+// "vreaumate.online/aplicatie" the phone app (owner decision 2026-11-06:
+// separate cards, same domain).
+export function projectKey(url: string): string | null {
+  const host = projectHostname(url);
+  if (!host) return null;
+  const path = new URL(url).pathname.replace(/\/+$/, "");
+  return host + path;
+}
+
 export const PROJECTS: Project[] = [
   {
     title: "Beard Brothers — aplicația de voluntariat",
@@ -96,6 +115,12 @@ export const PROJECTS: Project[] = [
     description:
       "Site-ul unui profesor de matematică cu meditații online: orarul din calendar, probleme rezolvate, cereri plătite, teste generate pe loc și un panou din care își schimbă singur totul.",
     url: "https://www.vreaumate.online",
+  },
+  {
+    title: "vreaumate.online — aplicația",
+    description:
+      "Aplicația de iPhone și Android a aceluiași profesor: mii de probleme de exersat, cu explicația la fiecare, problema zilei pe ecran și progresul lună de lună.",
+    url: "https://www.vreaumate.online/aplicatie",
   },
   {
     title: "scoala.beard-brothers.ro",
@@ -129,8 +154,8 @@ export const PROJECTS: Project[] = [
   },
 ];
 
-// Value figures keyed by hostname (projectHostname), like the preview
-// screenshots. A missing entry simply hides the value block for that project.
+// Value figures keyed by projectKey (the hostname, plus the path for a project
+// on a sub-page), like the preview screenshots. A missing entry simply hides the value block for that project.
 // Scale (owner decision 2026-10-15): price new projects as what one senior
 // freelancer in Cluj would have charged working solo, not as an agency team —
 // see CLAUDE.md "Portfolio cost estimates". Don't inflate. joaca and ymarchive
@@ -156,6 +181,19 @@ export const PROJECT_VALUE: Record<string, ProjectValue> = {
       "Orarul lui Abel vine direct din Google Calendar: orele libere sunt verzi și deschid WhatsApp cu mesajul gata scris, iar părinții pot răsfoi și lunile trecute, să vadă cum a fost ocupat.",
       "Abel schimbă singur orice cuvânt de pe site — de la texte și întrebări frecvente până la mailurile trimise elevilor — cu ciornă, previzualizare și istoric, fără să depindă de un programator.",
       "Cereri de rezolvare: elevul trimite poza problemei, plătește înainte, vorbește cu Abel în pagină și primește videoul cu rezolvarea; biblioteca de probleme rezolvate se sincronizează singură cu canalul lui de YouTube.",
+    ],
+  },
+  // Owner decision 2026-11-06: ~32 weeks ≈ 1.300 h × 30–40 €/h, the API
+  // written on the site for the app included.
+  "vreaumate.online/aplicatie": {
+    cost: "~40.000–55.000 €",
+    time: "~7–8 luni, un singur programator",
+    features: [
+      "Problema zilei îl așteaptă pe elev pe ecranul telefonului, în widget, sau vine ca notificare la ora aleasă de el, pe iPhone și pe Android.",
+      "Merge și fără internet: elevul descarcă o dată unitățile clasei și exersează oriunde, cu formulele culese frumos și explicația la fiecare răspuns.",
+      "Ciornă direct pe ecran, cu degetul sau cu Apple Pencil pe iPad, figuri 3D pe care le întorci cu degetul și simulări după modelul Evaluării Naționale.",
+      "Abonamentul și cererile de rezolvare se plătesc prin Apple sau Google: elevul trimite poza problemei, vorbește cu Abel în aplicație și primește rezolvarea într-un video scurt.",
+      "Un singur cont cu site-ul, prin Apple, Google sau un cod pe email: progresul și raportul lunar, pe care îl poate trimite unui părinte, îl urmează pe orice telefon.",
     ],
   },
   "scoala.beard-brothers.ro": {

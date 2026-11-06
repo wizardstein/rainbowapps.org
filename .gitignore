@@ -43,3 +43,6 @@ next-env.d.ts
 
 # playwright mcp artifacts
 .playwright-mcp/
+
+# Raw store screenshots copied in to render public/previews/*.jpg
+scripts/preview-src/

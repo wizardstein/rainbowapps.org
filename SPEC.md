@@ -143,6 +143,8 @@ Store as a typed array in `lib/site.ts`. Each card: title, one-line description,
 
 *(Updated 2026-10-15.)* Seventh project: **vreaumate.online** (web, `https://www.vreaumate.online`), `~50.000–70.000 €`, `~7–8 luni, un singur programator`. From now on cost figures are priced at solo-senior-freelancer level, not agency level (owner decision 2026-10-15, see CLAUDE.md "Portfolio cost estimates").
 
+*(Updated 2026-11-06 — owner decision.)* Eighth project: **vreaumate.online — aplicația** (iOS + Android, live in the App Store since 2026-11-05 and on Google Play; card URL `https://www.vreaumate.online/aplicatie`), a **separate card** from the vreaumate.online site, `~40.000–55.000 €`, `~7–8 luni, un singur programator` (~32 weeks ≈ 1.300 h × 30–40 €/h, the app API written on the site included). Because both cards share the domain, the hand-written per-project data (`PROJECT_VALUE`, `PROJECT_PLATFORM`, `PROJECT_TAGS`, previews) is keyed by `projectKey(url)` = hostname plus path (`vreaumate.online/aplicatie`), not by hostname alone. Preview source: `scripts/vreaumate-app-preview.html`.
+
 ### 6.4 Status badge
 
 A small pill: a colored dot + label. Driven by a single constant `AVAILABILITY: 'green' | 'amber'` in `lib/site.ts` (flipping it is a one-line commit; Vercel auto-deploys).
