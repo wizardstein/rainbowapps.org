@@ -27,6 +27,9 @@ RainbowApps (rainbowapps.org) is a service run by one person (Adelin, Cluj-Napoc
 7. **Don't add scope.** If it isn't in `SPEC.md`, ask before building it.
 
 ## Portfolio cost estimates (`PROJECT_VALUE` in `lib/site.ts`)
+Since the portfolio redesign (2026-11-06) the cost/time figures are **not shown on the site**
+(no prices anywhere, see SPEC.md); they stay in `PROJECT_VALUE` as the reference below, next to
+the five features the homepage deck does show.
 Owner feedback, 2026-10-15: **don't inflate the "ar fi costat" figures.** Price every new
 project as what one good senior freelancer in Cluj would have charged working solo
 (~30–40 €/h, i.e. ~4.500–6.500 €/month; add a designer only where there is real identity or

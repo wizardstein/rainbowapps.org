@@ -1,10 +1,12 @@
 import Link from "next/link";
 import ArcMark from "@/components/ArcMark";
 
+// Owner redesign, 2026-11-06: „Ce am construit” and „Despre mine” are their
+// own pages, reached only from here; the other two are homepage sections.
 const LINKS = [
-  { href: "/#portofoliu", label: "Ce am construit" },
-  { href: "/#cum-functioneaza", label: "Cum funcționează" },
-  { href: "/#povestea", label: "Povestea mea" },
+  { href: "/proiecte", label: "Ce am construit" },
+  { href: "/#recenzii", label: "Recenzii" },
+  { href: "/despre", label: "Despre mine" },
   { href: "/#sustine", label: "Susține" },
 ];
 
@@ -37,6 +39,22 @@ export default function SiteHeader() {
           </Link>
         </nav>
       </div>
+      {/* On phones the four links get their own row, swipeable sideways, so
+          the separate pages stay reachable. */}
+      <nav
+        aria-label="Navigație"
+        className="rail -mt-1 flex gap-1 overflow-x-auto px-2 pb-2 md:hidden"
+      >
+        {LINKS.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className="inline-flex min-h-11 flex-none items-center rounded-full px-3 text-[15px] font-medium whitespace-nowrap text-ink transition-colors hover:text-blue"
+          >
+            {link.label}
+          </Link>
+        ))}
+      </nav>
     </header>
   );
 }

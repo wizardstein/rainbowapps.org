@@ -25,9 +25,11 @@ const instrument = Instrument_Sans({
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.rainbowapps.org";
-const title = "RainbowApps — Ai o idee bună? O construiesc, de la 0 lei.";
+// Portfolio redesign (owner, 2026-11-06): no prices anywhere — free for NGOs
+// and good causes is said, the rest is left unsaid.
+const title = "RainbowApps — aplicații și site-uri pentru oameni cu idei bune";
 const description =
-  "Sunt Adelin, programator din Cluj. Dacă ai o idee de aplicație care ajută oameni, dar nu știi să programezi, o construiesc eu — gratuit pentru ONG‑uri și cauze bune, contra cost pentru proiecte mai mari.";
+  "Sunt Adelin, programator din Cluj. Construiesc aplicații de telefon și site-uri pentru oameni cu idei bune — gratuit pentru ONG‑uri și cauze bune. Tu păstrezi totul: ideea, codul, domeniul.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

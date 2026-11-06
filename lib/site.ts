@@ -17,9 +17,11 @@ export type Project = {
   url: string;
 };
 
-// "Cât ar fi costat / cât ar fi durat" figures shown in the portfolio, keyed by
-// hostname (see PROJECT_VALUE). These are hand-written market estimates, kept
-// out of the DB on purpose — not owner-editable content.
+// Per-project value data, keyed by projectKey (see PROJECT_VALUE): the five
+// features shown on the homepage deck, plus the "cât ar fi costat / cât ar fi
+// durat" market estimates. Since the portfolio redesign (owner, 2026-11-06)
+// the cost and time are no longer shown anywhere; they stay here as the
+// reference for future estimates. Hand-written, kept out of the DB on purpose.
 export type ProjectValue = {
   cost: string;
   time: string;
@@ -68,18 +70,10 @@ export function projectTags(key: string | null): string[] {
   return (key && PROJECT_TAGS[key]) || ["Site web"];
 }
 
-// Anchor id for a project card, e.g. "proiect-vreaumate-online" (or
-// "proiect-vreaumate-online-aplicatie"), so the hero pills can jump to the
-// card in the rail.
+// Anchor id for a project card on /proiecte, e.g. "proiect-vreaumate-online"
+// (or "proiect-vreaumate-online-aplicatie").
 export function projectSlug(key: string | null): string {
   return `proiect-${(key ?? "x").replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`;
-}
-
-// Lower bound of a cost range like "~70.000–100.000 €", in euro. Used to add up
-// the "cât ar fi costat" band under the hero.
-export function costFloorEur(cost: string): number {
-  const m = cost.match(/\d{1,3}(?:\.\d{3})*/);
-  return m ? Number(m[0].replace(/\./g, "")) : 0;
 }
 
 // Used to key the static preview screenshots in public/previews.

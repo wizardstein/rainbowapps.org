@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 
 const SHARE_URL = "https://www.rainbowapps.org";
-const SHARE_TITLE = "RainbowApps — Ai o idee bună? O construiesc, de la 0 lei.";
+const SHARE_TITLE = "RainbowApps — aplicații și site-uri pentru oameni cu idei bune";
 const SHARE_TEXT =
-  "Ai o idee de aplicație care ajută oameni, dar nu știi să programezi? Adelin, un programator din Cluj, o construiește — de la 0 lei. Tu păstrezi totul.";
+  "Ai o idee de aplicație care ajută oameni, dar nu știi să programezi? Adelin, un programator din Cluj, o construiește — gratuit pentru ONG-uri și cauze bune. Tu păstrezi totul.";
 
 const LINKS = [
   {
