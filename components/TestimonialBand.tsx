@@ -115,18 +115,23 @@ export default function TestimonialBand({
     hold.current.holding = true;
     hold.current.dragged = false;
     drag.current = { x: e.clientX, scroll: band.current.scrollLeft };
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch {
-      // Pointer already gone — dragging still works uncaptured.
-    }
   }
-  function onPointerMove(e: React.PointerEvent) {
+  function onPointerMove(e: React.PointerEvent<HTMLDivElement>) {
     const d = drag.current;
     const el = band.current;
     if (!d || !el) return;
     const dx = e.clientX - d.x;
-    if (Math.abs(dx) > 4) hold.current.dragged = true;
+    if (!hold.current.dragged && Math.abs(dx) > 4) {
+      hold.current.dragged = true;
+      // Capture only once it is really a drag: a captured pointer sends the
+      // click to the band instead of the link, so capturing on press made
+      // the project links dead (2026-11-16).
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId);
+      } catch {
+        // Pointer already gone — dragging still works uncaptured.
+      }
+    }
     el.scrollLeft = d.scroll - dx;
   }
   function onPointerUp(e: React.PointerEvent) {
@@ -244,6 +249,7 @@ export default function TestimonialBand({
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
+        onPointerLeave={onPointerUp}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}

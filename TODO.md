@@ -190,3 +190,24 @@ projects — the public site never breaks because a table is empty.
 - Submission status + notes edits persist; sketches open via signed URL.
 - Public pages keep working with auth env vars missing entirely.
 - No secret (Google client secret, AUTH_SECRET, service key) in the client bundle.
+
+## 6. Homepage hero — open question, raised 2026-11-16
+
+The owner feels something is missing at the top of the homepage. Since the 2026-11-06
+redesign (SPEC.md) the first screen is only the portfolio deck: the h1 is visually hidden and
+there is no visible headline, lead, CTA or availability pill. The owner doesn't yet know what a
+good hero would be. Decide that first, then build.
+
+- What has been tried and dropped: „<total> € de software. 0 lei ceruți.” (dropped 2026-10-18,
+  read as a lack of confidence), then the two figures „<total> € / 100%” (dropped 2026-11-06
+  together with every price on the site). Whatever comes next can't show prices or cost
+  figures.
+- Directions to sketch in the Claude Design canvas before any code (the owner picks; copy
+  comes from him, verbatim):
+  1. One visible line above the deck saying who I am and what I build, plus the existing
+     „Trimite o idee” button. The deck stays the first thing you see.
+  2. The availability pill (`AVAILABILITY`, editable in /admin) as an eyebrow over that line,
+     so visitors know whether I'm taking new ideas right now.
+  3. A short hero band before the deck (headline, lead, CTA). This pushes the deck below the
+     fold on phones, which is the trade-off to weigh.
+- Check it at 390×844 as well as on desktop: on phones the deck already fills the screen.
