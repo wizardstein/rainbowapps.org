@@ -57,6 +57,10 @@ export const metadata: Metadata = {
     description,
     images: ["/og.png"],
   },
+  // Meta Business (portofoliul RainbowApps): verificarea domeniului, 2026-11-20.
+  other: {
+    "facebook-domain-verification": "yyn9wvu3s9f83qevsskfyel9d4kc2p",
+  },
 };
 
 export default function RootLayout({
