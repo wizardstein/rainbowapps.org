@@ -64,6 +64,7 @@ export const PROJECT_TAGS: Record<string, string[]> = {
   "nightshiftfabrications.ro": ["Site web", "Atelier"],
   "vreaumate.online": ["Site web", "Educație"],
   "vreaumate.online/aplicatie": ["iOS", "Android", "Educație"],
+  "gustulexotic.ro": ["Magazin online", "Alimentar"],
 };
 
 export function projectTags(key: string | null): string[] {
@@ -145,6 +146,12 @@ export const PROJECTS: Project[] = [
     description:
       "Site pentru un atelier de fabricație din Cluj: galerie de lucrări, cerere de ofertă și un panou propriu de administrare.",
     url: "https://nightshiftfabrications.ro",
+  },
+  {
+    title: "gustulexotic.ro",
+    description:
+      "Magazin online de vanilie Bourbon din Madagascar: păstăi, pudră și nuci de macadamia, la gramaj sau la kilogram, cu plata cu cardul direct pe site.",
+    url: "https://gustulexotic.ro",
   },
 ];
 
@@ -243,6 +250,21 @@ export const PROJECT_VALUE: Record<string, ProjectValue> = {
       "Când cineva cere o ofertă, completează un formular scurt care se adaptează după cum e persoană fizică sau firmă, iar cererea ajunge direct pe mail.",
       "Pozele urcate din panou se micșorează și se optimizează singure, așa că site-ul rămâne rapid chiar și cu sute de imagini.",
       "Pagina de pornire prezintă atelierul cap-coadă — lucrări, cifre, recenzii și pașii de lucru — clar și rapid pe telefon.",
+    ],
+  },
+  // Agent's low reading (2026-11-26), not yet confirmed by the owner:
+  // ~10–12 weeks ≈ 400–480 h × 30–40 €/h (storefront + WordPress migration,
+  // per-weight catalog + admin, BT iPay payments with follow-up and refunds,
+  // orders in admin). Not shown on the site.
+  "gustulexotic.ro": {
+    cost: "~12.000–17.000 €",
+    time: "~2–3 luni, un singur programator",
+    features: [
+      "Magazinul vechi, făcut pe WordPress, a fost rescris de la zero: paginile se deschid pe loc, sunt gândite să fie găsite ușor pe Google, iar linkurile vechi duc în continuare unde trebuie.",
+      "Fiecare produs se vinde pe gramaje, de la 100 g la 5 kg, fiecare cu prețul lui, iar prețul pe kilogram se vede din prima, pe telefon ca și pe calculator.",
+      "Plata cu cardul merge direct prin Banca Transilvania, cu email de confirmare pentru client și pentru magazin; dacă o plată rămâne neclară, site-ul o verifică singur la bancă și trimite o alertă.",
+      "Dani își schimbă singur produsele, gramajele, prețurile și pozele dintr-un panou privat, iar o salvare greșită se întoarce din istoric, cu un clic.",
+      "Toate comenzile stau într-un loc: plata se verifică la bancă și banii se returnează dintr-un buton, iar la fiecare se vede dacă clientul a venit dintr-o reclamă și din care.",
     ],
   },
 };

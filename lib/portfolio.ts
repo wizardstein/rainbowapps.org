@@ -7,6 +7,7 @@ import previewNsfab from "@/public/previews/nsfab.jpg";
 import previewBbapp from "@/public/previews/bbapp.jpg";
 import previewVreaumate from "@/public/previews/vreaumate.jpg";
 import previewVreaumateApp from "@/public/previews/vreaumate-app.jpg";
+import previewGustulexotic from "@/public/previews/gustulexotic.jpg";
 import {
   PROJECT_VALUE,
   projectKey,
@@ -45,6 +46,7 @@ const PREVIEWS: Record<string, StaticImageData> = {
   "app.beard-brothers.ro": previewBbapp,
   "vreaumate.online": previewVreaumate,
   "vreaumate.online/aplicatie": previewVreaumateApp,
+  "gustulexotic.ro": previewGustulexotic,
 };
 
 export function portfolioItems(projects: Project[]): PortfolioItem[] {
